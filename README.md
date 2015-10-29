@@ -13,3 +13,4 @@ Uputstva:
 * veličinu prozora možete saznati sa GetClientRect
 * nakon što promijenite stil prozoru (da bi se pokazao/sakrio rub), ponovno iscrtavanje cijelog prozora forsirate sa SetWindowPos koristeći flag SWP_FRAMECHANGED (uz SWP_NOMOVE, SWP_NOSIZE, SWP_NOZORDER)
 
+![ship](/screenshot.jpg?raw=true)
