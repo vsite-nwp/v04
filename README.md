@@ -1,4 +1,4 @@
-#### vježba 3
+#### vježba 4
 
 Napišite program kojim pomičete brod po prozoru. Kao brod neka vam posluži static sa tekstom "x". 
 * klik lijevom tipkom miša postavlja trenutnu poziciju "broda"
