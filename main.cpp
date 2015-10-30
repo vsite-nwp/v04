@@ -33,6 +33,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
 {
 	Application app;
 	MainWindow wnd;
-	wnd.Create(NULL, WS_OVERLAPPEDWINDOW | WS_VISIBLE, "NWP 4",NULL,CW_USEDEFAULT,CW_USEDEFAULT,WD_WIDTH,WD_HEIGHT);
+	wnd.Create(NULL, WS_OVERLAPPEDWINDOW | WS_VISIBLE, "NWP 4",NULL,WD_WIDTH,WD_HEIGHT);
 	return app.Run();
 }
