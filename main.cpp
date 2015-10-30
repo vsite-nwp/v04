@@ -1,6 +1,14 @@
 #include "nwpwin.h"
+//Custom defines...
+#define WD_WIDTH 400
+#define WD_HEIGHT 400
+#define SH_SIZE 10
 
-// TODO: prepare class (Static) for a ship
+
+class Static : public Window {
+public:
+	std::string ClassName() { return "STATIC"; }
+};
 
 class MainWindow : public Window
 {
@@ -25,6 +33,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
 {
 	Application app;
 	MainWindow wnd;
-	wnd.Create(NULL, WS_OVERLAPPEDWINDOW | WS_VISIBLE, "NWP 4");
+	wnd.Create(NULL, WS_OVERLAPPEDWINDOW | WS_VISIBLE, "NWP 4",NULL,WD_WIDTH,WD_HEIGHT);
 	return app.Run();
 }
