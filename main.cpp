@@ -3,6 +3,8 @@
 #define WD_WIDTH 400
 #define WD_HEIGHT 400
 #define SH_SIZE 20
+#define SH_SMALLSTEP 1
+#define SH_BIGSTEP 10
 
 
 class Static : public Window {
@@ -12,35 +14,81 @@ public:
 
 class MainWindow : public Window
 {
-
 protected:
 	void OnLButtonDown(POINT p) {
+		target = p;
+		CheckNSetPosition(target);
 
-		CheckNSetPosition(p);
-
-		if (!ship) {
-			BuildShip(position);
-		}
+		if (!ship) BuildShip();
 		
-		SetWindowPos(ship, HWND_TOP, position.x, position.y, NULL, NULL, SWP_NOSIZE | SWP_NOZORDER);
+		TeleportShip();
 	}
+
 	void OnKeyUp(int vk) {
-		// TODO: mark ship (if exists) as "not moving"
+		if(ship) StopShip();
 	}
+
 	void OnKeyDown(int vk) {
-		// TODO: if ship exists, move it depending on key and mark as "moving"
+		if (ship) {
+			int step = SH_SMALLSTEP;
+			if (GetKeyState(VK_CONTROL) < 0) step = SH_BIGSTEP;
+			SetWindowLong(ship, GWL_STYLE, moveStyle);
+			
+			switch (vk)
+			{
+			case VK_UP: 
+				target.y = position.y - step;
+				CheckNSetPosition(target);
+				MoveShip();
+				break;
+			case VK_DOWN:
+				target.y = position.y + step;
+				CheckNSetPosition(target);
+				MoveShip();
+				break;
+			case VK_LEFT:
+				target.x=position.x - step;
+				CheckNSetPosition(target);
+				MoveShip();
+				break;
+			case VK_RIGHT:
+				target.x =position.x + step;
+				CheckNSetPosition(target);
+				MoveShip();
+				break;
+			default:
+				break;
+			}
+		}
 	}
+
 	void OnDestroy(){
 		::PostQuitMessage(0);
 	}
+
 private:
 	Static ship;
-	POINT position;
+	POINT position, target;
 	RECT clientSize, perimeter;
+	DWORD style= WS_CHILD | WS_VISIBLE | SS_CENTER;
+	DWORD moveStyle = style | WS_BORDER;
 	
+	void BuildShip() {
+		ship.Create(*this, style, "X", NULL, position.x, position.y, SH_SIZE, SH_SIZE);
+	}
 
-	void BuildShip(POINT& p) {
-		ship.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, "X", NULL, p.x, p.y, SH_SIZE, SH_SIZE);
+	void TeleportShip() {
+		SetWindowLong(ship, GWL_STYLE, style);
+		SetWindowPos(ship, HWND_TOP, position.x, position.y, NULL, NULL, SWP_NOSIZE | SWP_NOZORDER);
+	}
+
+	void StopShip() {
+		SetWindowLong(ship, GWL_STYLE, style);
+		SetWindowPos(ship, HWND_TOP, position.x, position.y, NULL, NULL, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
+	}
+
+	void MoveShip() {
+		SetWindowPos(ship, HWND_TOP, position.x, position.y, NULL, NULL,SWP_FRAMECHANGED| SWP_NOSIZE | SWP_NOZORDER);
 	}
 
 	void CheckNSetPosition(POINT& p) {
@@ -52,19 +100,16 @@ private:
 		perimeter.top = clientSize.top;
 		perimeter.left = clientSize.left;
 
-		if (p.x > perimeter.right) {
-			position.x = perimeter.right;
-		}
-		else{ 
-			position.x = p.x; 
-		}
+		if (p.x > perimeter.right) p.x = perimeter.right;
+
+		if (p.y > perimeter.bottom) p.y = perimeter.bottom;
 		
-		if (p.y > perimeter.bottom) {
-			position.y = perimeter.bottom;
-		}
-		else {
-			position.y = p.y;
-		}
+		if (p.x < perimeter.left) p.x = perimeter.left;
+
+		if (p.y < perimeter.top) p.y = perimeter.top;
+
+		position.y = p.y;
+		position.x = p.x;
 	}
 };
 

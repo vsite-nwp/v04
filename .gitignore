@@ -5,3 +5,5 @@
 *.exe
 *.suo
 /Debug
+/v4.sdf
+/v4.opensdf
