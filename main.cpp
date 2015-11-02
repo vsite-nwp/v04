@@ -1,9 +1,14 @@
 #include "nwpwin.h"
 
-// TODO: prepare class (Static) for a ship
+class Static : public Window {
+public:
+	std::string ClassName() override { return "STATIC"; }
+};
 
 class MainWindow : public Window
 {
+	Static ship;
+	POINT position;
 protected:
 	void OnLButtonDown(POINT p) {
 		// TODO: create ship if it doesn't exist yet
