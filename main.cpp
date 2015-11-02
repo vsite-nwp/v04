@@ -3,18 +3,25 @@
 // TODO: prepare class (Static) for a ship
 class Static :public Window {
 public:
-	std::string ClassName()
-	{
-		return "X";
+	std::string ClassName() {
+
+		return "Static";
 	}
+	
 };
 
 class MainWindow : public Window
 {
+	Static ship;
+	POINT current_position;
 protected:
 	void OnLButtonDown(POINT p) {
 		// TODO: create ship if it doesn't exist yet
+		if (!ship)
+			ship.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER,("X"), 10,10,200,50);
+
 		// TODO: change current location
+		current_position = p;
 	}
 	void OnKeyUp(int vk) {
 		// TODO: mark ship (if exists) as "not moving"
