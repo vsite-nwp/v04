@@ -17,7 +17,7 @@ protected:
 	void OnLButtonDown(POINT p) {
 		// TODO: create ship if it doesn't exist yet
 		if (!ship){
-			ship.Create(*this, WS_CHILD | WS_VISIBLE, "X", 0, (int)p.x, (int)p.y, 20, 20);
+			ship.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, "X", 0, (int)p.x, (int)p.y, 20, 20);
 		}
 		// TODO: change current location
 		SetWindowPos(ship, 0, (int)p.x, (int)p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SS_CENTER);
@@ -25,8 +25,9 @@ protected:
 	}
 	void OnKeyUp(int vk) {
 		// TODO: mark ship (if exists) as "not moving"
-		if (!ship) return;
-		StopRightThere();
+		if (ship){
+			StopRightThere();
+		}
 	}
 	void OnKeyDown(int vk) {
 		// TODO: if ship exists, move it depending on key and mark as "moving"
@@ -38,6 +39,8 @@ protected:
 
 			GetClientRect(*this, &rec);
 			
+			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER | WS_BORDER);
+
 			switch (vk){
 				case VK_UP:
 					cords.y -= throttle;
@@ -72,11 +75,12 @@ private:
 	RECT rec;
 
 	void StopRightThere(){
+		SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER);
 		SetWindowPos(ship, 0, cords.x, cords.y, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
 	}
 
 	void GoShipGo(){
-		SetWindowPos(ship, 0, cords.x , cords.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SS_CENTER);
+		SetWindowPos(ship, 0, cords.x, cords.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 	}
 };
 
