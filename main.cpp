@@ -1,5 +1,7 @@
 #include "nwpwin.h"
 
+#define SHIP_SIZE 20
+
 // TODO: prepare class (Static) for a ship
 class Static : public Window{
 public:
@@ -23,9 +25,8 @@ protected:
 	}
 	void OnKeyUp(int vk) {
 		// TODO: mark ship (if exists) as "not moving"
-	/*	if (ship){
-			SetWindowLong(ship, GWL_STYLE, ~WS_BORDER);
-		}*/
+		if (!ship) return;
+		StopRightThere();
 	}
 	void OnKeyDown(int vk) {
 		// TODO: if ship exists, move it depending on key and mark as "moving"
@@ -45,7 +46,7 @@ protected:
 					break;
 				case VK_DOWN:
 					cords.y += throttle;
-					rec.bottom > cords.y ? cords.y : cords.y = rec.bottom;
+					rec.bottom - SHIP_SIZE > cords.y ? cords.y : cords.y = rec.bottom - SHIP_SIZE;
 					GoShipGo();
 					break;
 				case VK_LEFT:
@@ -55,7 +56,7 @@ protected:
 					break;
 				case VK_RIGHT:
 					cords.x += throttle;
-					rec.right > cords.x ? cords.x : cords.x = rec.right;
+					rec.right - SHIP_SIZE > cords.x ? cords.x : cords.x = rec.right - SHIP_SIZE;
 					GoShipGo();
 					break;
 			}
@@ -70,9 +71,12 @@ private:
 	POINT cords;
 	RECT rec;
 
-	void GoShipGo(){
+	void StopRightThere(){
+		SetWindowPos(ship, 0, cords.x, cords.y, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
+	}
 
-		::SetWindowPos(ship, 0, cords.x , cords.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SS_CENTER);
+	void GoShipGo(){
+		SetWindowPos(ship, 0, cords.x , cords.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SS_CENTER);
 	}
 };
 
