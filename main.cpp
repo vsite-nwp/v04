@@ -15,12 +15,11 @@ protected:
 	void OnLButtonDown(POINT p) {
 		// TODO: create ship if it doesn't exist yet
 		if (!ship){
-			ship.Create(*this, WS_CHILD | WS_VISIBLE, "X", 0, (int)p.x, (int)p.y, 15, 15);
-			cords = p;
+			ship.Create(*this, WS_CHILD | WS_VISIBLE, "X", 0, (int)p.x, (int)p.y, 20, 20);
 		}
 		// TODO: change current location
-
 		SetWindowPos(ship, 0, (int)p.x, (int)p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SS_CENTER);
+		cords = p;
 	}
 	void OnKeyUp(int vk) {
 		// TODO: mark ship (if exists) as "not moving"
@@ -32,26 +31,30 @@ protected:
 		// TODO: if ship exists, move it depending on key and mark as "moving"
 		if (ship){
 
+			int throttle = 5;
+			if (GetKeyState(VK_CONTROL) < 0)
+				throttle = 20;
+
 			GetClientRect(*this, &rec);
 			
 			switch (vk){
 				case VK_UP:
-					cords.y -= 5;
+					cords.y -= throttle;
 					rec.top < cords.y ? cords.y : cords.y = rec.top;
 					GoShipGo();
 					break;
 				case VK_DOWN:
-					cords.y += 5;
+					cords.y += throttle;
 					rec.bottom > cords.y ? cords.y : cords.y = rec.bottom;
 					GoShipGo();
 					break;
 				case VK_LEFT:
-					cords.x -= 5;
+					cords.x -= throttle;
 					rec.left < cords.x ? cords.x : cords.x = rec.left;
 					GoShipGo();
 					break;
 				case VK_RIGHT:
-					cords.x += 5;
+					cords.x += throttle;
 					rec.right > cords.x ? cords.x : cords.x = rec.right;
 					GoShipGo();
 					break;
@@ -68,8 +71,7 @@ private:
 	RECT rec;
 
 	void GoShipGo(){
-		
-		SetWindowLong(ship, GWL_STYLE, WS_BORDER);
+
 		::SetWindowPos(ship, 0, cords.x , cords.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SS_CENTER);
 	}
 };
