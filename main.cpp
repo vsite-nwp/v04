@@ -2,7 +2,7 @@
 
 #define SHIP_SIZE 20
 
-// TODO: prepare class (Static) for a ship
+
 class Static : public Window{
 public:
 	std::string ClassName(){ 
@@ -15,22 +15,22 @@ class MainWindow : public Window
 {
 protected:
 	void OnLButtonDown(POINT p) {
-		// TODO: create ship if it doesn't exist yet
+
 		if (!ship){
 			ship.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, "X", 0, (int)p.x, (int)p.y, 20, 20);
 		}
-		// TODO: change current location
+
 		SetWindowPos(ship, 0, (int)p.x, (int)p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SS_CENTER);
 		cords = p;
 	}
 	void OnKeyUp(int vk) {
-		// TODO: mark ship (if exists) as "not moving"
+
 		if (ship){
 			StopRightThere();
 		}
 	}
 	void OnKeyDown(int vk) {
-		// TODO: if ship exists, move it depending on key and mark as "moving"
+
 		if (ship){
 
 			int throttle = 5;
