@@ -17,10 +17,10 @@ protected:
 	void OnLButtonDown(POINT p) {
 
 		if (!ship){
-			ship.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, "X", 0, (int)p.x, (int)p.y, 20, 20);
+			ship.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, "X", 0, p.x, p.y, SHIP_SIZE, SHIP_SIZE);
 		}
 
-		SetWindowPos(ship, 0, (int)p.x, (int)p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SS_CENTER);
+		SetWindowPos(ship, 0, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SS_CENTER);
 		cords = p;
 	}
 	void OnKeyUp(int vk) {
@@ -36,7 +36,8 @@ protected:
 			int throttle = 5;
 			if (GetKeyState(VK_CONTROL) < 0)
 				throttle = 20;
-
+			
+			RECT rec;
 			GetClientRect(*this, &rec);
 			
 			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER | WS_BORDER);
@@ -45,24 +46,25 @@ protected:
 				case VK_UP:
 					cords.y -= throttle;
 					rec.top < cords.y ? cords.y : cords.y = rec.top;
-					GoShipGo();
+					//GoShipGo();
 					break;
 				case VK_DOWN:
 					cords.y += throttle;
 					rec.bottom - SHIP_SIZE > cords.y ? cords.y : cords.y = rec.bottom - SHIP_SIZE;
-					GoShipGo();
+					//GoShipGo();
 					break;
 				case VK_LEFT:
 					cords.x -= throttle;
 					rec.left < cords.x ? cords.x : cords.x = rec.left;
-					GoShipGo();
+					//GoShipGo();
 					break;
 				case VK_RIGHT:
 					cords.x += throttle;
 					rec.right - SHIP_SIZE > cords.x ? cords.x : cords.x = rec.right - SHIP_SIZE;
-					GoShipGo();
+					//GoShipGo();
 					break;
 			}
+			GoShipGo();
 
 		}
 	}
@@ -72,7 +74,7 @@ protected:
 private:
 	Static ship;
 	POINT cords;
-	RECT rec;
+	//RECT rec;
 
 	void StopRightThere(){
 		SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER);
