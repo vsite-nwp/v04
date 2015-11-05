@@ -1,6 +1,6 @@
 #include "nwpwin.h"
-#define SHIP_WIDTH 16
-#define SHIP_HEIGHT 25  //size of ship in pixels
+#define SHIP_WIDTH 20
+#define SHIP_HEIGHT 20  //size of ship in pixels
 
 // TODO: prepare class (Static) for a ship
 class Static : public Window {
@@ -15,9 +15,13 @@ protected:
 	Static ship;
 	void OnLButtonDown(POINT p) {
 		// TODO: create ship if it doesn't exist yet
-	
+		if (!ship) {
+
+			ship.Create(*this, WS_VISIBLE | WS_CHILD, "x", NULL, p.x, p.y, SHIP_WIDTH, SHIP_HEIGHT);
+		}
+
 		// TODO: change current location
-		
+		SetWindowPos(ship,NULL, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 
 	}
 	void OnKeyUp(int vk) {
