@@ -7,9 +7,11 @@
 #define SH_BIGSTEP 10
 
 
+
 class Static : public Window {
 public:
 	std::string ClassName() { return "STATIC"; }
+	DWORD style = WS_CHILD | WS_VISIBLE | SS_CENTER;
 };
 
 class MainWindow : public Window
@@ -17,48 +19,73 @@ class MainWindow : public Window
 protected:
 	void OnLButtonDown(POINT p) {
 		target = p;
-		CheckNSetPosition(target);
+		GetClientRect(*this, &clientSize);
+
+		if ((target.x + SH_SIZE) > clientSize.right) target.x = clientSize.right - SH_SIZE;
+		else if (target.x < clientSize.left) target.x = clientSize.left;
+
+		if ((target.y+SH_SIZE) > clientSize.bottom) target.y = clientSize.bottom - SH_SIZE;
+		else if (target.y < clientSize.top) target.y = clientSize.top;
+		
+		position.y = target.y;
+		position.x = target.x;
 
 		if (!ship) BuildShip();
 		
-		TeleportShip();
+		SetWindowLong(ship, GWL_STYLE, ship.style);
+		SetWindowPos(ship, HWND_TOP, position.x, position.y, NULL, NULL, SWP_NOSIZE | SWP_NOZORDER);
 	}
 
 	void OnKeyUp(int vk) {
-		if(ship) StopShip();
-	}
-
-	void OnKeyDown(int vk) {
-		if (ship) {
-			int step = SH_SMALLSTEP;
-			if (GetKeyState(VK_CONTROL) < 0) step = SH_BIGSTEP;
-			SetWindowLong(ship, GWL_STYLE, moveStyle);
-			
-			switch (vk)
+		if (ship) 
+		{
+			switch (vk) 
 			{
-			case VK_UP: 
-				target.y = position.y - step;
-				CheckNSetPosition(target);
-				MoveShip();
-				break;
+			case VK_UP:
 			case VK_DOWN:
-				target.y = position.y + step;
-				CheckNSetPosition(target);
-				MoveShip();
-				break;
 			case VK_LEFT:
-				target.x=position.x - step;
-				CheckNSetPosition(target);
-				MoveShip();
-				break;
 			case VK_RIGHT:
-				target.x =position.x + step;
-				CheckNSetPosition(target);
-				MoveShip();
+				break;
+			case VK_CONTROL:
+				step = SH_SMALLSTEP;
 				break;
 			default:
 				break;
 			}
+			SetWindowLong(ship, GWL_STYLE, ship.style);
+			SetWindowPos(ship, HWND_TOP, position.x, position.y, NULL, NULL, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
+		}
+	}
+
+	void OnKeyDown(int vk) {
+		if (ship) {
+			if (GetKeyState(VK_CONTROL) < 0) step = SH_BIGSTEP;
+			GetClientRect(*this, &clientSize);
+				switch (vk)
+				{
+				case VK_UP:
+					target.y = position.y - step;
+					if (target.y < clientSize.top) target.y = clientSize.top;
+					break;
+				case VK_DOWN:
+					target.y = position.y + step;
+					if ((target.y + SH_SIZE) > clientSize.bottom) target.y = clientSize.bottom - SH_SIZE;
+					break;
+				case VK_LEFT:
+					target.x = position.x - step;
+					if (target.x < clientSize.left) target.x = clientSize.left;
+					break;
+				case VK_RIGHT:
+					target.x = position.x + step;
+					if ((target.x + SH_SIZE) > clientSize.right) target.x = clientSize.right - SH_SIZE;
+					break;
+				default:
+					break;
+				}
+				SetWindowLong(ship, GWL_STYLE, ship.style | WS_BORDER);
+				position.x = target.x;
+				position.y = target.y;
+				SetWindowPos(ship, HWND_TOP, position.x, position.y, NULL, NULL, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 		}
 	}
 
@@ -69,47 +96,11 @@ protected:
 private:
 	Static ship;
 	POINT position, target;
-	RECT clientSize, perimeter;
-	DWORD style= WS_CHILD | WS_VISIBLE | SS_CENTER;
-	DWORD moveStyle = style | WS_BORDER;
+	RECT clientSize;
+	int step = SH_SMALLSTEP;
 	
 	void BuildShip() {
-		ship.Create(*this, style, "X", NULL, position.x, position.y, SH_SIZE, SH_SIZE);
-	}
-
-	void TeleportShip() {
-		SetWindowLong(ship, GWL_STYLE, style);
-		SetWindowPos(ship, HWND_TOP, position.x, position.y, NULL, NULL, SWP_NOSIZE | SWP_NOZORDER);
-	}
-
-	void StopShip() {
-		SetWindowLong(ship, GWL_STYLE, style);
-		SetWindowPos(ship, HWND_TOP, position.x, position.y, NULL, NULL, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
-	}
-
-	void MoveShip() {
-		SetWindowPos(ship, HWND_TOP, position.x, position.y, NULL, NULL,SWP_FRAMECHANGED| SWP_NOSIZE | SWP_NOZORDER);
-	}
-
-	void CheckNSetPosition(POINT& p) {
-
-		GetClientRect(*this, &clientSize);
-
-		perimeter.bottom = clientSize.bottom - SH_SIZE;
-		perimeter.right = clientSize.right - SH_SIZE;
-		perimeter.top = clientSize.top;
-		perimeter.left = clientSize.left;
-
-		if (p.x > perimeter.right) p.x = perimeter.right;
-
-		if (p.y > perimeter.bottom) p.y = perimeter.bottom;
-		
-		if (p.x < perimeter.left) p.x = perimeter.left;
-
-		if (p.y < perimeter.top) p.y = perimeter.top;
-
-		position.y = p.y;
-		position.x = p.x;
+		ship.Create(*this, ship.style, "X", NULL, position.x, position.y, SH_SIZE, SH_SIZE);
 	}
 };
 
