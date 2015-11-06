@@ -18,9 +18,10 @@ protected:
 	void OnLButtonDown(POINT p) {
 		// TODO: create ship if it doesn't exist yet
 		if (!ship)
-			ship.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER,("X"), 10,10,200,50);
+			ship.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, ("x"),0,0,0,20,20);
 
 		// TODO: change current location
+		SetWindowPos(ship,0,current_position.x,current_position.y,0,0,SWP_NOSIZE | SWP_NOZORDER);
 		current_position = p;
 	}
 	void OnKeyUp(int vk) {
