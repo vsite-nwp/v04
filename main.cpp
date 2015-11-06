@@ -45,24 +45,22 @@ protected:
 			switch (vk){
 				case VK_UP:
 					cords.y -= throttle;
-					rec.top < cords.y ? cords.y : cords.y = rec.top;
-					//GoShipGo();
+					if (cords.y < rec.top) cords.y = rec.top;
 					break;
 				case VK_DOWN:
 					cords.y += throttle;
-					rec.bottom - SHIP_SIZE > cords.y ? cords.y : cords.y = rec.bottom - SHIP_SIZE;
-					//GoShipGo();
+					if (cords.y > rec.bottom - SHIP_SIZE) cords.y = rec.bottom - SHIP_SIZE;
 					break;
 				case VK_LEFT:
 					cords.x -= throttle;
-					rec.left < cords.x ? cords.x : cords.x = rec.left;
-					//GoShipGo();
+					if (cords.x < rec.left) cords.x = rec.left;
 					break;
 				case VK_RIGHT:
 					cords.x += throttle;
-					rec.right - SHIP_SIZE > cords.x ? cords.x : cords.x = rec.right - SHIP_SIZE;
-					//GoShipGo();
+					if (cords.x > rec.right - SHIP_SIZE) cords.x = rec.right - SHIP_SIZE;
 					break;
+				default:
+					return;
 			}
 			GoShipGo();
 
@@ -74,7 +72,6 @@ protected:
 private:
 	Static ship;
 	POINT cords;
-	//RECT rec;
 
 	void StopRightThere(){
 		SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER);
