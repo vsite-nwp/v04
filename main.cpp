@@ -67,13 +67,16 @@ protected:
 			}
 	} 
 		else if(vk == VK_DOWN) {
+			if (pos.y <(rect.bottom - NORMAL_STEP)) {
 				SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
-				SetWindowPos(ship, NULL, pos.x, pos.y += step, 0, 0, SWP_NOSIZE |SWP_NOZORDER| SWP_FRAMECHANGED);
-			
+				SetWindowPos(ship, NULL, pos.x, pos.y += step, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+			}
 	}	
 		else if (vk == VK_UP) {
-			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
-			SetWindowPos(ship, NULL, pos.x, pos.y-=step, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+			if (pos.y > 0) {
+				SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
+				SetWindowPos(ship, NULL, pos.x, pos.y -= step, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+			}
 	}
 
 }
