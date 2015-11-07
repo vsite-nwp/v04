@@ -1,6 +1,8 @@
 #include "nwpwin.h"
 #define SHIP_WIDTH 20
 #define SHIP_HEIGHT 20
+#define NORMAL_STEP 25
+#define BIG_STEP 50
 
 
 
@@ -16,7 +18,6 @@ class MainWindow : public Window
 protected:
 	POINT pos;
 	Static ship;
-	RECT rec;
 	
 	
 	void OnLButtonDown(POINT p) {
@@ -38,33 +39,37 @@ protected:
 		
 		// TODO: mark ship (if exists) as "not moving"
 		SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE);
-		SetWindowPos(ship, NULL, 0, 0, 0, 0,SWP_NOSIZE | SWP_NOZORDER |SWP_NOMOVE|SWP_FRAMECHANGED);
+		SetWindowPos(ship, NULL, 0, 0, 0, 0,SWP_NOSIZE |SWP_NOMOVE|SWP_FRAMECHANGED);
 	
 		
 	}
 	void OnKeyDown(int vk) {
-
+		
 		// TODO: if ship exists, move it depending on key and mark as "moving"
-		GetClientRect(*this, &rec);
-		int step=20;
+		RECT rect;
+		GetClientRect(*this, &rect);
+		int step=NORMAL_STEP;
 		if (GetKeyState(VK_CONTROL)<0) {
-			step += 50;
+			step += BIG_STEP;
 		}
 			
-		
 	if (vk == VK_LEFT){
-		 
+		if (pos.x >0){
 			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
-			SetWindowPos(ship, NULL, pos.x -= step, pos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+			SetWindowPos(ship, NULL, pos.x -= step, pos.y, 0, 0, SWP_NOSIZE | SWP_FRAMECHANGED);
+		}
 		
 	}
 		else if (vk == VK_RIGHT) {
-			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
-			SetWindowPos(ship, NULL, pos.x += step, pos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+			if (pos.x < (rect.right-NORMAL_STEP)) {
+				SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
+				SetWindowPos(ship, NULL, pos.x += step, pos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+			}
 	} 
 		else if(vk == VK_DOWN) {
-			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
-			SetWindowPos(ship, NULL, pos.x, pos.y+=step, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+				SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
+				SetWindowPos(ship, NULL, pos.x, pos.y += step, 0, 0, SWP_NOSIZE |SWP_NOZORDER| SWP_FRAMECHANGED);
+			
 	}	
 		else if (vk == VK_UP) {
 			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
