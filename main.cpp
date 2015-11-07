@@ -1,12 +1,9 @@
 #include "nwpwin.h"
-#define SHIP_WIDTH 20
-#define SHIP_HEIGHT 20
-#define NORMAL_STEP 25
-#define BIG_STEP 50
+#define SHIP_WIDTH 20	 
+#define SHIP_HEIGHT 20	//veli?ina broda u pixelima
+#define NORMAL_STEP 25  //korak kretnje broda bez CTRL
+#define BIG_STEP 50    //korak kretnje broda sa CTRL
 
-
-
-// TODO: prepare class (Static) for a ship
 class Static : public Window {
 
 public:
@@ -21,59 +18,53 @@ protected:
 	
 	
 	void OnLButtonDown(POINT p) {
-		// TODO: create ship if it doesn't exist yet
+		
 		if (!ship) {
 			ship.Create(*this, WS_VISIBLE | WS_CHILD, "x", NULL, p.x, p.y, SHIP_WIDTH, SHIP_HEIGHT);
 			pos.x = p.x;
 			pos.y = p.y;
-			
-		}
-
-		// TODO: change current location
+		} //kreiraj brod i zapamti vrijednosti koordinata
+		
 		SetWindowPos(ship,NULL, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 		pos.x = p.x;
-		pos.y = p.y;
-
-	}
+		pos.y = p.y; //promijeni koordinate broda i zapamti nove vrijednosti
+} 
 	void OnKeyUp(int vk) {
 		
-		// TODO: mark ship (if exists) as "not moving"
-		SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE);
+		SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE); //promijeni izgled ukoliko brod stoji
 		SetWindowPos(ship, NULL, 0, 0, 0, 0,SWP_NOSIZE |SWP_NOMOVE|SWP_FRAMECHANGED);
 	
 		
 	}
 	void OnKeyDown(int vk) {
 		
-		// TODO: if ship exists, move it depending on key and mark as "moving"
 		RECT rect;
-		GetClientRect(*this, &rect);
+		GetClientRect(*this, &rect);	//saznaj koordinate glavnog prozora
 		int step=NORMAL_STEP;
 		if (GetKeyState(VK_CONTROL)<0) {
 			step += BIG_STEP;
 		}
 			
 	if (vk == VK_LEFT){
-		if (pos.x >0){
-			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
+		if (pos.x>0){
+			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);//ako brod ne stoji, promijeni rub broda
 			SetWindowPos(ship, NULL, pos.x -= step, pos.y, 0, 0, SWP_NOSIZE | SWP_FRAMECHANGED);
-		}
-		
+			}
 	}
 		else if (vk == VK_RIGHT) {
 			if (pos.x < (rect.right-NORMAL_STEP)) {
 				SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
-				SetWindowPos(ship, NULL, pos.x += step, pos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+				SetWindowPos(ship, NULL, pos.x += step, pos.y, 0, 0, SWP_NOSIZE|SWP_NOZORDER|SWP_FRAMECHANGED);
 			}
 	} 
 		else if(vk == VK_DOWN) {
 			if (pos.y <(rect.bottom - NORMAL_STEP)) {
 				SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
-				SetWindowPos(ship, NULL, pos.x, pos.y += step, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+				SetWindowPos(ship, NULL, pos.x, pos.y += step, 0, 0, SWP_NOSIZE |SWP_NOZORDER| SWP_FRAMECHANGED);
 			}
 	}	
 		else if (vk == VK_UP) {
-			if (pos.y > 0) {
+			if (pos.y>0) {
 				SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
 				SetWindowPos(ship, NULL, pos.x, pos.y -= step, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
 			}
