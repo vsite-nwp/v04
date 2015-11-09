@@ -1,9 +1,9 @@
 #include "nwpwin.h"
 #define SHIP_WIDTH 20	 
-#define SHIP_HEIGHT 20	//veli?ina broda u pixelima
+#define SHIP_HEIGHT 20	//velicina broda u pixelima
 #define NORMAL_STEP 25  //korak kretnje broda bez CTRL
 #define BIG_STEP 50    //korak kretnje broda sa CTRL
-
+#define BORDER 40  //granica do koje se ship moze kretati
 class Static : public Window {
 
 public:
@@ -42,29 +42,29 @@ protected:
 		GetClientRect(*this, &rect);	//saznaj koordinate glavnog prozora
 		int step=NORMAL_STEP;
 		if (GetKeyState(VK_CONTROL)<0) {
-			step += BIG_STEP;
+			step = BIG_STEP;
 		}
 			
 	if (vk == VK_LEFT){
-		if (pos.x>0){
+		if (pos.x>0+BORDER){
 			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);//ako brod ne stoji, promijeni rub broda
-			SetWindowPos(ship, NULL, pos.x -= step, pos.y, 0, 0, SWP_NOSIZE | SWP_FRAMECHANGED);
+			SetWindowPos(ship, NULL, pos.x -= step, pos.y, 0, 0, SWP_NOSIZE|SWP_NOZORDER | SWP_FRAMECHANGED);
 			}
 	}
 		else if (vk == VK_RIGHT) {
-			if (pos.x < (rect.right-NORMAL_STEP)) {
+			if (pos.x < (rect.right-BORDER)) {
 				SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
 				SetWindowPos(ship, NULL, pos.x += step, pos.y, 0, 0, SWP_NOSIZE|SWP_NOZORDER|SWP_FRAMECHANGED);
 			}
 	} 
 		else if(vk == VK_DOWN) {
-			if (pos.y <(rect.bottom - NORMAL_STEP)) {
+			if (pos.y <(rect.bottom - BORDER)) {
 				SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
 				SetWindowPos(ship, NULL, pos.x, pos.y += step, 0, 0, SWP_NOSIZE |SWP_NOZORDER| SWP_FRAMECHANGED);
 			}
 	}	
 		else if (vk == VK_UP) {
-			if (pos.y>0) {
+			if (pos.y>0+BORDER) {
 				SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
 				SetWindowPos(ship, NULL, pos.x, pos.y -= step, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
 			}
