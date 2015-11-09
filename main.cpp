@@ -6,6 +6,7 @@ class MainWindow : public Window
 {
 protected:
 	void OnLButtonDown(POINT p) {
+
 		// TODO: create ship if it doesn't exist yet
 		// TODO: change current location
 	}
@@ -28,3 +29,5 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
 	wnd.Create(NULL, WS_OVERLAPPEDWINDOW | WS_VISIBLE, "NWP 4");
 	return app.Run();
 }
+
+
