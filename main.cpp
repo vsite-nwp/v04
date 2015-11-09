@@ -19,7 +19,7 @@ protected:
 		// TODO: create ship if it doesn't exist yet
 		if (!ship) 
 		{
-			ship.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, ("x"), 0, 0, 0, 20, 20);
+			ship.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, ("x"), NULL, NULL, NULL, 20, 20);
 
 			// TODO: change current location
 			
@@ -37,10 +37,28 @@ protected:
 	}
 	void OnKeyDown(int vk) {
 		// TODO: if ship exists, move it depending on key and mark as "moving"
-		
+		if (ship)
+		{
+			int step=5;
+			if (GetKeyState(VK_CONTROL) < 0) step = 10;
+			RECT rc; ::GetClientRect(*this, &rc);
+			if (vk == VK_LEFT )
+				current_position.x = max(0,current_position.x - step);
+			else if (vk == VK_RIGHT)
+				current_position.x = min(rc.right-20, current_position.x + step);
+			else if (vk == VK_UP)
+				current_position.y = max(0, current_position.y - step);
+			else if (vk == VK_DOWN)
+				current_position.y = min(rc.bottom-20,current_position.y + step);
+			else
+				return;
+
+			Mark_ship(true);
+			Not_Move();
+		}
 		
 
-
+		
 
 	}	
 	void OnDestroy(){
@@ -48,15 +66,15 @@ protected:
 	}
 private:
 	void Not_Move() {
-		::SetWindowPos(ship, HWND_BOTTOM, current_position.x, current_position.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+		::SetWindowPos(ship, HWND_BOTTOM, current_position.x, current_position.y, NULL, NULL, SWP_NOSIZE | SWP_NOZORDER);
 	}
 
 	
  void Mark_ship(bool on) {
-			DWORD style = ::GetWindowLong(ship, GWL_STYLE);
+			DWORD style =GetWindowLong(ship, GWL_STYLE);
 			style = on ? (style | WS_BORDER) : (style & ~WS_BORDER);
-			::SetWindowLong(ship, GWL_STYLE, style);
-			::SetWindowPos(ship, 0, 0, 0, 0, 0,
+			SetWindowLong(ship, GWL_STYLE, style);
+			SetWindowPos(ship, NULL, NULL, NULL, NULL, NULL,
 				SWP_NOZORDER | SWP_NOSIZE | SWP_NOMOVE | SWP_FRAMECHANGED); // border
 		}
 
