@@ -14,7 +14,6 @@ public:
 	Static s;
 	POINT cp;
 	RECT rect;
-	bool ctrlPritisnut = false;
 protected:
 	void OnLButtonDown(POINT p) {
 		if (!s)
@@ -22,19 +21,25 @@ protected:
 			s.Create(*this, WS_CHILD | WS_VISIBLE, "X", SHIP_ID, p.x, p.y, 15, 20);			
 			cp = p;
 		}
+		else
+		{
+			SetWindowPos(s, NULL, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+			cp = p;
+		}
 	}
 	void OnKeyUp(int vk) {
-		if (vk == 17) ctrlPritisnut = false;
-
-		SetWindowLong(s, GWL_STYLE, WS_VISIBLE | WS_CHILD);
-		SetWindowPos(s, NULL, cp.x, cp.y, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
+		if (s)
+		{
+			SetWindowLong(s, GWL_STYLE, WS_VISIBLE | WS_CHILD);
+			SetWindowPos(s, NULL, cp.x, cp.y, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
+		}
 
 		// TODO: mark ship (if exists) as "not moving"
 	}
 	void OnKeyDown(int vk)
 	{		
 
-		if ((vk == VK_LEFT && cp.x > rect.left) || (vk == VK_RIGHT&& cp.x < rect.right) || (vk == VK_UP && cp.y > rect.top) || (vk == VK_DOWN && cp.y < rect.bottom))
+		if (s &&((vk == VK_LEFT && cp.x > rect.left) || (vk == VK_RIGHT&& cp.x < rect.right) || (vk == VK_UP && cp.y > rect.top) || (vk == VK_DOWN && cp.y < rect.bottom)))
 		{
 			GetClientRect(*this, &rect);
 			rect.bottom -= 20;
