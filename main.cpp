@@ -65,6 +65,9 @@ protected:
 				pos.y -= step;
 			}
 		}
+		else {
+			return;
+	}
 		SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
 		SetWindowPos(ship, NULL, pos.x, pos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
 
