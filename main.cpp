@@ -13,19 +13,17 @@ class MainWindow : public Window
 public:
 	Static s;
 	POINT cp;
-	RECT rect;
 protected:
 	void OnLButtonDown(POINT p) {
 		if (!s)
 		{		
-			s.Create(*this, WS_CHILD | WS_VISIBLE, "X", SHIP_ID, p.x, p.y, 15, 20);			
-			cp = p;
+			s.Create(*this, WS_CHILD | WS_VISIBLE, "X", SHIP_ID, p.x, p.y, 15, 20);	
 		}
 		else
 		{
 			SetWindowPos(s, NULL, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-			cp = p;
 		}
+		cp = p;
 	}
 	void OnKeyUp(int vk) {
 		if (s)
@@ -38,7 +36,7 @@ protected:
 	}
 	void OnKeyDown(int vk)
 	{		
-
+		RECT rect;
 		if (s &&((vk == VK_LEFT && cp.x > rect.left) || (vk == VK_RIGHT&& cp.x < rect.right) || (vk == VK_UP && cp.y > rect.top) || (vk == VK_DOWN && cp.y < rect.bottom)))
 		{
 			GetClientRect(*this, &rect);
@@ -50,16 +48,16 @@ protected:
 			switch (vk)
 			{
 			case VK_LEFT:
-				cp.x = cp.x - 1 * brzina;
+				cp.x = cp.x - brzina;
 				break;
 			case VK_RIGHT:
-				cp.x = cp.x + 1 * brzina;
+				cp.x = cp.x + brzina;
 				break;
 			case VK_UP:
-				cp.y = cp.y - 1 * brzina;
+				cp.y = cp.y - brzina;
 				break;
 			case VK_DOWN:
-				cp.y = cp.y + 1 * brzina;
+				cp.y = cp.y + brzina;
 				break;
 			}
 			SetWindowPos(s, NULL, cp.x, cp.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
