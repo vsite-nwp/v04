@@ -18,11 +18,8 @@ public:
 protected:
 	void OnLButtonDown(POINT p) {
 		if (!s)
-		{
-			GetClientRect(*this, &rect);
-			s.Create(*this, WS_CHILD | WS_VISIBLE, "X", SHIP_ID, p.x, p.y, 15, 20);
-			rect.bottom -= 20;
-			rect.right -= 15;
+		{		
+			s.Create(*this, WS_CHILD | WS_VISIBLE, "X", SHIP_ID, p.x, p.y, 15, 20);			
 			cp = p;
 		}
 	}
@@ -35,26 +32,31 @@ protected:
 		// TODO: mark ship (if exists) as "not moving"
 	}
 	void OnKeyDown(int vk)
-	{
-		if (vk == 17) ctrlPritisnut = true;
-		if (vk == 37 && cp.x > rect.left)
+	{		
+
+		if ((vk == VK_LEFT && cp.x > rect.left) || (vk == VK_RIGHT&& cp.x < rect.right) || (vk == VK_UP && cp.y > rect.top) || (vk == VK_DOWN && cp.y < rect.bottom))
 		{
-			cp.x = cp.x - 1 * (ctrlPritisnut ? 10 : 1);
-			SetWindowPos(s, NULL, cp.x, cp.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-		}
-		else if (vk == 39 && cp.x < rect.right)
-		{
-			cp.x = cp.x + 1 * (ctrlPritisnut ? 10 : 1);
-			SetWindowPos(s, NULL, cp.x, cp.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-		}
-		else if (vk == 38 && cp.y > rect.top)
-		{
-			cp.y = cp.y - 1 * (ctrlPritisnut ? 10 : 1);
-			SetWindowPos(s, NULL, cp.x, cp.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-		}
-		else if (vk == 40 && cp.y < rect.bottom)
-		{
-			cp.y = cp.y + 1 * (ctrlPritisnut ? 10 : 1);
+			GetClientRect(*this, &rect);
+			rect.bottom -= 20;
+			rect.right -= 15;
+
+			int brzina = GetAsyncKeyState(VK_CONTROL) ? 10 : 1;
+
+			switch (vk)
+			{
+			case VK_LEFT:
+				cp.x = cp.x - 1 * brzina;
+				break;
+			case VK_RIGHT:
+				cp.x = cp.x + 1 * brzina;
+				break;
+			case VK_UP:
+				cp.y = cp.y - 1 * brzina;
+				break;
+			case VK_DOWN:
+				cp.y = cp.y + 1 * brzina;
+				break;
+			}
 			SetWindowPos(s, NULL, cp.x, cp.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 		}
 		// TODO: if ship exists, move it depending on key and mark as "moving"
