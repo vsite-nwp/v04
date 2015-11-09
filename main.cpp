@@ -1,20 +1,78 @@
 #include "nwpwin.h"
+#define SHIP_WIDTH 20	 
+#define SHIP_HEIGHT 20	//velicina broda u pixelima
+#define NORMAL_STEP 25  //korak kretnje broda bez CTRL
+#define BIG_STEP 50    //korak kretnje broda sa CTRL
+#define BORDER 40  //granica do koje se ship moze kretati
+class Static : public Window {
 
-// TODO: prepare class (Static) for a ship
+public:
+	std::string ClassName() { return "Static"; }
+};
 
 class MainWindow : public Window
 {
 protected:
+	POINT pos;
+	Static ship;
+	
+	
 	void OnLButtonDown(POINT p) {
-		// TODO: create ship if it doesn't exist yet
-		// TODO: change current location
-	}
+		
+		if (!ship) {
+			ship.Create(*this, WS_VISIBLE | WS_CHILD, "x", NULL, p.x, p.y, SHIP_WIDTH, SHIP_HEIGHT);
+			pos.x = p.x;
+			pos.y = p.y;
+		} //kreiraj brod i zapamti vrijednosti koordinata
+		
+		SetWindowPos(ship,NULL, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+		pos.x = p.x;
+		pos.y = p.y; //promijeni koordinate broda i zapamti nove vrijednosti
+} 
 	void OnKeyUp(int vk) {
-		// TODO: mark ship (if exists) as "not moving"
+		
+		SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE); //promijeni izgled ukoliko brod stoji
+		SetWindowPos(ship, NULL, 0, 0, 0, 0,SWP_NOSIZE |SWP_NOMOVE|SWP_FRAMECHANGED);
+	
+		
 	}
 	void OnKeyDown(int vk) {
-		// TODO: if ship exists, move it depending on key and mark as "moving"
+		
+		RECT rect;
+		GetClientRect(*this, &rect);	//saznaj koordinate glavnog prozora
+		int step=NORMAL_STEP;
+		if (GetKeyState(VK_CONTROL)<0) {
+			step = BIG_STEP;
+		}
+			
+	if (vk == VK_LEFT){
+		if (pos.x>0+BORDER){
+			pos.x -= step;
+		}
 	}
+		else if (vk == VK_RIGHT) {
+			if (pos.x < (rect.right-BORDER)) {
+				pos.x += step;
+			}
+	} 
+		else if(vk == VK_DOWN) {
+			if (pos.y <(rect.bottom - BORDER)) {
+				pos.y += step;
+			}
+	}	
+		else if (vk == VK_UP) {
+			if (pos.y>0+BORDER) {
+				pos.y -= step;
+			}
+		}
+		else {
+			return;
+	}
+		SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
+		SetWindowPos(ship, NULL, pos.x, pos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+
+
+}
 	void OnDestroy(){
 		::PostQuitMessage(0);
 	}
@@ -26,5 +84,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
 	Application app;
 	MainWindow wnd;
 	wnd.Create(NULL, WS_OVERLAPPEDWINDOW | WS_VISIBLE, "NWP 4");
+	
 	return app.Run();
 }
+
