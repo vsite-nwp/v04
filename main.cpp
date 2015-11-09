@@ -27,6 +27,11 @@ protected:
 		}
 	}
 	void OnKeyUp(int vk) {
+		if (vk == 17) ctrlPritisnut = false;
+
+		SetWindowLong(s, GWL_STYLE, WS_VISIBLE | WS_CHILD);
+		SetWindowPos(s, NULL, cp.x, cp.y, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
+
 		// TODO: mark ship (if exists) as "not moving"
 	}
 	void OnKeyDown(int vk) {
