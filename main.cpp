@@ -47,28 +47,27 @@ protected:
 			
 	if (vk == VK_LEFT){
 		if (pos.x>0+BORDER){
-			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);//ako brod ne stoji, promijeni rub broda
-			SetWindowPos(ship, NULL, pos.x -= step, pos.y, 0, 0, SWP_NOSIZE|SWP_NOZORDER | SWP_FRAMECHANGED);
-			}
+			pos.x -= step;
+		}
 	}
 		else if (vk == VK_RIGHT) {
 			if (pos.x < (rect.right-BORDER)) {
-				SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
-				SetWindowPos(ship, NULL, pos.x += step, pos.y, 0, 0, SWP_NOSIZE|SWP_NOZORDER|SWP_FRAMECHANGED);
+				pos.x += step;
 			}
 	} 
 		else if(vk == VK_DOWN) {
 			if (pos.y <(rect.bottom - BORDER)) {
-				SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
-				SetWindowPos(ship, NULL, pos.x, pos.y += step, 0, 0, SWP_NOSIZE |SWP_NOZORDER| SWP_FRAMECHANGED);
+				pos.y += step;
 			}
 	}	
 		else if (vk == VK_UP) {
 			if (pos.y>0+BORDER) {
-				SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
-				SetWindowPos(ship, NULL, pos.x, pos.y -= step, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+				pos.y -= step;
 			}
-	}
+		}
+		SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
+		SetWindowPos(ship, NULL, pos.x, pos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+
 
 }
 	void OnDestroy(){
