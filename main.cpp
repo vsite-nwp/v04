@@ -1,6 +1,6 @@
 #include "nwpwin.h"
 
-// TODO: prepare class (Static) for a ship
+ // prepare class (Static) for a ship
 class Static :public Window {
 public:
 	std::string ClassName() {
@@ -16,19 +16,19 @@ class MainWindow : public Window
 	POINT current_position;
 protected:
 	void OnLButtonDown(POINT p) {
-		// TODO: create ship if it doesn't exist yet
+		//: create ship if it doesn't exist yet
 		if (!ship) 
 		{
 			ship.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, ("x"), NULL, NULL, NULL, 20, 20);
 
-			// TODO: change current location
+			// change current location
 			
 			current_position = p;
 			Not_Move();
 		}
 	}
 	void OnKeyUp(int vk) {
-		// TODO: mark ship (if exists) as "not moving"
+		// mark ship (if exists) as "not moving"
 		if (ship) 
 		{
 			Mark_ship(false);
@@ -36,7 +36,7 @@ protected:
 		}
 	}
 	void OnKeyDown(int vk) {
-		// TODO: if ship exists, move it depending on key and mark as "moving"
+		// if ship exists, move it depending on key and mark as "moving"
 		if (ship)
 		{
 			int step=5;
