@@ -34,8 +34,33 @@ protected:
 
 		// TODO: mark ship (if exists) as "not moving"
 	}
-	void OnKeyDown(int vk) {
+	void OnKeyDown(int vk)
+	{
+		if (vk == 17) ctrlPritisnut = true;
+		if (vk == 37 && cp.x > rect.left)
+		{
+			cp.x = cp.x - 1 * (ctrlPritisnut ? 10 : 1);
+			SetWindowPos(s, NULL, cp.x, cp.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+		}
+		else if (vk == 39 && cp.x < rect.right)
+		{
+			cp.x = cp.x + 1 * (ctrlPritisnut ? 10 : 1);
+			SetWindowPos(s, NULL, cp.x, cp.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+		}
+		else if (vk == 38 && cp.y > rect.top)
+		{
+			cp.y = cp.y - 1 * (ctrlPritisnut ? 10 : 1);
+			SetWindowPos(s, NULL, cp.x, cp.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+		}
+		else if (vk == 40 && cp.y < rect.bottom)
+		{
+			cp.y = cp.y + 1 * (ctrlPritisnut ? 10 : 1);
+			SetWindowPos(s, NULL, cp.x, cp.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+		}
 		// TODO: if ship exists, move it depending on key and mark as "moving"
+
+		SetWindowLong(s, GWL_STYLE, WS_VISIBLE | WS_BORDER | WS_CHILD);
+		SetWindowPos(s, NULL, cp.x, cp.y, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
 	}
 	void OnDestroy(){
 		::PostQuitMessage(0);
