@@ -11,8 +11,11 @@ class MainWindow : public Window
 	POINT position;
 protected:
 	void OnLButtonDown(POINT p) {
-		// TODO: create ship if it doesn't exist yet
+		position = p;
+		if (!ship)
+			ship.Create(*this, WS_CHILD | WS_VISIBLE | WS_BORDER, "X", NULL, position.x, position.y, 15, 20);
 		// TODO: change current location
+		
 	}
 	void OnKeyUp(int vk) {
 		// TODO: mark ship (if exists) as "not moving"
