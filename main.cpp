@@ -10,6 +10,8 @@ public:
 	std::string ClassName() { return "STATIC"; }
 	DWORD style1 = WS_CHILD | WS_VISIBLE | SS_CENTER;
 	
+
+
 };
 
 class MainWindow : public Window
@@ -33,7 +35,8 @@ protected:
 		// TODO: mark ship (if exists) as "not moving"
 		if (ship)
 		{
-						
+			
+
 			SetWindowLong(ship, GWL_STYLE, ship.style1 &~WS_BORDER);
 			
 		}
