@@ -24,32 +24,32 @@ protected:
 		}
 	}
 	void OnKeyDown(int vk) {
-		// TODO: if ship exists, move it depending on key and mark as "moving"
-		int gasPedal = 10;
+		if (ship){
+			int gasPedal = 10;
 		if (GetKeyState(VK_CONTROL) < 0)
 			gasPedal = 50;
 		RECT rekt;
 		GetClientRect(*this, &rekt);
-		SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE);
 		switch (vk){
-			case VK_UP:
-				position.y = max(rekt.top, position.y - gasPedal);
-				break;
-			case VK_DOWN:
-				position.y = min(rekt.bottom - 15, position.y + gasPedal);
-				break;
-			case VK_LEFT:
-				position.x = max(rekt.left, position.x - gasPedal);
-				break;
-			case VK_RIGHT:
-				position.x = min(rekt.right - 10 , position.x + gasPedal);
-				break;
-			default:
-				return;
+		case VK_UP:
+			position.y = max(rekt.top, position.y - gasPedal);
+			break;
+		case VK_DOWN:
+			position.y = min(rekt.bottom - 15, position.y + gasPedal);
+			break;
+		case VK_LEFT:
+			position.x = max(rekt.left, position.x - gasPedal);
+			break;
+		case VK_RIGHT:
+			position.x = min(rekt.right - 10, position.x + gasPedal);
+			break;
+		default:
+			return;
 		}
+		SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
 		SetWindowPos(ship, 0, position.x, position.y, 0, 0, SWP_NOSIZE | SWP_FRAMECHANGED | SWP_NOZORDER);
-		OnKeyUp(vk);
-	}
+		}
+}
 	void OnDestroy(){
 		::PostQuitMessage(0);
 	}
