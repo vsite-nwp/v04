@@ -4,11 +4,11 @@
 #define S_STEP 1
 #define S_BIGSTEP 30
 
-// TODO: prepare class (Static) for a ship
+
 class Static : public Window {
 public:
 	std::string ClassName() { return "STATIC"; }
-	DWORD style1 = WS_CHILD | WS_VISIBLE | SS_CENTER;
+	
 	
 
 
@@ -18,8 +18,7 @@ class MainWindow : public Window
 {
 protected:
 	void OnLButtonDown(POINT p) {
-		// TODO: create ship if it doesn't exist yet
-		// TODO: change current location
+		
 		newCoord = p;
 		GetClientRect(*this, &wSize);
 
@@ -28,21 +27,20 @@ protected:
 
 		if (!ship) CreateShip();
 
-		SetWindowLong(ship, GWL_STYLE, ship.style1);
+		SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER);
 		
 	}
 	void OnKeyUp(int vk) {
-		// TODO: mark ship (if exists) as "not moving"
+		
 		if (ship)
-		{
-			
-
-			SetWindowLong(ship, GWL_STYLE, ship.style1 &~WS_BORDER);
+		{			
+			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE); 
+			SetWindowPos(ship, NULL, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_FRAMECHANGED);
 			
 		}
 	}
 	void OnKeyDown(int vk) {
-		// TODO: if ship exists, move it depending on key and mark as "moving"
+		
 		if (ship)
 		{
 			if (GetKeyState(VK_CONTROL) < 0) step = S_BIGSTEP;
@@ -65,12 +63,13 @@ protected:
 			default:
 				break;			
 			}
-			SetWindowLong(ship, GWL_STYLE, ship.style1 | WS_BORDER );
+			
+			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
 			coord.x = newCoord.x;
 			coord.y = newCoord.y;
 
-			SetWindowPos(ship, HWND_TOP, coord.x, coord.y, NULL, NULL, SWP_FRAMECHANGED | SWP_NOSIZE);
-		
+			
+			SetWindowPos(ship, NULL, coord.x, coord.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
 		}
 	
 	
@@ -86,7 +85,7 @@ private:
 
 	void CreateShip()
 	{
-		ship.Create(*this, ship.style1, "X", NULL, coord.x, coord.y, S_SIZE, S_SIZE);
+		ship.Create(*this, WS_VISIBLE | WS_CHILD, "x", NULL, coord.x, coord.y, S_SIZE, S_SIZE);
 	}
 };
 
