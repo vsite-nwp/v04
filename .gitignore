@@ -5,3 +5,10 @@
 *.exe
 *.suo
 /Debug
+# Visual C++ cache files
+ipch/
+*.aps
+*.ncb
+*.opensdf
+*.sdf
+*.cachefile
