@@ -25,9 +25,11 @@ protected:
 		coord.x = newCoord.x;
 		coord.y = newCoord.y;
 
-		if (!ship) CreateShip();
-
-		SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER);
+		if (!ship) 
+			ship.Create(*this, WS_VISIBLE | WS_CHILD, "x", NULL, coord.x, coord.y, S_SIZE, S_SIZE);
+				
+			SetWindowPos(ship, NULL, coord.x, coord.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER);
 		
 	}
 	void OnKeyUp(int vk) {
@@ -83,10 +85,10 @@ private:
 	RECT wSize;
 	int step;
 
-	void CreateShip()
+	/*void CreateShip()
 	{
 		ship.Create(*this, WS_VISIBLE | WS_CHILD, "x", NULL, coord.x, coord.y, S_SIZE, S_SIZE);
-	}
+	}*/
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
