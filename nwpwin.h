@@ -13,6 +13,8 @@ class Window
 
 protected:
 	virtual std::string ClassName();
+	virtual void MoveChildWndIn(int x, int y, bool moveWnd) {}
+	virtual void DrawChildWndFrame(bool keyUpDown) {}
 	bool Register(const std::string& name);
 	std::string GenerateClassName();
 
