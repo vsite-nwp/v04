@@ -2,13 +2,9 @@
 
 class StaticWnd : public Window {
 	POINT staticPos;
-	bool cntrlKeyState;
 public:
-	StaticWnd() : cntrlKeyState(false) {}
 	std::string ClassName() override { return "STATIC"; }
-	void SetStaticCntrlKey(bool cntrl) { cntrlKeyState = cntrl; }
 	void SetStaticpos(const POINT point) { staticPos = point; }
-	const bool GetCntrlKeyState() { return cntrlKeyState; }
 	const POINT& GetStaticPos() { return staticPos; }
 
 	void DrawChildWndFrame(bool keyUpDown) override
@@ -30,6 +26,8 @@ public:
 
 class MainWindow : public Window
 {
+public:
+	MainWindow(): cntrlKeyState(false){}
 protected:
 	void OnLButtonDown(POINT p) {
 		if (!stWnd)
@@ -41,7 +39,7 @@ protected:
 	}
 	void OnKeyUp(int vk) {
 		if (vk == VK_CONTROL)
-			stWnd.SetStaticCntrlKey(false);
+			cntrlKeyState = false;
 		else if (vk == VK_LEFT || vk == VK_DOWN || vk == VK_RIGHT || vk == VK_UP)
 			stWnd.DrawChildWndFrame(false);
 	}
@@ -53,26 +51,26 @@ protected:
 
 			if (vk == VK_CONTROL)
 			{
-				stWnd.SetStaticCntrlKey(true);
+				cntrlKeyState = true;
 				return;
 			}
 
 			switch (vk)
 			{
 			case VK_LEFT:
-				stWnd.GetCntrlKeyState() ? stWnd.MoveChildWndIn(-20, 0, ((stWnd.GetStaticPos().x + (-20)) > mainWndSize.left))
+				cntrlKeyState ? stWnd.MoveChildWndIn(-20, 0, ((stWnd.GetStaticPos().x + (-20)) > mainWndSize.left))
 					: stWnd.MoveChildWndIn(-5, 0, ((stWnd.GetStaticPos().x + (-5)) > mainWndSize.left));
 				break;
 			case VK_UP:
-				stWnd.GetCntrlKeyState() ? stWnd.MoveChildWndIn(0, -20, ((stWnd.GetStaticPos().y + (-20)) > mainWndSize.top))
+				cntrlKeyState ? stWnd.MoveChildWndIn(0, -20, ((stWnd.GetStaticPos().y + (-20)) > mainWndSize.top))
 					: stWnd.MoveChildWndIn(0, -5, ((stWnd.GetStaticPos().y + (-5)) > mainWndSize.top));
 				break;
 			case VK_DOWN:
-				stWnd.GetCntrlKeyState() ? stWnd.MoveChildWndIn(0, 20, ((stWnd.GetStaticPos().y + 20) < mainWndSize.bottom))
+				cntrlKeyState ? stWnd.MoveChildWndIn(0, 20, ((stWnd.GetStaticPos().y + 20) < mainWndSize.bottom))
 					: stWnd.MoveChildWndIn(0, 5, ((stWnd.GetStaticPos().y + 5) < mainWndSize.bottom));
 				break;
 			case VK_RIGHT:
-				stWnd.GetCntrlKeyState() ? stWnd.MoveChildWndIn(20, 0, ((stWnd.GetStaticPos().x + 20) < mainWndSize.right))
+				cntrlKeyState ? stWnd.MoveChildWndIn(20, 0, ((stWnd.GetStaticPos().x + 20) < mainWndSize.right))
 					: stWnd.MoveChildWndIn(5, 0, ((stWnd.GetStaticPos().x + 5) < mainWndSize.right));
 				break;
 			}
@@ -85,6 +83,7 @@ protected:
 private:
 	StaticWnd stWnd;
 	RECT mainWndSize;
+	bool cntrlKeyState;
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
