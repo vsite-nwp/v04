@@ -1,6 +1,6 @@
 #include "nwpwin.h"
 
-// TODO: prepare class (Static) for a ship
+#define S_SIZE = 20
 
  class Static : public Window {
  public:
@@ -12,7 +12,8 @@ class MainWindow : public Window
 protected:
 	void OnLButtonDown(POINT p) { 
 		if (!ship)
-			ship.Create(*this, WS_CHILD | WS_VISIBLE, "x", NULL, (int)p.x, (int)p.y, 15, 15);
+			ship.Create(*this, WS_CHILD | WS_VISIBLE |SS_CENTER, "X", NULL, p.x, p.y, 15, 15);
+		SetWindowPos(ship, 0, p.x, p.y, 0, 0, SS_CENTER);
 
 		// TODO: create ship if it doesn't exist yet
 		// TODO: change current location
