@@ -2,10 +2,18 @@
 
 // TODO: prepare class (Static) for a ship
 
+ class Static : public Window {
+ public:
+	std::string ClassName() { return "STATIC"; }
+};
+
 class MainWindow : public Window
 {
 protected:
-	void OnLButtonDown(POINT p) {
+	void OnLButtonDown(POINT p) { 
+		if (!ship)
+			ship.Create(*this, WS_CHILD | WS_VISIBLE, "x", NULL, (int)p.x, (int)p.y, 15, 15);
+
 		// TODO: create ship if it doesn't exist yet
 		// TODO: change current location
 	}
@@ -19,6 +27,8 @@ protected:
 		::PostQuitMessage(0);
 	}
 private:
+	Static ship;
+	void Move(POINT p) { SetWindowPos(ship, 0, p.x, p.y, NULL, NULL,NULL); }
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
