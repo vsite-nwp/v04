@@ -62,6 +62,7 @@ POINT GetPoint(LPARAM lp)
 	return p;
 }
 
+
 LRESULT CALLBACK Window::Proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	if(message == WM_CREATE){
@@ -71,6 +72,7 @@ LRESULT CALLBACK Window::Proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPa
 		pw->hw = hwnd;
 		return pw->OnCreate(pcs);
 	}
+
 
 	Window* pThis = reinterpret_cast<Window*>(::GetWindowLong(hwnd, 0));
 	switch (message)

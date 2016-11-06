@@ -14,21 +14,46 @@ protected:
 		if (!ship)
 			ship.Create(*this, WS_CHILD | WS_VISIBLE |SS_CENTER, "X", NULL, p.x, p.y, 15, 15);
 		SetWindowPos(ship, 0, p.x, p.y, 0, 0, SS_CENTER);
+		point = p;
+	}	
 
-		// TODO: create ship if it doesn't exist yet
-		// TODO: change current location
-	}
 	void OnKeyUp(int vk) {
 		// TODO: mark ship (if exists) as "not moving"
+		if (!ship) {
+			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER);
+			SetWindowPos(ship, 0, point.x, point.y, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
+		}
 	}
 	void OnKeyDown(int vk) {
 		// TODO: if ship exists, move it depending on key and mark as "moving"
+
+		if (ship) {
+			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER | WS_BORDER);
+			switch (vk) {
+			case VK_UP:
+				SetWindowPos(ship, 0, point.x, point.y - 5, 0, 0,  SWP_NOSIZE | SWP_NOZORDER);
+				break;
+			case VK_DOWN:
+				SetWindowPos(ship, 0, point.x, point.y + 5, 0, 0,  SWP_NOSIZE | SWP_NOZORDER);
+				break;
+			case VK_LEFT:
+				SetWindowPos(ship, 0, point.x - 5, point.y, 0, 0,  SWP_NOSIZE | SWP_NOZORDER);
+				break;
+			case VK_RIGHT:
+				SetWindowPos(ship, 0, point.x + 5, point.y, 0, 0,  SWP_NOSIZE | SWP_NOZORDER);
+				break;
+			default:
+				return;
+			}
+		}
 	}
+
 	void OnDestroy(){
 		::PostQuitMessage(0);
 	}
 private:
 	Static ship;
+	POINT point;
 	void Move(POINT p) { SetWindowPos(ship, 0, p.x, p.y, NULL, NULL,NULL); }
 };
 
