@@ -19,40 +19,35 @@ protected:
 
 	void OnKeyUp(int vk) {
 		// TODO: mark ship (if exists) as "not moving"
-		if (!ship) {
-			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER);
-			SetWindowPos(ship, 0, point.x, point.y, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
-		}
+
 	}
 	void OnKeyDown(int vk) {
-		// TODO: if ship exists, move it depending on key and mark as "moving"
-
 		if (ship) {
 			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER | WS_BORDER);
 			switch (vk) {
 			case VK_UP:
-				if (GetKeyState(VK_CONTROL))
+				if (GetKeyState(VK_CONTROL) < 0)
 					point.y -= 20;
 				else
 				point.y -= 5;
 				SetWindowPos(ship, 0, point.x, point.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 				break;
 			case VK_DOWN:
-				if (GetKeyState(VK_CONTROL))
+				if (GetKeyState(VK_CONTROL) < 0)
 					point.y += 20;
 				else
 				point.y += 5;
 				SetWindowPos(ship, 0, point.x, point.y, 0, 0,  SWP_NOSIZE | SWP_NOZORDER);
 				break;
 			case VK_LEFT:
-				if (GetKeyState(VK_CONTROL))
+				if (GetKeyState(VK_CONTROL) < 0)
 					point.x -= 20;
 				else
 				point.x -= 5;
 				SetWindowPos(ship, 0, point.x, point.y, 0, 0,  SWP_NOSIZE | SWP_NOZORDER);
 				break;
 			case VK_RIGHT:
-				if (GetKeyState(VK_CONTROL))
+				if (GetKeyState(VK_CONTROL) < 0)
 					point.x += 20;
 				else
 				point.x += 5;
