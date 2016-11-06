@@ -22,14 +22,18 @@ protected:
 
 	}
 	void OnKeyDown(int vk) {
+		RECT frame;
+		GetClientRect(*this, &frame);
+
 		if (ship) {
-			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER | WS_BORDER);
 			switch (vk) {
 			case VK_UP:
 				if (GetKeyState(VK_CONTROL) < 0)
 					point.y -= 20;
 				else
 				point.y -= 5;
+				if (point.y < frame.top)
+					point.y = frame.top;
 				SetWindowPos(ship, 0, point.x, point.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 				break;
 			case VK_DOWN:
@@ -37,6 +41,8 @@ protected:
 					point.y += 20;
 				else
 				point.y += 5;
+				if (point.y > frame.bottom - 15)
+					point.y = frame.bottom - 15;
 				SetWindowPos(ship, 0, point.x, point.y, 0, 0,  SWP_NOSIZE | SWP_NOZORDER);
 				break;
 			case VK_LEFT:
@@ -44,6 +50,8 @@ protected:
 					point.x -= 20;
 				else
 				point.x -= 5;
+				if (point.x < frame.left)
+					point.x = frame.left;
 				SetWindowPos(ship, 0, point.x, point.y, 0, 0,  SWP_NOSIZE | SWP_NOZORDER);
 				break;
 			case VK_RIGHT:
@@ -51,6 +59,8 @@ protected:
 					point.x += 20;
 				else
 				point.x += 5;
+				if (point.x > frame.right - 15)
+					point.x = frame.right - 15;
 				SetWindowPos(ship, 0, point.x, point.y, 0, 0,  SWP_NOSIZE | SWP_NOZORDER);
 				break;
 			default:
