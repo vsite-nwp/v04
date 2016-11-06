@@ -31,16 +31,20 @@ protected:
 			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER | WS_BORDER);
 			switch (vk) {
 			case VK_UP:
-				SetWindowPos(ship, 0, point.x, point.y - 5, 0, 0,  SWP_NOSIZE | SWP_NOZORDER);
+				point.y -= 5;
+				SetWindowPos(ship, 0, point.x, point.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 				break;
 			case VK_DOWN:
-				SetWindowPos(ship, 0, point.x, point.y + 5, 0, 0,  SWP_NOSIZE | SWP_NOZORDER);
+				point.y += 5;
+				SetWindowPos(ship, 0, point.x, point.y, 0, 0,  SWP_NOSIZE | SWP_NOZORDER);
 				break;
 			case VK_LEFT:
-				SetWindowPos(ship, 0, point.x - 5, point.y, 0, 0,  SWP_NOSIZE | SWP_NOZORDER);
+				point.x -= 5;
+				SetWindowPos(ship, 0, point.x, point.y, 0, 0,  SWP_NOSIZE | SWP_NOZORDER);
 				break;
 			case VK_RIGHT:
-				SetWindowPos(ship, 0, point.x + 5, point.y, 0, 0,  SWP_NOSIZE | SWP_NOZORDER);
+				point.x += 5;
+				SetWindowPos(ship, 0, point.x, point.y, 0, 0,  SWP_NOSIZE | SWP_NOZORDER);
 				break;
 			default:
 				return;
