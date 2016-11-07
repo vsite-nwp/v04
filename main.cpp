@@ -1,33 +1,57 @@
 #include "nwpwin.h"
 
 class StaticWnd : public Window {
-	POINT staticPos;
 public:
 	std::string ClassName() override { return "STATIC"; }
-	void SetStaticpos(const POINT point) { staticPos = point; }
-	const POINT& GetStaticPos() { return staticPos; }
-
-	void DrawChildWndFrame(bool keyUpDown) override
-	{
-		SetWindowLong(*this, GWL_STYLE, WS_CHILD | WS_VISIBLE | (keyUpDown ? WS_BORDER : NULL));
-		SetWindowPos(*this, NULL, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER | SWP_NOMOVE);
-	}
-
-	//Move child window inside parent, moveWnd specify is childwindows still inside parent
-	void MoveChildWndIn(int x, int y, bool moveWnd) override
-	{
-		SetWindowPos(*this, NULL,
-			(moveWnd ? staticPos.x += (x) : NULL),
-			(moveWnd ? staticPos.y += (y) : NULL),
-			0, 0,
-			SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER | (moveWnd ? NULL : SWP_NOMOVE));
-	}
 };
 
 class MainWindow : public Window
 {
+private:
+	StaticWnd stWnd;
+	int staticBehavior;
+	POINT staticPos;
+	RECT mainWndSize;
 public:
-	MainWindow(): cntrlKeyState(false){}
+	MainWindow(): staticBehavior(0){}
+
+	void SetStaticPos(int vk) 
+	{
+		switch (vk)
+		{
+		case VK_LEFT:
+			if ((staticPos.x - staticBehavior) > mainWndSize.left)
+				staticPos.x -= staticBehavior;
+			break;
+		case VK_RIGHT:
+			if ((staticPos.x + staticBehavior) < mainWndSize.right)
+				staticPos.x += staticBehavior;
+			break;
+		case VK_DOWN:
+			if ((staticPos.y + staticBehavior) < mainWndSize.bottom)
+				staticPos.y += staticBehavior;
+			break;
+		case VK_UP:
+			if ((staticPos.y - staticBehavior) > mainWndSize.top)
+				staticPos.y -= staticBehavior;
+			break;
+		}
+	}
+
+	void DrawStaticdWndFrame(int vk, bool keyUpDown)
+	{
+		if (vk == VK_LEFT || vk == VK_DOWN || vk == VK_RIGHT || vk == VK_UP)
+		{
+			SetWindowLong(stWnd, GWL_STYLE, WS_CHILD | WS_VISIBLE | (keyUpDown ? WS_BORDER : 0));
+			SetWindowPos(stWnd, NULL, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER | SWP_NOMOVE);
+		}
+	}
+
+	void MoveStaticWndIn()
+	{
+		SetWindowPos(stWnd, NULL, staticPos.x, staticPos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
+	}
+
 protected:
 	void OnLButtonDown(POINT p) {
 		if (!stWnd)
@@ -35,55 +59,34 @@ protected:
 		else
 			SetWindowPos(stWnd, NULL, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 
-		stWnd.SetStaticpos(p);
+		staticPos = p;
 	}
+
 	void OnKeyUp(int vk) {
-		if (vk == VK_CONTROL)
-			cntrlKeyState = false;
-		else if (vk == VK_LEFT || vk == VK_DOWN || vk == VK_RIGHT || vk == VK_UP)
-			stWnd.DrawChildWndFrame(false);
+		if (GetKeyState(VK_CONTROL) >= 0)
+			staticBehavior = 5;
+
+		DrawStaticdWndFrame(vk, false);
 	}
+
 	void OnKeyDown(int vk) {
 		if (stWnd)
 		{
-			stWnd.DrawChildWndFrame(true);
 			GetClientRect(*this, &mainWndSize);
 
-			if (vk == VK_CONTROL)
-			{
-				cntrlKeyState = true;
-				return;
-			}
+			GetKeyState(VK_CONTROL) < 0 ? staticBehavior = 15 : staticBehavior = 5;
 
-			switch (vk)
-			{
-			case VK_LEFT:
-				cntrlKeyState ? stWnd.MoveChildWndIn(-20, 0, ((stWnd.GetStaticPos().x + (-20)) > mainWndSize.left))
-					: stWnd.MoveChildWndIn(-5, 0, ((stWnd.GetStaticPos().x + (-5)) > mainWndSize.left));
-				break;
-			case VK_UP:
-				cntrlKeyState ? stWnd.MoveChildWndIn(0, -20, ((stWnd.GetStaticPos().y + (-20)) > mainWndSize.top))
-					: stWnd.MoveChildWndIn(0, -5, ((stWnd.GetStaticPos().y + (-5)) > mainWndSize.top));
-				break;
-			case VK_DOWN:
-				cntrlKeyState ? stWnd.MoveChildWndIn(0, 20, ((stWnd.GetStaticPos().y + 20) < mainWndSize.bottom))
-					: stWnd.MoveChildWndIn(0, 5, ((stWnd.GetStaticPos().y + 5) < mainWndSize.bottom));
-				break;
-			case VK_RIGHT:
-				cntrlKeyState ? stWnd.MoveChildWndIn(20, 0, ((stWnd.GetStaticPos().x + 20) < mainWndSize.right))
-					: stWnd.MoveChildWndIn(5, 0, ((stWnd.GetStaticPos().x + 5) < mainWndSize.right));
-				break;
-			}
+			SetStaticPos(vk);
+			
+			DrawStaticdWndFrame(vk, true);
+
+			MoveStaticWndIn();
 		}
 	}
 	void OnDestroy() {
 		::PostQuitMessage(0);
 	}
 
-private:
-	StaticWnd stWnd;
-	RECT mainWndSize;
-	bool cntrlKeyState;
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
