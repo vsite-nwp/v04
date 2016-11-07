@@ -19,7 +19,10 @@ protected:
 
 	void OnKeyUp(int vk) {
 		// TODO: mark ship (if exists) as "not moving"
-
+		if (ship) {
+			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE);
+			SetWindowPos(ship, NULL, point.x, point.y, 0, 0, SWP_NOSIZE | SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOZORDER);
+		}
 	}
 	void OnKeyDown(int vk) {
 		RECT frame;
@@ -66,6 +69,8 @@ protected:
 			default:
 				return;
 			}
+			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
+			SetWindowPos(ship, 0, point.x, point.y, 0, 0, SWP_NOSIZE | SWP_FRAMECHANGED | SWP_NOZORDER);
 		}
 	}
 
