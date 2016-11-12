@@ -1,24 +1,74 @@
 #include "nwpwin.h"
 
-// TODO: prepare class (Static) for a ship
+
+class Static :public Window {
+public: 
+	std::string ClassName() override { return "Static"; }
+};
 
 class MainWindow : public Window
 {
 protected:
 	void OnLButtonDown(POINT p) {
-		// TODO: create ship if it doesn't exist yet
-		// TODO: change current location
+		if (!s)
+			s.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, "x", 0, 0, 0, 20, 20);
+		this->p = p;
+		Move();
 	}
 	void OnKeyUp(int vk) {
-		// TODO: mark ship (if exists) as "not moving"
+		if (!s) return;
+		Move();
 	}
 	void OnKeyDown(int vk) {
-		// TODO: if ship exists, move it depending on key and mark as "moving"
+		if (!s) return;
+			int a = GetKeyState(VK_CONTROL)<0 ? 5 : 20;
+
+			RECT window;
+			::GetClientRect(*this, &window);
+
+			switch (vk) {
+			case VK_LEFT:
+				p.x -= a;
+				if (p.x < window.left)
+					p.x = window.left;
+				MarkMove();
+				break;
+			case VK_RIGHT:
+				p.x += a;
+				if (p.x > window.right-20)
+					p.x = window.right-20;
+				MarkMove();
+				break;
+			case VK_DOWN:
+				p.y += a;
+				if (p.y > window.bottom-20)
+					p.y = window.bottom-20;
+				MarkMove();
+				break;
+			case VK_UP:
+				p.y -= a;
+				if (p.y < window.top)
+					p.y = window.top;
+				MarkMove();
+				break;
+			default:
+				return;
+		}
+
 	}
-	void OnDestroy(){
+	void OnDestroy() {
 		::PostQuitMessage(0);
 	}
 private:
+	Static s;
+	POINT p;
+	void Move() { 
+		SetWindowLong(s, GWL_STYLE, WS_CHILD | WS_VISIBLE|SS_CENTER);
+		SetWindowPos(s, 0, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER); }
+	void MarkMove() {
+		SetWindowLong(s, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER | WS_BORDER);
+		SetWindowPos(s, 0, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+	}
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
