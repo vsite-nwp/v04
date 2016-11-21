@@ -29,31 +29,35 @@ protected:
 		switch (vk) {
 		case VK_UP:
 			p.y = max(0, p.y - step);
+			Move(true);
 			break;
 		case VK_DOWN:
 			p.y = min(rect.bottom - SHIP_SIZE, p.y + step);
+			Move(true);
 			break;
 		case VK_LEFT:
 			p.x = max(0, p.x - step);
+			Move(true);
 			break;
 		case VK_RIGHT:
 			p.x = min(rect.right - SHIP_SIZE, p.x + step);
+			Move(true);
 			break;
 		default:
 			break;
 		}
-		Move(true);
 	}
 	void OnDestroy() {
 		::PostQuitMessage(0);
 	}
+
 private:
 	Static ship;
 	POINT p;
 	int step;
 	
 	void Move(bool border) {
-		SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER | (border? WS_BORDER:NULL));
+		SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER | (border ? WS_BORDER : NULL));
 		SetWindowPos(ship, 0, p.x, p.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE | SWP_FRAMECHANGED);
 	}
 };
