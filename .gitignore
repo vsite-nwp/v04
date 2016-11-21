@@ -5,3 +5,5 @@
 *.exe
 *.suo
 /Debug
+/v4.VC.VC.opendb
+/v4.VC.db
