@@ -25,27 +25,24 @@ protected:
 
 		RECT rect;
 		::GetClientRect(*this, &rect);
-		step = GetKeyState(VK_CONTROL) < 0 ? SHIP_MOVE : SHIP_FAST_MOVE;
+		step = GetKeyState(VK_CONTROL) < 0 ? SHIP_FAST_MOVE : SHIP_MOVE;
 		switch (vk) {
 		case VK_UP:
 			p.y = max(0, p.y - step);
-			Move(true);
 			break;
 		case VK_DOWN:
 			p.y = min(rect.bottom - SHIP_SIZE, p.y + step);
-			Move(true);
 			break;
 		case VK_LEFT:
 			p.x = max(0, p.x - step);
-			Move(true);
 			break;
 		case VK_RIGHT:
 			p.x = min(rect.right - SHIP_SIZE, p.x + step);
-			Move(true);
 			break;
 		default:
-			break;
+			return;
 		}
+		Move(true);
 	}
 	void OnDestroy() {
 		::PostQuitMessage(0);
