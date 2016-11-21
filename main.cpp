@@ -14,11 +14,11 @@ protected:
 	void OnLButtonDown(POINT p) {
 		if (!ship) ship.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, "x", 0, 0, 0, SHIP_SIZE, SHIP_SIZE);
 		this->p = p;
-		Move();
+		Move(false);
 	}
 	void OnKeyUp(int vk) {
 		if (!ship) return;
-		Move();
+		Move(false);
 	}
 	void OnKeyDown(int vk) {
 		if (!ship) return;
@@ -29,23 +29,20 @@ protected:
 		switch (vk) {
 		case VK_UP:
 			p.y = max(0, p.y - step);
-			Move();
 			break;
 		case VK_DOWN:
 			p.y = min(rect.bottom - SHIP_SIZE, p.y + step);
-			Move();
 			break;
 		case VK_LEFT:
 			p.x = max(0, p.x - step);
-			Move();
 			break;
 		case VK_RIGHT:
 			p.x = min(rect.right - SHIP_SIZE, p.x + step);
-			Move();
 			break;
 		default:
 			break;
 		}
+		Move(true);
 	}
 	void OnDestroy() {
 		::PostQuitMessage(0);
@@ -54,9 +51,10 @@ private:
 	Static ship;
 	POINT p;
 	int step;
-	void Move() {
-		SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER);
-		SetWindowPos(ship, 0, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+	
+	void Move(bool border) {
+		SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER | (border? WS_BORDER:NULL));
+		SetWindowPos(ship, 0, p.x, p.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE | SWP_FRAMECHANGED);
 	}
 };
 
