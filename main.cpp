@@ -1,15 +1,27 @@
 #include "nwpwin.h"
+using namespace std;
 
 // TODO: prepare class (Static) for a ship
+class Static : public Window {
+	string ClassName() override { return "Static"; }
+};
 
 class MainWindow : public Window
 {
+	Static st;
+	POINT cur_pos;
 protected:
 	void OnLButtonDown(POINT p) {
+		if (!st) {
+			st.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, "x",0, p.x, p.y, 20, 20);
+		}
+		SetWindowPos(st,0,p.x,p.y,0,0,SWP_NOSIZE|SWP_NOZORDER);
+		cur_pos = p;
 		// TODO: create ship if it doesn't exist yet
 		// TODO: change current location
 	}
 	void OnKeyUp(int vk) {
+
 		// TODO: mark ship (if exists) as "not moving"
 	}
 	void OnKeyDown(int vk) {
