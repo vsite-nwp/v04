@@ -17,15 +17,35 @@ protected:
 		}
 		SetWindowPos(st,0,p.x,p.y,0,0,SWP_NOSIZE|SWP_NOZORDER);
 		cur_pos = p;
-		// TODO: create ship if it doesn't exist yet
-		// TODO: change current location
 	}
 	void OnKeyUp(int vk) {
 
 		// TODO: mark ship (if exists) as "not moving"
 	}
 	void OnKeyDown(int vk) {
-		// TODO: if ship exists, move it depending on key and mark as "moving"
+		RECT r;
+		GetClientRect(*this, &r);
+		switch (vk) {
+		case VK_UP:
+			cur_pos.y = cur_pos.y - 5;
+			if (cur_pos.y < r.top) { cur_pos.y = 0; }
+			break;
+		case VK_DOWN:
+			cur_pos.y = cur_pos.y + 5;
+			if (cur_pos.y > r.bottom) { cur_pos.y = r.bottom-20; }
+			break;
+		case VK_LEFT:
+			cur_pos.x = cur_pos.x - 5;
+			if (cur_pos.x < r.left) { cur_pos.x = 0; }
+			break;
+		case VK_RIGHT:
+			cur_pos.x = cur_pos.x + 5;
+			if (cur_pos.x > r.right) { cur_pos.x = r.right-20; }
+			break;
+
+		}
+		SetWindowPos(st, 0, cur_pos.x, cur_pos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+
 	}
 	void OnDestroy(){
 		::PostQuitMessage(0);
