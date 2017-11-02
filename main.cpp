@@ -31,7 +31,9 @@ protected:
 	void OnKeyDown(int vk) {
 		// TODO: if ship exists, move it depending on key and mark as "moving"
 		switch (vk) {
-		case VK_LEFT: SetWindowPos(st, 0, 66 + currpos.x, 66 + currpos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+		case VK_LEFT: 
+			currpos.x -= 1;
+			SetWindowPos(st, 0, currpos.x, currpos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 		}
 		/*vk = WM_KEYDOWN;
 		if (GetAsyncKeyState(VK_LEFT)) {
