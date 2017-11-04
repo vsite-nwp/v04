@@ -1,6 +1,12 @@
 #include "nwpwin.h"
 
-// TODO: prepare class (Static) for a ship
+using namespace std;
+class Static :public Window {
+public:
+	string ClassName() {
+		return "STATIC";
+	}
+};
 
 class MainWindow : public Window
 {
