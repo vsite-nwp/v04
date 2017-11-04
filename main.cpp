@@ -12,9 +12,13 @@ class MainWindow : public Window
 {
 protected:
 	void OnLButtonDown(POINT p) {
-		// TODO: create ship if it doesn't exist yet
-		// TODO: change current location
+		if (!st)
+			st.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, "x", NULL, p.x, p.y, 20, 20);
+
+		SetWindowPos(st, NULL, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+		current_pos = p;
 	}
+	
 	void OnKeyUp(int vk) {
 		// TODO: mark ship (if exists) as "not moving"
 	}
@@ -25,6 +29,8 @@ protected:
 		::PostQuitMessage(0);
 	}
 private:
+	Static st;
+	POINT current_pos;
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
