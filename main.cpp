@@ -9,6 +9,7 @@ class MainWindow : public Window
 {
 	Static shp;
 	POINT cords;
+	LPRECT wnd;
 protected:
 	void OnLButtonDown(POINT p) {
 		if (!shp)
@@ -33,49 +34,19 @@ protected:
 			return;
 		}
 
-		RECT wnd;
-		GetClientRect(*this, &wnd);
-		int mov = GetAsyncKeyState(VK_CONTROL)?20:1;
-
 		switch (vk) {
 		case VK_LEFT:
-			/*if (cords.x == 0)
-				break;*/
-			if (cords.x < 20)
-				mov = cords.x;
-
-			SetWindowPos(shp, 0, cords.x-=mov, cords.y, 20, 20, SWP_FRAMECHANGED);
+			SetWindowPos(shp, 0, GetAsyncKeyState(VK_CONTROL)?cords.x-=20:--cords.x, cords.y, 20,20,SWP_FRAMECHANGED);
 			break;
-		case VK_RIGHT: {
-			int dif = wnd.right - cords.x-20;			//razlika u sirini shipa(20)
-			if (!dif)
-				break;
-			else if (dif < 20)
-				mov = dif;
-
-			SetWindowPos(shp, 0, cords.x+=mov, cords.y, 20, 20, SWP_FRAMECHANGED);
+		case VK_RIGHT:
+			SetWindowPos(shp, 0, GetAsyncKeyState(VK_CONTROL) ? cords.x += 20 : ++cords.x, cords.y, 20, 20, SWP_FRAMECHANGED);
 			break;
-		}
-		case VK_DOWN: {
-			int dif = wnd.bottom - cords.y-20;					//razlika u visini shipa(20)
-			if (!dif) {
-				if (dif < 0)
-					SetWindowPos(shp, 0,cords.x, cords.y = wnd.bottom - 20, 20, 20, 0);
-				break;
-			}
-			else if (dif < 20)
-				mov = dif;
-
-			SetWindowPos(shp, 0, cords.x, cords.y+=mov, 20, 20, SWP_FRAMECHANGED);
+		case VK_DOWN:
+			SetWindowPos(shp, 0, cords.x, GetAsyncKeyState(VK_CONTROL) ? cords.y += 20 : ++cords.y, 20, 20, SWP_FRAMECHANGED);
 			break;
 		}
 		case VK_UP:
-			if (cords.y == 0)
-				break;
-			else if (cords.y < 20)
-				mov = cords.y;
-
-			SetWindowPos(shp, 0, cords.x, cords.y-=mov, 20, 20, SWP_FRAMECHANGED);
+			SetWindowPos(shp, 0, cords.x, GetAsyncKeyState(VK_CONTROL) ? cords.y -= 20 : --cords.y, 20, 20, SWP_FRAMECHANGED);
 		}
 	}
 	void OnDestroy() {
