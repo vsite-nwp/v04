@@ -34,13 +34,13 @@ protected:
 					currPos.x = max(0, currPos.x - Speed);
 					break;
 				case (VK_RIGHT) :
-					currPos.x += Speed;
+					currPos.x = max(0 ,currPos.x + Speed);
 					break;
 				case (VK_UP) :
-					currPos.y -= Speed;
+					currPos.y = max(0, currPos.y - Speed);
 					break;
 				case(VK_DOWN) :
-					currPos.y += Speed;
+					currPos.y = max(0, currPos.y + Speed);
 					break;
 				default:
 					return;
