@@ -25,27 +25,27 @@ protected:
 	void OnKeyDown(int vk) {
 		if (st)
 		{
-			int Speed = 5;
+			int Speed = 4;
 			if (GetKeyState(VK_LCONTROL) == -128)
 				Speed = 20;
 
 			switch (vk) {
-			case (VK_LEFT) :
-				currPos.x -= Speed;
-				break;
-			case (VK_RIGHT) :
-				currPos.x += Speed;
-				break;
-			case (VK_UP) :
-				currPos.y -= Speed;
-				break;
-			case(VK_DOWN) :
-				currPos.y += Speed;
-				break;
-			default:
-				return;
-			}
-			naCrtajGa(WS_BORDER);
+				case (VK_LEFT) :
+					currPos.x = max(0, currPos.x - Speed);
+					break;
+				case (VK_RIGHT) :
+					currPos.x += Speed;
+					break;
+				case (VK_UP) :
+					currPos.y -= Speed;
+					break;
+				case(VK_DOWN) :
+					currPos.y += Speed;
+					break;
+				default:
+					return;
+				}
+				naCrtajGa(WS_BORDER);
 		}
 	}
 
