@@ -9,7 +9,6 @@ class MainWindow : public Window
 {
 	Static shp;
 	POINT cords;
-	LPRECT wnd;
 protected:
 	void OnLButtonDown(POINT p) {
 		if (!shp)
@@ -34,25 +33,51 @@ protected:
 			return;
 		}
 
+		RECT wnd;
+		GetWindowRect(*this, &wnd);
+		int mov = GetAsyncKeyState(VK_CONTROL) ? 20 : 1;;
+
 		switch (vk) {
 		case VK_LEFT:
-			SetWindowPos(shp, 0, GetAsyncKeyState(VK_CONTROL)?cords.x-=20:--cords.x, cords.y, 20,20,SWP_FRAMECHANGED);
+			if (!cords.x)
+				break;
+			else if (cords.x < 20)
+				mov = cords.x;
+
+			SetWindowPos(shp, 0,cords.x-=mov, cords.y, 20,20,SWP_FRAMECHANGED);
 			break;
-		case VK_RIGHT:
-			SetWindowPos(shp, 0, GetAsyncKeyState(VK_CONTROL) ? cords.x += 20 : ++cords.x, cords.y, 20, 20, SWP_FRAMECHANGED);
+		case VK_RIGHT: {
+			int dif = wnd.bottom-cords.x - 20;
+			if (!dif)
+				break;
+			else if ((dif < 20 && mov == 20)||dif<0)
+				mov = dif;
+
+			SetWindowPos(shp, 0, cords.x += mov, cords.y, 20, 20, SWP_FRAMECHANGED);
 			break;
-		case VK_DOWN:
-			SetWindowPos(shp, 0, cords.x, GetAsyncKeyState(VK_CONTROL) ? cords.y += 20 : ++cords.y, 20, 20, SWP_FRAMECHANGED);
+		}
+		case VK_DOWN: {
+			int dif = wnd.right - cords.y - 20;
+			if (!dif)
+				break;
+			else if ((dif < 20 && mov == 20) || dif < 0)
+				mov = dif;
+
+			SetWindowPos(shp, 0, cords.x, cords.y += mov, 20, 20, SWP_FRAMECHANGED);
 			break;
 		}
 		case VK_UP:
-			SetWindowPos(shp, 0, cords.x, GetAsyncKeyState(VK_CONTROL) ? cords.y -= 20 : --cords.y, 20, 20, SWP_FRAMECHANGED);
+			if (!cords.y)
+				break;
+			else if (cords.y < 20)
+				mov = cords.y;
+
+			SetWindowPos(shp, 0, cords.x, cords.y-=mov, 20, 20, SWP_FRAMECHANGED);
 		}
 	}
 	void OnDestroy() {
 		::PostQuitMessage(0);
 	}
-private:
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
