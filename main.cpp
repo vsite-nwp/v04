@@ -8,14 +8,16 @@ class MainWindow : public Window
 {
 protected:
 	void OnLButtonDown(POINT p) {
-		if (!ship)
+		if (!ship) {
 			ship.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, "X", 0, p.x, p.y, 20, 20);
+			stil = GetWindowLong(ship, GWL_STYLE);
+		}
 		SetWindowPos(ship, 0, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 		currentP = p;
 	}
 	void OnKeyUp(int vk) {
 		if (ship) {
-			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER);
+			SetWindowLong(ship, GWL_STYLE, stil);
 			SetWindowPos(ship, 0, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOMOVE | SWP_FRAMECHANGED);
 		}
 	}
@@ -43,7 +45,7 @@ protected:
 			default:
 				return;
 			}
-			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER | WS_BORDER);
+			SetWindowLong(ship, GWL_STYLE, stil| WS_BORDER);
 			SetWindowPos(ship, 0, currentP.x, currentP.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
 		}
 	}
@@ -53,6 +55,7 @@ protected:
 private:
 	Static ship;
 	POINT currentP;
+	LONG stil;
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
