@@ -9,12 +9,15 @@ class MainWindow : public Window
 protected:
 	void OnLButtonDown(POINT p) {
 		if (!ship)
-			ship.Create(*this,WS_CHILD|WS_VISIBLE|SS_CENTER,"X",p.x, p.y,20,20);
-		SetWindowPos(ship, 0, p.x, p.y, 0, 0, SWP_NOSIZE|SWP_NOZORDER | SS_CENTER);
+			ship.Create(*this, WS_CHILD|WS_VISIBLE|SS_CENTER, "X", 0, p.x, p.y, 20, 20);
+		SetWindowPos(ship, 0, p.x, p.y, 0, 0, SWP_NOSIZE|SWP_NOZORDER|SS_CENTER);
 		currentP = p;
 	}
 	void OnKeyUp(int vk) {
-		// TODO: mark ship (if exists) as "not moving"
+		if (ship) {
+			SetWindowLong(ship, GWL_STYLE, WS_CHILD|WS_VISIBLE|SS_CENTER);
+			SetWindowPos(ship, 0, 0, 0, 0, 0, SWP_NOSIZE|SWP_NOZORDER|SWP_NOMOVE|SWP_FRAMECHANGED);
+		}
 	}
 	void OnKeyDown(int vk) {
 		// TODO: if ship exists, move it depending on key and mark as "moving"
