@@ -28,7 +28,33 @@ protected:
 	}
 	
 	void OnKeyDown(int vk) {
-		// TODO: if ship exists, move it depending on key and mark as "moving"
+		if (st)
+		{
+			int Speed = 10;
+			if (GetKeyState(VK_CONTROL) < 0)
+				Speed *= 2;
+			RECT rc;
+			GetClientRect(*this, &rc);
+
+			switch (vk) {
+			case (VK_LEFT):
+				current_pos.x = max(0, current_pos.x - Speed);
+				break;
+			case (VK_RIGHT):
+				current_pos.x = min(rc.right - 20, current_pos.x + Speed);
+				break;
+			case (VK_UP):
+				current_pos.y = max(0, current_pos.y - Speed);
+				break;
+			case(VK_DOWN):
+				current_pos.y = min(rc.bottom - 20, current_pos.y + Speed);
+				break;
+			default:
+				return;
+			}
+			SetWindowLong(st, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
+			SetWindowPos(st, NULL, current_pos.x, current_pos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
+		}
 	}
 	void OnDestroy(){
 		::PostQuitMessage(0);
