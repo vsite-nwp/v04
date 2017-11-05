@@ -1,16 +1,21 @@
 #include "nwpwin.h"
 
 class Static : public Window{
-	std::string ClassName() override { return "Static"; }
+	std::string ClassName() { return "Static"; }
 };
 
 class MainWindow : public Window
 {
+	Static st;
+	POINT currPos;
 protected:
 	void OnLButtonDown(POINT p) {
-		// TODO: create ship if it doesn't exist yet
+		if (!st)
+			st.Create(*this, WS_CHILD | WS_VISIBLE, ";)", NULL, p.x, p.y, 20, 20);
+		SetWindowPos(st, NULL, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+		currPos = p;
+	};
 		// TODO: change current location
-	}
 	void OnKeyUp(int vk) {
 		// TODO: mark ship (if exists) as "not moving"
 	}
