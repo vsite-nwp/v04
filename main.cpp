@@ -16,8 +16,8 @@ protected:
 	void OnLButtonDown(POINT p) {
 		if (!st)
 			st.Create(*this, WS_CHILD | WS_VISIBLE, ";)", NULL, p.x, p.y, sizeX, sizeY);
-		SetWindowPos(st, NULL, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SS_CENTER);
 		currPos = p;
+		naCrtajGa(NULL);
 	};
 
 	void OnKeyUp(int vk) {
