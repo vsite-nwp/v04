@@ -8,6 +8,7 @@ class MainWindow : public Window
 {
 	Static st;
 	POINT currPos;
+	int border;
 protected:
 	void OnLButtonDown(POINT p) {
 		if (!st)
@@ -18,8 +19,7 @@ protected:
 
 	void OnKeyUp(int vk) {
 		if (st){
-			SetWindowLong(st, GWL_STYLE, WS_CHILD | WS_VISIBLE);
-			SetWindowPos(st, NULL, currPos.x, currPos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
+			naCrtajGa(NULL);
 		}
 	}
 	void OnKeyDown(int vk) {
@@ -45,9 +45,14 @@ protected:
 			default:
 				return;
 			}
-			SetWindowLong(st, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
-			SetWindowPos(st, NULL, currPos.x, currPos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
+			naCrtajGa(WS_BORDER);
 		}
+	}
+
+	void naCrtajGa(int border){
+		border = border;
+		SetWindowLong(st, GWL_STYLE, WS_CHILD | WS_VISIBLE | border);
+		SetWindowPos(st, NULL, currPos.x, currPos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 	}
 
 	void OnDestroy(){
