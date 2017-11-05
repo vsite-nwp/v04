@@ -2,6 +2,7 @@
 
 class Static : public Window{
 	std::string ClassName() override { return "Static"; }
+};
 
 class MainWindow : public Window
 {
