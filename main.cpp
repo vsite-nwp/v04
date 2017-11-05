@@ -24,8 +24,10 @@ protected:
 			return;
 		}
 
-		SetWindowLong(shp, GWL_STYLE, WS_VISIBLE | SS_CENTER | WS_CHILD);
-		SetWindowPos(shp, 0, cords.x, cords.y, 20, 20, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
+		int style = GetWindowLong(shp, GWL_STYLE);
+		style = WS_VISIBLE | SS_CENTER | WS_CHILD;
+		SetWindowLong(shp, GWL_STYLE, style);
+		SetWindowPos(shp, 0, cords.x, cords.y, 20, 20, SWP_FRAMECHANGED);
 	}
 	void OnKeyDown(int vk) {
 		if (!shp) {
@@ -33,6 +35,8 @@ protected:
 			return;
 		}
 
+		int style = GetWindowLong(shp, GWL_STYLE);
+		style |= WS_BORDER;
 		RECT wnd;
 		GetClientRect(*this, &wnd);
 		int mov = GetAsyncKeyState(VK_CONTROL) ? 20 : 1;;
@@ -54,8 +58,8 @@ protected:
 			break;
 		}
 
-		SetWindowLong(shp, GWL_STYLE, WS_BORDER | WS_VISIBLE | SS_CENTER | WS_CHILD);
-		SetWindowPos(shp, 0, cords.x, cords.y, 20, 20, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
+		SetWindowLong(shp, GWL_STYLE, style);
+		SetWindowPos(shp, 0, cords.x, cords.y, 20, 20, SWP_FRAMECHANGED);
 	}
 	void OnDestroy() {
 		::PostQuitMessage(0);
