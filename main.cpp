@@ -10,7 +10,7 @@ protected:
 	void OnLButtonDown(POINT p) {
 		if (!ship)
 			ship.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, "X", 0, p.x, p.y, 20, 20);
-		SetWindowPos(ship, 0, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SS_CENTER);
+		SetWindowPos(ship, 0, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 		currentP = p;
 	}
 	void OnKeyUp(int vk) {
@@ -29,24 +29,16 @@ protected:
 			switch (vk)
 			{
 			case VK_LEFT:
-				currentP.x -= brzina;
-				if (currentP.x < glavniP.left)
-					currentP.x = glavniP.left;
+				currentP.x = max(glavniP.left, currentP.x - brzina);
 				break;
 			case VK_RIGHT:
-				currentP.x += brzina;
-				if (currentP.x > glavniP.right - 20)
-					currentP.x = glavniP.right - 20;
+				currentP.x = min(glavniP.right - 20,currentP.x+brzina);
 				break;
 			case VK_UP:
-				currentP.y -= brzina;
-				if (currentP.y < glavniP.top)
-					currentP.y = glavniP.top;
+				currentP.y = max(glavniP.top, currentP.y - brzina);
 				break;
 			case VK_DOWN:
-				currentP.y += brzina;
-				if (currentP.y > glavniP.bottom - 20)
-					currentP.y = glavniP.bottom - 20;
+				currentP.y = min(glavniP.bottom - 20, currentP.y + brzina);
 				break;
 			default:
 				return;
