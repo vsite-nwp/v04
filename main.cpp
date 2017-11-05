@@ -24,7 +24,8 @@ protected:
 			return;
 		}
 
-		int style = WS_VISIBLE | SS_CENTER | WS_CHILD;
+		int style=GetWindowLong(shp, GWL_STYLE)&~WS_BORDER;
+
 		SetWindowLong(shp, GWL_STYLE, style);
 		SetWindowPos(shp, 0, cords.x, cords.y, 20, 20, SWP_FRAMECHANGED);
 	}
@@ -34,8 +35,8 @@ protected:
 			return;
 		}
 
-		int style = GetWindowLong(shp, GWL_STYLE);
-		style |= WS_BORDER;
+		int style = GetWindowLong(shp, GWL_STYLE)|WS_BORDER;
+
 		RECT wnd;
 		GetClientRect(*this, &wnd);
 		int mov = GetAsyncKeyState(VK_CONTROL) ? 20 : 1;;
