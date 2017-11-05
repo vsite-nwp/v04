@@ -55,8 +55,7 @@ protected:
 		}
 	}
 
-	void naCrtajGa(int border){
-		border = border;
+	void naCrtajGa(int border) {
 		SetWindowLong(st, GWL_STYLE, WS_CHILD | WS_VISIBLE | border);
 		SetWindowPos(st, NULL, currPos.x, currPos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 	}
