@@ -24,8 +24,7 @@ protected:
 			return;
 		}
 
-		int style = GetWindowLong(shp, GWL_STYLE);
-		style = WS_VISIBLE | SS_CENTER | WS_CHILD;
+		int style = WS_VISIBLE | SS_CENTER | WS_CHILD;
 		SetWindowLong(shp, GWL_STYLE, style);
 		SetWindowPos(shp, 0, cords.x, cords.y, 20, 20, SWP_FRAMECHANGED);
 	}
