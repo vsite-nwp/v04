@@ -15,16 +15,41 @@ protected:
 		SetWindowPos(st, NULL, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 		currPos = p;
 	};
-		// TODO: change current location
+
 	void OnKeyUp(int vk) {
 		if (st){
 			SetWindowLong(st, GWL_STYLE, WS_CHILD | WS_VISIBLE);
-			SetWindowPos(st, NULL, currPos.x, currPos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
+			SetWindowPos(st, NULL, currPos.x, currPos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 		}
 	}
 	void OnKeyDown(int vk) {
-		// TODO: if ship exists, move it depending on key and mark as "moving"
+		if (st)
+		{
+			int Speed = 5;
+			if (GetKeyState(VK_LCONTROL) == -128)
+				Speed = 20;
+
+			switch (vk) {
+			case (VK_LEFT) :
+				currPos.x -= Speed;
+				break;
+			case (VK_RIGHT) :
+				currPos.x += Speed;
+				break;
+			case (VK_UP) :
+				currPos.y -= Speed;
+				break;
+			case(VK_DOWN) :
+				currPos.y += Speed;
+				break;
+			default:
+				return;
+			}
+			SetWindowLong(st, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
+			SetWindowPos(st, NULL, currPos.x, currPos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
+		}
 	}
+
 	void OnDestroy(){
 		::PostQuitMessage(0);
 	}
