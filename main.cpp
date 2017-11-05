@@ -47,20 +47,20 @@ protected:
 			SetWindowPos(shp, 0,cords.x-=mov, cords.y, 20,20,SWP_FRAMECHANGED);
 			break;
 		case VK_RIGHT: {
-			int dif = wnd.bottom-cords.x - 20;
-			if (!dif)
+			int dif = wnd.right-cords.x-20;
+			if (cords.x==wnd.right)
 				break;
-			else if ((dif < 20 && mov == 20)||dif<0)
+			else if (dif<20&&mov==20)
 				mov = dif;
 
 			SetWindowPos(shp, 0, cords.x += mov, cords.y, 20, 20, SWP_FRAMECHANGED);
 			break;
 		}
 		case VK_DOWN: {
-			int dif = wnd.right - cords.y - 20;
+			int dif = wnd.bottom - cords.y-20;
 			if (!dif)
 				break;
-			else if ((dif < 20 && mov == 20) || dif < 0)
+			else if (dif < 20 && mov == 20)
 				mov = dif;
 
 			SetWindowPos(shp, 0, cords.x, cords.y += mov, 20, 20, SWP_FRAMECHANGED);
