@@ -13,8 +13,8 @@ protected:
 	void OnLButtonDown(POINT p) {
 		if (!shp)
 			shp.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, "x", 0, p.x, p.y, 20, 20);
-		cords.x = p.x;
-		cords.y = p.y;
+
+		cords = p;
 
 		SetWindowPos(shp, 0, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 	}
@@ -28,15 +28,13 @@ protected:
 		SetWindowPos(shp, 0, cords.x, cords.y, 20, 20, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 	}
 	void OnKeyDown(int vk) {
-		//TODO: napisati izracun u caseu, pomak iza casea(i promjena okvira)
-
 		if (!shp) {
 			MessageBox(*this, "Ship isn't set", "Not set", MB_ICONWARNING);
 			return;
 		}
 
 		RECT wnd;
-		GetWindowRect(*this, &wnd);
+		GetClientRect(*this, &wnd);
 		int mov = GetAsyncKeyState(VK_CONTROL) ? 20 : 1;;
 
 		switch (vk) {
@@ -46,18 +44,16 @@ protected:
 			else if (cords.x < 20)
 				mov = cords.x;
 
-			SetWindowLong(shp, GWL_STYLE, WS_BORDER | WS_VISIBLE | SS_CENTER | WS_CHILD);
-			SetWindowPos(shp, 0,cords.x-=mov, cords.y, 20,20,SWP_FRAMECHANGED|SWP_NOSIZE|SWP_NOZORDER);
+			cords.x -= mov;
 			break;
 		case VK_RIGHT: {
 			int dif = wnd.right-cords.x-20;
-			if (cords.x==wnd.right)
+			if (!dif)
 				break;
 			else if (dif<20&&mov==20)
 				mov = dif;
-
-			SetWindowLong(shp, GWL_STYLE, WS_BORDER | WS_VISIBLE | SS_CENTER | WS_CHILD);
-			SetWindowPos(shp, 0, cords.x += mov, cords.y, 20, 20, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
+			
+			cords.x += mov;
 			break;
 		}
 		case VK_DOWN: {
@@ -67,8 +63,7 @@ protected:
 			else if (dif < 20 && mov == 20)
 				mov = dif;
 
-			SetWindowLong(shp, GWL_STYLE, WS_BORDER | WS_VISIBLE | SS_CENTER | WS_CHILD);
-			SetWindowPos(shp, 0, cords.x, cords.y += mov, 20, 20, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
+			cords.y += mov;
 			break;
 		}
 		case VK_UP:
@@ -77,9 +72,12 @@ protected:
 			else if (cords.y < 20)
 				mov = cords.y;
 
-			SetWindowLong(shp, GWL_STYLE, WS_BORDER | WS_VISIBLE | SS_CENTER | WS_CHILD);
-			SetWindowPos(shp, 0, cords.x, cords.y-=mov, 20, 20, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
+			cords.y -= mov;
+			break;
 		}
+
+		SetWindowLong(shp, GWL_STYLE, WS_BORDER | WS_VISIBLE | SS_CENTER | WS_CHILD);
+		SetWindowPos(shp, 0, cords.x, cords.y, 20, 20, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 	}
 	void OnDestroy() {
 		::PostQuitMessage(0);
