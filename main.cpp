@@ -16,12 +16,13 @@ protected:
 			st.Create(*this, WS_CHILD | WS_VISIBLE, ":)", NULL, p.x, p.y, 20, 20);
 		currPos = p;
 		style = GetWindowLong(st, GWL_STYLE);
-		naCrtajGa(style, false);
+		SetWindowPos(st, NULL, currPos.x, currPos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 	};
 
 	void OnKeyUp(int vk) {
 		if (st){
-			naCrtajGa(style, false); 
+			SetWindowLong(st, GWL_STYLE, style);
+			SetWindowPos(st, NULL, currPos.x, currPos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 		}
 	}
 	void OnKeyDown(int vk) {
@@ -50,15 +51,9 @@ protected:
 				default:
 					return;
 				}
-			naCrtajGa(style, true); 
+			SetWindowLong(st, GWL_STYLE, style | WS_BORDER);
+			SetWindowPos(st, NULL, currPos.x, currPos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 		}
-	}
-
-	void naCrtajGa(LONG style, bool haveBorder) {
-		LONG border;
-		haveBorder ? border = WS_BORDER : border = NULL;
-		SetWindowLong(st, GWL_STYLE, style | border);
-		SetWindowPos(st,NULL, currPos.x, currPos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 	}
 
 	void OnDestroy(){
