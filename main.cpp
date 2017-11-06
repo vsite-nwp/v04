@@ -22,7 +22,8 @@ protected:
 	void OnKeyUp(int vk) {
 		// TODO: mark ship (if exists) as "not moving"
 		if (st)
-				SetWindowPos(st, 0, currpos.x, currpos.y, 0, 0, SWP_NOMOVE| SWP_NOSIZE | SWP_NOZORDER);
+			SetWindowLong(st, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER);
+			SetWindowPos(st, 0, currpos.x, currpos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE| SWP_NOSIZE | SWP_NOZORDER);
 		
 			//SetWindowPos(st, 0, currpos.x, currpos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 	}
@@ -52,7 +53,8 @@ protected:
 				currpos.y = rect.bottom-20; //the height of the ship is 20
 			break;
 		}
-		SetWindowPos(st, 0, currpos.x, currpos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+		SetWindowLong(st, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER | WS_BORDER);
+		SetWindowPos(st, 0, currpos.x, currpos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 		
 	} 
 	void OnDestroy(){
