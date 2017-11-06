@@ -32,7 +32,7 @@ protected:
 		RECT rect;
 		GetClientRect(*this, &rect);
 		int movement;
-		if (GetKeyState(VK_CONTROL & 0x8000))
+		if (GetKeyState(VK_CONTROL) & 0x8000)
 			movement = 10;
 		else
 			movement = 1;
