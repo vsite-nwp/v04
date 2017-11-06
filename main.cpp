@@ -13,22 +13,25 @@ class MainWindow : public Window
 protected:
 	void OnLButtonDown(POINT p) {
 		if (!st)
-			st.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, "x", NULL, p.x, p.y, 20, 20);
+
+			st.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, "X", NULL, p.x, p.y, 20, 20);
 
 		SetWindowPos(st, NULL, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 		current_pos = p;
+		
 	}
 	
 	void OnKeyUp(int vk) {
 		if (!st)
 			return;
-		else
-			SetWindowLong(st, GWL_STYLE, WS_CHILD | WS_VISIBLE);
+		SetWindowLong(st, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER);
 		SetWindowPos(st, NULL, current_pos.x, current_pos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
+		move(true);
 	}
 	
 	void OnKeyDown(int vk) {
 		if (st)
+			
 		{
 			int Speed = 10;
 			if (GetKeyState(VK_CONTROL) < 0)
@@ -52,8 +55,10 @@ protected:
 			default:
 				return;
 			}
+			
 			SetWindowLong(st, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
 			SetWindowPos(st, NULL, current_pos.x, current_pos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
+			move(true);
 		}
 	}
 	void OnDestroy(){
@@ -62,6 +67,12 @@ protected:
 private:
 	Static st;
 	POINT current_pos;
+
+	void move(bool on) {
+		DWORD stil = ::GetWindowLong(st, GWL_STYLE);
+		stil= on ? (stil | WS_BORDER) : (stil&~WS_BORDER);
+	}
+	
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
@@ -70,4 +81,5 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
 	MainWindow wnd;
 	wnd.Create(NULL, WS_OVERLAPPEDWINDOW | WS_VISIBLE, "NWP 4");
 	return app.Run();
+
 }
