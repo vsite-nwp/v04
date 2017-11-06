@@ -19,55 +19,24 @@ protected:
 	void OnKeyUp(int vk) {
 		if (!st)
 			return;
-		SetWindowLongPtr(st, GWL_STYLE, WS_VISIBLE | WS_CHILD);
-		SetWindowPos(st, 0, current_pos.x, current_pos.y, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);	
+		SetWindowLongPtr(st, GWL_STYLE, GetWindowLongPtr(st, GWL_STYLE) & ~WS_BORDER);
+		SetWindowPos(st, 0, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);	
 	}
 	void OnKeyDown(int vk) {
 		if (!st)
 			return;
-		RECT r, s;
-		LPRECT cr = &r;
-		LPRECT sr = &s;
-		GetClientRect(*this, cr);
-		GetClientRect(st, sr);
-		int step = 1;
-		int bend = cr->bottom - sr->bottom - 5;
-		int rend = cr->right - sr->right - 5;
-
-		if (GetKeyState(VK_CONTROL) < 0)
-			step *= 8;
+		RECT cr;
+		GetClientRect(*this, &cr);
+		int step = GetKeyState(VK_CONTROL) < 0 ? 12 : 3;
 		switch (vk)
 		{
-		case VK_UP:
-			if (current_pos.y < cr->top) {
-				current_pos.y = cr->top;
-				break;
-			}
-			current_pos.y -= step;
-			break;
-		case VK_DOWN:
-			if (current_pos.y > bend) {
-				current_pos.y = bend;
-				break;
-			}
-			current_pos.y += step;
-			break;
-		case VK_LEFT:
-			if (current_pos.x < cr->left ) {
-				current_pos.x = cr->left;
-				break;
-			}
-			current_pos.x -= step;
-			break;
-		case VK_RIGHT:
-			if (current_pos.x > rend){
-				current_pos.x = rend;
-				break;
+		case VK_UP: current_pos.y = max(0, current_pos.y - step); break;
+		case VK_DOWN: current_pos.y = min( cr.bottom - 20, current_pos.y + step); break;
+		case VK_LEFT: current_pos.x = max(0, current_pos.x - step); break;
+		case VK_RIGHT: current_pos.x = min(cr.right - 20, current_pos.x + step); break;
+		default: return;
 		}
-			current_pos.x += step;
-			break;
-		}
-		SetWindowLongPtr(st, GWL_STYLE, WS_BORDER | WS_VISIBLE | WS_CHILD);
+		SetWindowLongPtr(st, GWL_STYLE, GetWindowLongPtr(st, GWL_STYLE) | WS_BORDER );
 		SetWindowPos(st, 0, current_pos.x, current_pos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
 	}
 
