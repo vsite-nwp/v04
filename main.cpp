@@ -28,30 +28,32 @@ protected:
 	}
 	void OnKeyDown(int vk) {
 		// TODO: if ship exists, move it depending on key and mark as "moving"
+		RECT rect;
+		GetClientRect(*this, &rect);
 		switch (vk) {
 		case VK_LEFT: 
 			currpos.x -= 1;
-			SetWindowPos(st, 0, currpos.x, currpos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+			if (currpos.x < rect.left)
+				currpos.x = rect.left;
 			break;
 		case VK_RIGHT:
 			currpos.x += 1;
-			SetWindowPos(st, 0, currpos.x, currpos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+			if (currpos.x > rect.right-20)
+				currpos.x = rect.right-20;  //the width of the ship is 20
 			break;
 		case VK_UP:
 			currpos.y -= 1;
-			SetWindowPos(st, 0, currpos.x, currpos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+			if (currpos.y < rect.top)
+				currpos.y = rect.top;
 			break;
 		case VK_DOWN:
 			currpos.y += 1;
-			SetWindowPos(st, 0, currpos.x, currpos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+			if (currpos.y > rect.bottom-20)
+				currpos.y = rect.bottom-20; //the height of the ship is 20
 			break;
 		}
-		/*vk = WM_KEYDOWN;
-		if (GetAsyncKeyState(VK_LEFT)) {
-			while (!vk) {
-				SetWindowPos(st, 0, 2 + currpos.x, 2 + currpos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-			}
-		}*/
+		SetWindowPos(st, 0, currpos.x, currpos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+		
 	} 
 	void OnDestroy(){
 		::PostQuitMessage(0);
@@ -63,9 +65,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
 {
 	Application app;
 	MainWindow wnd;
-	RECT rect;
 	wnd.Create(NULL, WS_OVERLAPPEDWINDOW | WS_VISIBLE, "NWP 4");
-	GetClientRect(HWND(wnd), &rect);
-	ClipCursor(&rect);
 	return app.Run();
 }
