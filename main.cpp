@@ -31,24 +31,29 @@ protected:
 		// TODO: if ship exists, move it depending on key and mark as "moving"
 		RECT rect;
 		GetClientRect(*this, &rect);
+		int movement;
+		if (GetKeyState(VK_CONTROL & 0x8000))
+			movement = 10;
+		else
+			movement = 1;
 		switch (vk) {
 		case VK_LEFT: 
-			currpos.x -= 1;
+			currpos.x -= movement;
 			if (currpos.x < rect.left)
 				currpos.x = rect.left;
 			break;
 		case VK_RIGHT:
-			currpos.x += 1;
+			currpos.x += movement;
 			if (currpos.x > rect.right-20)
 				currpos.x = rect.right-20;  //the width of the ship is 20
 			break;
 		case VK_UP:
-			currpos.y -= 1;
+			currpos.y -= movement;
 			if (currpos.y < rect.top)
 				currpos.y = rect.top;
 			break;
 		case VK_DOWN:
-			currpos.y += 1;
+			currpos.y += movement;
 			if (currpos.y > rect.bottom-20)
 				currpos.y = rect.bottom-20; //the height of the ship is 20
 			break;
