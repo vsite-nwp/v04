@@ -11,10 +11,10 @@ public:
 
 class MainWindow : public Window
 	{
-	UINT key;
+
 	Static ship;
 	POINT current_pos;
-	RECT sea;
+
 protected:
 
 	void OnLButtonDown(POINT p) {
@@ -33,35 +33,38 @@ protected:
 	void OnKeyDown(int vk) {
 		if (!ship)
 			return;	
-
+		RECT sea;
 		GetClientRect(*this, &sea);
+		
 
 		int speed;
-		if (GetKeyState(VK_CONTROL) & 0x8000)
-			speed = 15;
-		else
-			speed = 5;
+		GetKeyState(VK_CONTROL)<0 ? speed = 15 : speed = 5;
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
-		if ((GetKeyState(VK_UP)&0x8000)&&(GetKeyState(VK_LEFT)&0x8000)&&current_pos.x>5&&current_pos.y>25)
+		//Up left
+		if ((GetKeyState(VK_UP)<0)&&(GetKeyState(VK_LEFT)<0)&&current_pos.x>5&&current_pos.y>25)
 		{
 			current_pos.y -= speed;
 			current_pos.x -= speed;
 		}
-		else if((GetKeyState(VK_DOWN)&0x8000)&&(GetKeyState(VK_LEFT)&0x8000)&&current_pos.y<sea.bottom-25&&current_pos.x>5)
-		{
-			current_pos.y += speed;
-			current_pos.x -= speed;
-		}
-		else if((GetKeyState(VK_DOWN)&0x8000)&&(GetKeyState(VK_RIGHT)&0x8000&&current_pos.y<sea.bottom-25&&current_pos.x<sea.right-25))
-		{
-			current_pos.y += speed;
-			current_pos.x += speed;
-		}
-		else if((GetKeyState(VK_UP)&0x8000)&&(GetKeyState(VK_RIGHT)&0x8000)&&current_pos.x<sea.right-25&&current_pos.y>25)
+		//Up right
+		else if((GetKeyState(VK_UP)<0)&&(GetKeyState(VK_RIGHT)<0)&&current_pos.x<sea.right-25&&current_pos.y>25)
 		{
 			current_pos.y -= speed;
 			current_pos.x += speed;
 		}
+		//Down left
+		else if((GetKeyState(VK_DOWN)<0)&&(GetKeyState(VK_LEFT)<0)&&current_pos.y<sea.bottom-25&&current_pos.x>5)
+		{
+			current_pos.y += speed;
+			current_pos.x -= speed;
+		}
+		//Down right
+		else if((GetKeyState(VK_DOWN)<0)&&(GetKeyState(VK_RIGHT)<0&&current_pos.y<sea.bottom-25&&current_pos.x<sea.right-25))
+		{
+			current_pos.y += speed;
+			current_pos.x += speed;
+		}
+
 		else if (vk==VK_UP&&current_pos.y>25)
 			current_pos.y -= speed;
 		else if (vk==VK_DOWN&&current_pos.y<sea.bottom-25)
@@ -82,12 +85,12 @@ private:
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	void moving() 
 	{
-		SetWindowLong(ship,GWL_STYLE,WS_BORDER|WS_CHILD|WS_VISIBLE|SS_CENTER);
+		SetWindowLong(ship,GWL_STYLE,GetWindowLong(ship ,GWL_STYLE)| WS_BORDER);
 		SetWindowPos(ship,0,current_pos.x,current_pos.y,0,0,SWP_NOSIZE|SWP_NOZORDER|SWP_FRAMECHANGED);
 	}
 	void not_moving()
 	{
-		SetWindowLong(ship, GWL_STYLE,  WS_CHILD | WS_VISIBLE | SS_CENTER);
+		SetWindowLong(ship, GWL_STYLE, GetWindowLong(ship, GWL_STYLE) & ~ WS_BORDER);
 		SetWindowPos(ship,0,current_pos.x,current_pos.y,0,0,SWP_NOSIZE|SWP_NOZORDER|SWP_NOMOVE|SWP_FRAMECHANGED);
 	}
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
