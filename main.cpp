@@ -1,7 +1,6 @@
 #include "nwpwin.h"
 using namespace std;
 
-// TODO: prepare class (Static) for a ship
 class Static : public Window {
 	string ClassName() override { return "Static"; }
 };
@@ -21,7 +20,9 @@ protected:
 	}
 	void OnKeyUp(int vk) {
 
-		// TODO: mark ship (if exists) as "not moving"
+		SetWindowLong(st, GWL_STYLE, WS_CHILD | WS_VISIBLE);
+		SetWindowPos(st, NULL, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
+		
 	}
 	void OnKeyDown(int vk) {
 		RECT r;
@@ -47,7 +48,8 @@ protected:
 			break;
 
 		}
-		SetWindowPos(st, 0, cur_pos.x, cur_pos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+		SetWindowLong(st, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
+		SetWindowPos(st, 0, cur_pos.x, cur_pos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 
 	}
 	void OnDestroy() {
