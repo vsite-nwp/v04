@@ -1,6 +1,6 @@
 #include "nwpwin.h"
 
-// TODO: prepare class (Static) for a ship
+
 
 class Static : public Window {
 	std::string ClassName() override { return "STATIC"; }
@@ -16,19 +16,18 @@ protected:
 			st.Create(*this, WS_CHILD|WS_VISIBLE|SS_CENTER, "X", 0, p.x, p.y, 20, 20);
 		SetWindowPos(st, 0, p.x, p.y, 0, 0, SWP_NOSIZE|SWP_NOZORDER);
 		currpos = p;
-		// TODO: create ship if it doesn't exist yet
-		// TODO: change current location
+	
 	}
 	void OnKeyUp(int vk) {
-		// TODO: mark ship (if exists) as "not moving"
+		
 		if (st)
 			SetWindowLong(st, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER);
 			SetWindowPos(st, 0, currpos.x, currpos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE| SWP_NOSIZE | SWP_NOZORDER);
 		
-			//SetWindowPos(st, 0, currpos.x, currpos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+			
 	}
 	void OnKeyDown(int vk) {
-		// TODO: if ship exists, move it depending on key and mark as "moving"
+		
 		RECT rect;
 		GetClientRect(*this, &rect);
 		int movement;
@@ -45,7 +44,7 @@ protected:
 		case VK_RIGHT:
 			currpos.x += movement;
 			if (currpos.x > rect.right-20)
-				currpos.x = rect.right-20;  //the width of the ship is 20
+				currpos.x = rect.right-20;  
 			break;
 		case VK_UP:
 			currpos.y -= movement;
@@ -55,7 +54,7 @@ protected:
 		case VK_DOWN:
 			currpos.y += movement;
 			if (currpos.y > rect.bottom-20)
-				currpos.y = rect.bottom-20; //the height of the ship is 20
+				currpos.y = rect.bottom-20; 
 			break;
 		}
 		SetWindowLong(st, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER | WS_BORDER);
