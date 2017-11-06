@@ -11,9 +11,10 @@ public:
 
 class MainWindow : public Window
 	{
-
+	RECT sea;
 	Static ship;
 	POINT current_pos;
+	int speed;
 
 protected:
 
@@ -33,47 +34,16 @@ protected:
 	void OnKeyDown(int vk) {
 		if (!ship)
 			return;	
-		RECT sea;
 		GetClientRect(*this, &sea);
-		
-
-		int speed;
 		GetKeyState(VK_CONTROL)<0 ? speed = 15 : speed = 5;
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
-		//Up left
-		if ((GetKeyState(VK_UP)<0)&&(GetKeyState(VK_LEFT)<0)&&current_pos.x>5&&current_pos.y>25)
+		switch (vk) 
 		{
-			current_pos.y -= speed;
-			current_pos.x -= speed;
+		case (VK_UP): goUp(); goLeft(); goRight(); break;
+		case(VK_DOWN): goDown(); goLeft(); goRight(); break;
+		case(VK_RIGHT): goRight(); goUp(); goDown(); break;
+		case(VK_LEFT): goLeft(); goUp(); goDown(); break;		
 		}
-		//Up right
-		else if((GetKeyState(VK_UP)<0)&&(GetKeyState(VK_RIGHT)<0)&&current_pos.x<sea.right-25&&current_pos.y>25)
-		{
-			current_pos.y -= speed;
-			current_pos.x += speed;
-		}
-		//Down left
-		else if((GetKeyState(VK_DOWN)<0)&&(GetKeyState(VK_LEFT)<0)&&current_pos.y<sea.bottom-25&&current_pos.x>5)
-		{
-			current_pos.y += speed;
-			current_pos.x -= speed;
-		}
-		//Down right
-		else if((GetKeyState(VK_DOWN)<0)&&(GetKeyState(VK_RIGHT)<0&&current_pos.y<sea.bottom-25&&current_pos.x<sea.right-25))
-		{
-			current_pos.y += speed;
-			current_pos.x += speed;
-		}
-
-		else if (vk==VK_UP&&current_pos.y>25)
-			current_pos.y -= speed;
-		else if (vk==VK_DOWN&&current_pos.y<sea.bottom-25)
-			current_pos.y += speed;
-		else if (vk==VK_LEFT&&current_pos.x>25)
-			current_pos.x -= speed;
-		else if (vk==VK_RIGHT&&current_pos.x<sea.right-25)
-			current_pos.x += speed;
-		
 		moving();	
 	}
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -83,6 +53,10 @@ protected:
 	}
 private:
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	void goRight() { if (GetKeyState(VK_RIGHT) < 0 && current_pos.x < sea.right -30)current_pos.x += speed; }
+	void goLeft()  { if (GetKeyState(VK_LEFT)  < 0 && current_pos.x > 0)current_pos.x -= speed; }
+	void goDown()  { if (GetKeyState(VK_DOWN)  < 0 && current_pos.y < sea.bottom -30) current_pos.y += speed; }
+	void goUp()    { if (GetKeyState(VK_UP)    < 0 && current_pos.y > 25)current_pos.y -= speed; }
 	void moving() 
 	{
 		SetWindowLong(ship,GWL_STYLE,GetWindowLong(ship ,GWL_STYLE)| WS_BORDER);
