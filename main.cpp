@@ -15,7 +15,7 @@ class MainWindow : public Window
 protected:
 	void OnLButtonDown(POINT p) {
 		if (!st)
-			st.Create(*this, WS_CHILD | WS_VISIBLE, ";)", NULL, p.x, p.y, sizeX, sizeY);
+			st.Create(*this, WS_CHILD | WS_VISIBLE, ":)", NULL, p.x, p.y, sizeX, sizeY);
 		currPos = p;
 		naCrtajGa(NULL);
 	};
@@ -57,7 +57,7 @@ protected:
 
 	void naCrtajGa(int border) {
 		SetWindowLong(st, GWL_STYLE, WS_CHILD | WS_VISIBLE | border);
-		SetWindowPos(st, NULL, currPos.x, currPos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
+		SetWindowPos(st,NULL, currPos.x, currPos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 	}
 
 	void OnDestroy(){
