@@ -21,11 +21,9 @@ protected:
 	}
 	void OnKeyUp(int vk) {
 		// TODO: mark ship (if exists) as "not moving"
-		vk = WM_KEYUP;
-		while (!vk) {
-			if (st)
-				SetWindowPos(st, 0, currpos.x, currpos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-		}
+		if (st)
+				SetWindowPos(st, 0, currpos.x, currpos.y, 0, 0, SWP_NOMOVE| SWP_NOSIZE | SWP_NOZORDER);
+		
 			//SetWindowPos(st, 0, currpos.x, currpos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 	}
 	void OnKeyDown(int vk) {
@@ -34,6 +32,19 @@ protected:
 		case VK_LEFT: 
 			currpos.x -= 1;
 			SetWindowPos(st, 0, currpos.x, currpos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+			break;
+		case VK_RIGHT:
+			currpos.x += 1;
+			SetWindowPos(st, 0, currpos.x, currpos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+			break;
+		case VK_UP:
+			currpos.y -= 1;
+			SetWindowPos(st, 0, currpos.x, currpos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+			break;
+		case VK_DOWN:
+			currpos.y += 1;
+			SetWindowPos(st, 0, currpos.x, currpos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+			break;
 		}
 		/*vk = WM_KEYDOWN;
 		if (GetAsyncKeyState(VK_LEFT)) {
@@ -52,6 +63,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
 {
 	Application app;
 	MainWindow wnd;
+	RECT rect;
 	wnd.Create(NULL, WS_OVERLAPPEDWINDOW | WS_VISIBLE, "NWP 4");
+	GetClientRect(HWND(wnd), &rect);
+	ClipCursor(&rect);
 	return app.Run();
 }
