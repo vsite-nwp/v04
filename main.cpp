@@ -8,28 +8,27 @@ class MainWindow : public Window
 {
 	Static st;
 	POINT currPos;
-	int border;
-	int sizeX = 20;
-	int sizeY = 20;
+	LONG style;
 
 protected:
 	void OnLButtonDown(POINT p) {
 		if (!st)
-			st.Create(*this, WS_CHILD | WS_VISIBLE, ":)", NULL, p.x, p.y, sizeX, sizeY);
+			st.Create(*this, WS_CHILD | WS_VISIBLE, ":)", NULL, p.x, p.y, 20, 20);
 		currPos = p;
-		naCrtajGa(NULL);
+		style = GetWindowLong(st, GWL_STYLE);
+		naCrtajGa(style, false);
 	};
 
 	void OnKeyUp(int vk) {
 		if (st){
-			naCrtajGa(NULL);
+			naCrtajGa(style, false); 
 		}
 	}
 	void OnKeyDown(int vk) {
 		if (st)
 		{
 			int Speed = 5;
-			if (GetKeyState(VK_LCONTROL) == -128)
+			if (GetKeyState(VK_LCONTROL) < 0)
 				Speed = 20;
 
 			RECT stPosition;
@@ -40,23 +39,25 @@ protected:
 					currPos.x = max(0, currPos.x - Speed);
 					break;
 				case (VK_RIGHT) :
-					currPos.x = min(stPosition.right - sizeX, currPos.x + Speed);
+					currPos.x = min(stPosition.right - 20, currPos.x + Speed);
 					break;
 				case (VK_UP) :
 					currPos.y = max(0, currPos.y - Speed);
 					break;
 				case(VK_DOWN) :
-					currPos.y = min(stPosition.bottom - sizeY , currPos.y + Speed);
+					currPos.y = min(stPosition.bottom - 20 , currPos.y + Speed);
 					break;
 				default:
 					return;
 				}
-				naCrtajGa(WS_BORDER);
+			naCrtajGa(style, true); 
 		}
 	}
 
-	void naCrtajGa(int border) {
-		SetWindowLong(st, GWL_STYLE, WS_CHILD | WS_VISIBLE | border);
+	void naCrtajGa(LONG style, bool haveBorder) {
+		LONG border;
+		haveBorder ? border = WS_BORDER : border = NULL;
+		SetWindowLong(st, GWL_STYLE, style | border);
 		SetWindowPos(st,NULL, currPos.x, currPos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 	}
 
