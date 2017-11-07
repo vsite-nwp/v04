@@ -10,6 +10,7 @@ class MainWindow : public Window
 {
 	Static st;
 	POINT currpos;
+	DWORD BLKWNDSTY;
 protected:
 	void OnLButtonDown(POINT p) {
 		if (!st)
@@ -20,10 +21,10 @@ protected:
 	}
 	void OnKeyUp(int vk) {
 		
-		if (st)
+		if (st) {
 			SetWindowLong(st, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER);
-			SetWindowPos(st, 0, currpos.x, currpos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE| SWP_NOSIZE | SWP_NOZORDER);
-		
+			SetWindowPos(st, 0, currpos.x, currpos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
+		}
 			
 	}
 	void OnKeyDown(int vk) {
@@ -31,32 +32,14 @@ protected:
 		RECT rect;
 		GetClientRect(*this, &rect);
 		int movement;
-		if (GetKeyState(VK_CONTROL) & 0x8000)
-			movement = 10;
-		else
-			movement = 1;
+		(GetKeyState(VK_CONTROL) < 0) ? movement = 10 : movement = 1;
 		switch (vk) {
-		case VK_LEFT: 
-			currpos.x -= movement;
-			if (currpos.x < rect.left)
-				currpos.x = rect.left;
-			break;
-		case VK_RIGHT:
-			currpos.x += movement;
-			if (currpos.x > rect.right-20)
-				currpos.x = rect.right-20;  
-			break;
-		case VK_UP:
-			currpos.y -= movement;
-			if (currpos.y < rect.top)
-				currpos.y = rect.top;
-			break;
-		case VK_DOWN:
-			currpos.y += movement;
-			if (currpos.y > rect.bottom-20)
-				currpos.y = rect.bottom-20; 
-			break;
+		case VK_LEFT: currpos.x -= movement; currpos.x = max(currpos.x , rect.left); break;
+		case VK_RIGHT: currpos.x += movement; currpos.x = min(currpos.x , rect.right - 20); break;
+		case VK_UP: currpos.y -= movement; currpos.y = max(currpos.y , rect.top); break;
+		case VK_DOWN: currpos.y += movement; currpos.y = min(currpos.y , rect.bottom - 20); break;
 		}
+		BLKWNDSTY = GetWindowLong(st, -20);
 		SetWindowLong(st, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER | WS_BORDER);
 		SetWindowPos(st, 0, currpos.x, currpos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 		
@@ -65,6 +48,9 @@ protected:
 		::PostQuitMessage(0);
 	}
 private:
+	/*bool style_engaged() {
+		if ()
+	}*/
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
