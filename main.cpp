@@ -19,44 +19,46 @@ protected:
 	}
 	void OnKeyUp(int vk) {
 
-		SetWindowLong(st, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER);
-		SetWindowPos(st, NULL, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
-
+		move(false);
 	}
 	void OnKeyDown(int vk) {
 		RECT r;
 		GetClientRect(*this, &r);
-		int brzina;
-		GetKeyState(VK_CONTROL) == 0 ? brzina = 10 : brzina = 2;
+		int brzina = GetKeyState(VK_CONTROL) < 0 ?  10 : 2;
 		switch (vk) {
 		case VK_UP:
 			cur_pos.y = max(cur_pos.y - brzina, 0);
-			/*cur_pos.y = cur_pos.y - brzina;
-			if (cur_pos.y < r.top) { cur_pos.y = 0; }*/
 			break;
 		case VK_DOWN:
 			cur_pos.y = min(cur_pos.y + brzina, r.bottom - 20);
-			/*cur_pos.y = cur_pos.y + brzina;
-			if (cur_pos.y > r.bottom) { cur_pos.y = r.bottom - 20; }*/
 			break;
 		case VK_LEFT:
 			cur_pos.x = max(cur_pos.x - brzina, 0);
-			/*cur_pos.x = cur_pos.x - brzina;
-			if (cur_pos.x < r.left) { cur_pos.x = 0; }*/
 			break;
 		case VK_RIGHT:
 			cur_pos.x = min(cur_pos.x + brzina, r.right - 20);
-			/*cur_pos.x = cur_pos.x + brzina;
-			if (cur_pos.x > r.right) { cur_pos.x = r.right - 20; }*/
 			break;
 
 		}
-		SetWindowLong(st, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER| SS_CENTER);
-		SetWindowPos(st, 0, cur_pos.x, cur_pos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
-
+		move(true);
 	}
 	void OnDestroy() {
 		::PostQuitMessage(0);
+	}
+
+	void move(bool on) {
+		long style;
+		if (on) {
+			style = GetWindowLong(st, GWL_STYLE) | WS_BORDER;
+			SetWindowLong(st, GWL_STYLE, style);
+			SetWindowPos(st, 0, cur_pos.x, cur_pos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
+		}
+		else {
+			style = GetWindowLong(st, GWL_STYLE) & ~WS_BORDER;
+			SetWindowLong(st, GWL_STYLE, style);
+			SetWindowPos(st, NULL, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
+		}
+		
 	}
 private:
 };
