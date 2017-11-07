@@ -16,17 +16,17 @@ protected:
 
 			st.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, "X", NULL, p.x, p.y, 20, 20);
 
-		SetWindowPos(st, NULL, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+		
 		current_pos = p;
+		move(false);
 		
 	}
 	
 	void OnKeyUp(int vk) {
 		if (!st)
 			return;
-		SetWindowLong(st, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER);
-		SetWindowPos(st, NULL, current_pos.x, current_pos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
-		move(true);
+	
+		move(false);
 	}
 	
 	void OnKeyDown(int vk) {
@@ -56,8 +56,7 @@ protected:
 				return;
 			}
 			
-			SetWindowLong(st, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
-			SetWindowPos(st, NULL, current_pos.x, current_pos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
+			
 			move(true);
 		}
 	}
@@ -71,6 +70,8 @@ private:
 	void move(bool on) {
 		DWORD stil = ::GetWindowLong(st, GWL_STYLE);
 		stil= on ? (stil | WS_BORDER) : (stil&~WS_BORDER);
+		SetWindowLong(st, GWL_STYLE,stil);
+		SetWindowPos(st, NULL, current_pos.x, current_pos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 	}
 	
 };
