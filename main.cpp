@@ -1,23 +1,14 @@
 #include "nwpwin.h"
 
-
-// TODO: prepare class (Static) for a ship
-class Static : public Window {
-
-public:
-	std::string ClassName() override { return "STATIC"; }
-
-};
-
+class Static : public Window {public: std::string ClassName() override { return "STATIC"; }};
 class MainWindow : public Window
-	{
+{
 	RECT sea;
 	Static ship;
 	POINT current_pos;
 	int speed;
-
+	bool isMoving;
 protected:
-
 	void OnLButtonDown(POINT p) {
 		if (!ship)
 			ship.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER , "x",0, p.x, p.y,20,20 );
@@ -27,7 +18,8 @@ protected:
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	void OnKeyUp(int vk) 
 	{
-		not_moving();
+		isMoving = false;
+		moving();
 	}
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -37,13 +29,7 @@ protected:
 		GetClientRect(*this, &sea);
 		GetKeyState(VK_CONTROL)<0 ? speed = 15 : speed = 5;
 	// / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / / /
-		switch (vk) 
-		{
-		case (VK_UP): goUp(); goLeft(); goRight(); break;
-		case(VK_DOWN): goDown(); goLeft(); goRight(); break;
-		case(VK_RIGHT): goRight(); goUp(); goDown(); break;
-		case(VK_LEFT): goLeft(); goUp(); goDown(); break;		
-		}
+		goUp(); goDown(); goLeft(); goRight();
 		moving();	
 	}
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -53,19 +39,16 @@ protected:
 	}
 private:
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	void goRight() { if (GetKeyState(VK_RIGHT) < 0 && current_pos.x < sea.right -30)current_pos.x += speed; }
-	void goLeft()  { if (GetKeyState(VK_LEFT)  < 0 && current_pos.x > 0)current_pos.x -= speed; }
-	void goDown()  { if (GetKeyState(VK_DOWN)  < 0 && current_pos.y < sea.bottom -30) current_pos.y += speed; }
-	void goUp()    { if (GetKeyState(VK_UP)    < 0 && current_pos.y > 25)current_pos.y -= speed; }
+	void goRight() { if (GetKeyState(VK_RIGHT) < 0 && current_pos.x < sea.right - 30) { current_pos.x += speed; isMoving = true; } }
+	void goLeft() { if (GetKeyState(VK_LEFT) < 0 && current_pos.x > 0) { current_pos.x -= speed; isMoving = true; } }
+	void goDown() { if (GetKeyState(VK_DOWN) < 0 && current_pos.y < sea.bottom - 30) { current_pos.y += speed; isMoving = true; } }
+	void goUp()    { if (GetKeyState(VK_UP)    < 0 && current_pos.y > 25){current_pos.y -= speed; isMoving = true; } }
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	void moving() 
 	{
-		SetWindowLong(ship,GWL_STYLE,GetWindowLong(ship ,GWL_STYLE)| WS_BORDER);
+		DWORD style = GetWindowLong(ship, GWL_STYLE);
+		isMoving ? SetWindowLong(ship, GWL_STYLE, style | WS_BORDER) : SetWindowLong(ship, GWL_STYLE, style& ~WS_BORDER);
 		SetWindowPos(ship,0,current_pos.x,current_pos.y,0,0,SWP_NOSIZE|SWP_NOZORDER|SWP_FRAMECHANGED);
-	}
-	void not_moving()
-	{
-		SetWindowLong(ship, GWL_STYLE, GetWindowLong(ship, GWL_STYLE) & ~ WS_BORDER);
-		SetWindowPos(ship,0,current_pos.x,current_pos.y,0,0,SWP_NOSIZE|SWP_NOZORDER|SWP_NOMOVE|SWP_FRAMECHANGED);
 	}
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 };
