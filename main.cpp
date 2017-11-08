@@ -27,12 +27,12 @@ protected:
 		RECT rect;
 		GetClientRect(*this, &rect);
 		int movement;
-		(GetKeyState(VK_CONTROL) < 0) ? movement = 10 : movement = 1;
+		movement = (GetKeyState(VK_CONTROL) < 0) ? 10 : 1;
 		switch (vk) {
-		case VK_LEFT: currpos.x -= movement; currpos.x = max(currpos.x , rect.left); break;
-		case VK_RIGHT: currpos.x += movement; currpos.x = min(currpos.x , rect.right - 20); break;
-		case VK_UP: currpos.y -= movement; currpos.y = max(currpos.y , rect.top); break;
-		case VK_DOWN: currpos.y += movement; currpos.y = min(currpos.y , rect.bottom - 20); break;
+		case VK_LEFT: currpos.x = max(currpos.x - movement , rect.left); break;
+		case VK_RIGHT:currpos.x = min(currpos.x + movement , rect.right - 20); break;
+		case VK_UP: currpos.y = max(currpos.y - movement , rect.top); break;
+		case VK_DOWN: currpos.y = min(currpos.y + movement , rect.bottom - 20); break;
 		}
 		SetWindowLong(st, GWL_STYLE, GetWindowLong(st, GWL_STYLE) | WS_BORDER);
 		SetWindowPos(st, 0, currpos.x, currpos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
