@@ -1,7 +1,5 @@
 #include "nwpwin.h"
 
-
-
 class Static : public Window {
 	std::string ClassName() override { return "STATIC"; }
 };
@@ -10,22 +8,19 @@ class MainWindow : public Window
 {
 	Static st;
 	POINT currpos;
-	DWORD BLKWNDSTY;
 protected:
 	void OnLButtonDown(POINT p) {
 		if (!st)
 			st.Create(*this, WS_CHILD|WS_VISIBLE|SS_CENTER, "X", 0, p.x, p.y, 20, 20);
 		SetWindowPos(st, 0, p.x, p.y, 0, 0, SWP_NOSIZE|SWP_NOZORDER);
 		currpos = p;
-	
 	}
 	void OnKeyUp(int vk) {
 		
 		if (st) {
-			SetWindowLong(st, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER);
+			SetWindowLong(st, GWL_STYLE, GetWindowLong(st, GWL_STYLE) & ~WS_BORDER);
 			SetWindowPos(st, 0, currpos.x, currpos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
 		}
-			
 	}
 	void OnKeyDown(int vk) {
 		
@@ -39,18 +34,13 @@ protected:
 		case VK_UP: currpos.y -= movement; currpos.y = max(currpos.y , rect.top); break;
 		case VK_DOWN: currpos.y += movement; currpos.y = min(currpos.y , rect.bottom - 20); break;
 		}
-		BLKWNDSTY = GetWindowLong(st, -20);
-		SetWindowLong(st, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER | WS_BORDER);
+		SetWindowLong(st, GWL_STYLE, GetWindowLong(st, GWL_STYLE) | WS_BORDER);
 		SetWindowPos(st, 0, currpos.x, currpos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
-		
 	} 
 	void OnDestroy(){
 		::PostQuitMessage(0);
 	}
 private:
-	/*bool style_engaged() {
-		if ()
-	}*/
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
