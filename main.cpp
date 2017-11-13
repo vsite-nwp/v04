@@ -13,38 +13,35 @@ class MainWindow : public Window
 {
 protected:
 	void OnLButtonDown(POINT p) {
-		GetClientRect(*this, &screen);
+		
 		shipPos = p;
 		if (!ship)
-			ship.Create(*this, style, "X", NULL, shipPos.x, shipPos.y, S_SIZE, S_SIZE);
-			SetWindowPos(ship, NULL, shipPos.x, shipPos.y, 0, 0, UFLAGS);
-			SetWindowLong(ship, GWL_STYLE, style);
+			ship.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, "X", NULL, shipPos.x, shipPos.y, S_SIZE, S_SIZE);
+			SetWindowPos(ship, NULL, shipPos.x, shipPos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+			SetWindowLong(ship, GWL_STYLE, GetWindowLong(ship, GWL_STYLE));
 	}
 	void OnKeyUp(int vk) {
 		if (ship){
-			SetWindowLong(ship, GWL_STYLE, style);
-			SetWindowPos(ship, NULL, 0, 0, 0, 0, UFLAGS | SWP_NOMOVE);
+			SetWindowLong(ship, GWL_STYLE, GetWindowLong(ship, GWL_STYLE)  & !WS_BORDER);
+			SetWindowPos(ship, NULL, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_NOMOVE);
 		}
 	}
 	void OnKeyDown(int vk) {
+		RECT screen;
+		GetClientRect(*this, &screen);
 		if (ship) {
 			int speed;
-			if (GetKeyState(VK_CONTROL) < 0) speed = FAST;
-			else speed = SLOW;
+			(GetKeyState(VK_CONTROL) < 0) ? speed = FAST : speed= SLOW;
 			switch (vk) {
 				case VK_UP:shipPos.y= max(0, shipPos.y - speed); break;
 				case VK_DOWN:shipPos.y = min(screen.bottom- S_SIZE, shipPos.y + speed); break;
 				case VK_LEFT:shipPos.x = max(0, shipPos.x - speed); break;
 				case VK_RIGHT:shipPos.x = min(screen.right - S_SIZE, shipPos.x + speed); break;
-				defalt: break;
+				defalt:
 			}
-			SetWindowLong(ship, GWL_STYLE, style | WS_BORDER);
-			SetWindowPos(ship, NULL, shipPos.x, shipPos.y, 0, 0, UFLAGS);
-			
-		
-		
+			SetWindowLong(ship, GWL_STYLE, GetWindowLong(ship, GWL_STYLE) | WS_BORDER);
+			SetWindowPos(ship, NULL, shipPos.x, shipPos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
 		}
-		
 	}
 	void OnDestroy(){
 		::PostQuitMessage(0);
@@ -52,9 +49,7 @@ protected:
 private:
 	Static ship;
 	POINT shipPos;
-	RECT screen;
-	DWORD style = WS_CHILD | WS_VISIBLE | SS_CENTER;
-	UINT UFLAGS = SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED;
+	
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
