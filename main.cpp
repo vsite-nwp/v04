@@ -22,7 +22,7 @@ protected:
 	}
 	void OnKeyUp(int vk) {
 		if (ship){
-			SetWindowLong(ship, GWL_STYLE, GetWindowLong(ship, GWL_STYLE)  & !WS_BORDER);
+			SetWindowLong(ship, GWL_STYLE, GetWindowLong(ship, GWL_STYLE) & ~WS_BORDER);
 			SetWindowPos(ship, NULL, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_NOMOVE);
 		}
 	}
@@ -31,13 +31,12 @@ protected:
 		GetClientRect(*this, &screen);
 		if (ship) {
 			int speed;
-			(GetKeyState(VK_CONTROL) < 0) ? speed = FAST : speed= SLOW;
+			GetKeyState(VK_CONTROL) < 0 ? speed = FAST : speed= SLOW;
 			switch (vk) {
-				case VK_UP:shipPos.y= max(0, shipPos.y - speed); break;
-				case VK_DOWN:shipPos.y = min(screen.bottom- S_SIZE, shipPos.y + speed); break;
-				case VK_LEFT:shipPos.x = max(0, shipPos.x - speed); break;
-				case VK_RIGHT:shipPos.x = min(screen.right - S_SIZE, shipPos.x + speed); break;
-				defalt:
+			case VK_UP:shipPos.y = max(0, shipPos.y - speed); break;
+			case VK_DOWN:shipPos.y = min(screen.bottom - S_SIZE, shipPos.y + speed); break;
+			case VK_LEFT:shipPos.x = max(0, shipPos.x - speed); break;
+			case VK_RIGHT:shipPos.x = min(screen.right - S_SIZE, shipPos.x + speed); break;
 			}
 			SetWindowLong(ship, GWL_STYLE, GetWindowLong(ship, GWL_STYLE) | WS_BORDER);
 			SetWindowPos(ship, NULL, shipPos.x, shipPos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
