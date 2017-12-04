@@ -10,6 +10,8 @@ public:
 class Window
 {
 	HWND hw;
+#define WM_LBUTTONDOWN                  0x0201
+	
 
 protected:
 	virtual std::string ClassName();
