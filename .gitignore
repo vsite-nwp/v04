@@ -5,3 +5,8 @@
 *.exe
 *.suo
 /Debug
+/Release
+*.user
+*.ipch
+*.db
+*.opendb

@@ -33,7 +33,7 @@ bool Window::Register(const std::string& name)
 std::string Window::GenerateClassName()
 {
 	static int cnt=1;
-	char s[16]; sprintf(s, "NWP%d", cnt++);
+	char s[16]; sprintf_s(s, "NWP%d", cnt++);
 	return std::string(s);
 }
 
