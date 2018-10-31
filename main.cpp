@@ -1,4 +1,4 @@
-﻿#include "nwpwin.h"
+#include "nwpwin.h"
 
 class Static : public Window {
 public:
