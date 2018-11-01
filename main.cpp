@@ -1,4 +1,7 @@
 #include "nwpwin.h"
+#include <algorithm>
+
+#define NOMINMAX 
 
 class Static : public Window {
 public:
@@ -11,8 +14,7 @@ class MainWindow : public Window
 protected:
 	void OnLButtonDown(POINT p) {
 		if(!ship)
-			ship.Create(*this,WS_CHILD  | WS_VISIBLE| SS_CENTER, "o", 0, p.x, p.y, 20, 20);
-		current_style = GetWindowLong(ship, GWL_STYLE);
+			ship.Create(*this, current_style, "o", 0, p.x, p.y, 20, 20);
 		SetWindowPos(ship,0,p.x,p.y,0,0, SWP_NOSIZE | SWP_NOZORDER);
 		curent_pos = p;
 			
@@ -22,10 +24,7 @@ protected:
 		SetWindowPos(ship, 0, curent_pos.x, curent_pos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
 	}
 	void OnKeyDown(int vk) {
-		int ctrl = GetAsyncKeyState(VK_CONTROL);
-
-		unsigned turbo = 4;
-		unsigned normal = 1;
+		const int step = GetAsyncKeyState(VK_CONTROL) ? 4 : 1;
 
 		RECT rect;
 		GetClientRect(*this, &rect);
@@ -33,20 +32,16 @@ protected:
 		switch (vk)
 		{
 		case VK_UP: 
-			curent_pos.y -= (ctrl ?  turbo : normal);
-			curent_pos.y < 0 ? curent_pos.y = 0 : 0;
+			curent_pos.y = max(curent_pos.y -= step, rect.top);
 			break;
 		case VK_DOWN: 
-			curent_pos.y += (ctrl ? turbo : normal);
-			curent_pos.y > rect.bottom-20 ? curent_pos.y = rect.bottom-20 : 0;
+			curent_pos.y = min(curent_pos.y += step, rect.bottom-20);
 			break;
 		case VK_LEFT: 
-			curent_pos.x -= (ctrl ? turbo : normal);
-			curent_pos.x < 0 ? curent_pos.x = 0 : 0;
+			curent_pos.x = max(curent_pos.x -= step, rect.left);
 			break;
 		case VK_RIGHT: 
-			curent_pos.x += (ctrl ? turbo : normal);
-			curent_pos.x > rect.right - 20 ? curent_pos.x = rect.right - 20 : 0;
+			curent_pos.x = min(curent_pos.x += step, rect.right - 20);
 			break;
 		default :
 			return;
@@ -62,7 +57,7 @@ protected:
 private:
 	Static ship;
 	POINT curent_pos;
-	DWORD current_style;
+	const DWORD current_style = WS_CHILD | WS_VISIBLE | SS_CENTER;
 
 };
 
