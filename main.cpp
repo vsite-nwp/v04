@@ -40,7 +40,7 @@ private:
 protected:
 	int MainWindow::OnCreate(CREATESTRUCT* pcs){
 		this->editXCordinate.Create(*this, editStyle, "x:", 001, 10, 10, 40, 25);
-		this->editXCordinate.Create(*this, editStyle, "y:", 002, 55, 10, 40, 25);
+		this->editYCordinate.Create(*this, editStyle, "y:", 002, 55, 10, 40, 25);
 		return 0;
 	}
 
