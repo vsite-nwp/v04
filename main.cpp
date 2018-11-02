@@ -1,4 +1,6 @@
-﻿#include "nwpwin.h"
+﻿#define NOMINMAX
+
+#include "nwpwin.h"
 #include <algorithm>
 #include <string>
 
@@ -17,36 +19,39 @@ class MainWindow : public Window
 private:
 	Static ship;
 	POINT position;
-	SIZE shipSize = {20,20};
+	const SIZE shipSize = {20,20};
 	Edit editXCordinate, editYCordinate;
 
-	DWORD editStyle = WS_CHILD | WS_VISIBLE | WS_BORDER | WS_DISABLED | WS_CLIPSIBLINGS;
+	enum { idShip = 1, idEditOne, idEditTwo };
 
 	void refreshText() {
-		SetDlgItemInt(*this, 001, this->position.x, true);
-		SetDlgItemInt(*this, 002, this->position.y, true);
+		SetDlgItemInt(*this, idEditOne, this->position.x, true);
+		SetDlgItemInt(*this, idEditTwo, this->position.y, true);
 	}
 
 	void initComponents() {
-		this->ship.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, "x", NULL, this->position.x, this->position.y, this->shipSize.cx, this->shipSize.cy);
+		this->ship.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER | WS_CLIPSIBLINGS, "x", idShip, this->position.x, this->position.y, this->shipSize.cx, this->shipSize.cy);
 		refreshText();
 	}
 
 	void setPosition() {
-		::SetWindowPos(ship, HWND_TOP, this->position.x, this->position.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE);
+		::SetWindowPos(ship, 0, this->position.x, this->position.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 		refreshText();
 	}
 
 protected:
-	int MainWindow::OnCreate(CREATESTRUCT* pcs){
-		this->editXCordinate.Create(*this, editStyle, "x:", 001, 10, 10, 40, 25);
-		this->editYCordinate.Create(*this, editStyle, "y:", 002, 55, 10, 40, 25);
+	int OnCreate(CREATESTRUCT* pcs){
+		const DWORD editStyle = WS_CHILD | WS_VISIBLE | WS_BORDER | WS_DISABLED | WS_CLIPSIBLINGS;
+
+		this->editXCordinate.Create(*this, editStyle, "x:", idEditOne, 10, 10, 40, 25);
+		this->editYCordinate.Create(*this, editStyle, "y:", idEditTwo, 55, 10, 40, 25);
 		return 0;
 	}
 
 	void OnLButtonDown(POINT p) {
 		this->position = p;	
-		ship == nullptr ? initComponents() : setPosition();
+		if (!ship) initComponents();
+		else setPosition();
 	}
 	void OnKeyUp(int vk) {
 		if (ship) {
@@ -63,16 +68,16 @@ protected:
 		
 		switch (vk) {
 		case VK_UP:
-			position.y = max(this->position.y - step, 0);
+			position.y = std::max(this->position.y - step, 0L);
 			break;
 		case VK_DOWN:
-			position.y = min(this->position.y + step, r.bottom - this->shipSize.cy);
+			position.y = std::min(this->position.y + step, r.bottom - this->shipSize.cy);
 			break;
 		case VK_LEFT:
-			position.x = max(this->position.x - step, 0);
+			position.x = std::max(this->position.x - step, 0L);
 			break;
 		case VK_RIGHT:
-			position.x = min(this->position.x + step, r.right - this->shipSize.cx);
+			position.x = std::min(this->position.x + step, r.right - this->shipSize.cx);
 			break;
 		default:
 			return;
