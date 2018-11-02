@@ -1,7 +1,6 @@
+#define NOMINMAX
 #include "nwpwin.h"
 #include <algorithm>
-
-#define NOMINMAX 
 
 class Static : public Window {
 public:
@@ -32,16 +31,16 @@ protected:
 		switch (vk)
 		{
 		case VK_UP: 
-			curent_pos.y = max(curent_pos.y -= step, rect.top);
+			curent_pos.y = std::max(curent_pos.y - step, rect.top);
 			break;
 		case VK_DOWN: 
-			curent_pos.y = min(curent_pos.y += step, rect.bottom-20);
+			curent_pos.y = std::min(curent_pos.y + step, rect.bottom-20);
 			break;
 		case VK_LEFT: 
-			curent_pos.x = max(curent_pos.x -= step, rect.left);
+			curent_pos.x = std::max(curent_pos.x - step, rect.left);
 			break;
 		case VK_RIGHT: 
-			curent_pos.x = min(curent_pos.x += step, rect.right - 20);
+			curent_pos.x = std::min(curent_pos.x + step, rect.right - 20);
 			break;
 		default :
 			return;
