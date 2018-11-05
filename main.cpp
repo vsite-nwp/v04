@@ -1,6 +1,5 @@
 #include "nwpwin.h"
 
-// TODO: prepare class (Static) for a ship
 class Static : public Window
 {
 public:
@@ -22,7 +21,7 @@ protected:
 	void OnKeyUp(int vk) {
 		if (ship) {
 			DWORD current_style = ::GetWindowLong(ship, GWL_STYLE);
-			::SetWindowLong(ship, GWL_STYLE, current_style | WS_BORDER);
+			::SetWindowLong(ship, GWL_STYLE,current_style & ~WS_BORDER );
 			::SetWindowPos(ship, 0, current_position.x, current_position.y, 0, 0, SWP_NOSIZE | SWP_FRAMECHANGED| SWP_NOZORDER);
 		}
 	}
@@ -31,12 +30,8 @@ protected:
 		bool ctrl = ::GetAsyncKeyState(VK_CONTROL);
 		RECT rc;
 		::GetClientRect(*this, &rc);
-		int brzina;
-		if (ctrl)
-			brzina = 10;
-		else
-			brzina = 2;
-
+		int brzina = ctrl==true?10:2 ;
+		
 		switch (vk)
 		{
 
