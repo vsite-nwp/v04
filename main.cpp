@@ -14,7 +14,7 @@ protected:
 
 		if (!ship)
 		{
-			ship.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, "X", 1, current_position.x, current_position.y, 20, 20);
+			ship.Create(*this, SHIP_STYLE, "X", 1, current_position.x, current_position.y, SHIP_WIDTH, SHIP_HEIGHT);
 		}
 		else {
 			::SetWindowPos(ship, 0, current_position.x, current_position.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
@@ -22,8 +22,8 @@ protected:
 	}
 	void OnKeyUp(int vk) {
 		if (ship) {
-			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER);
-			SetWindowPos(ship, NULL, current_position.x, current_position.y, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
+			SetWindowLong(ship, GWL_STYLE, SHIP_STYLE);
+			SetWindowPos(ship, NULL, NULL, NULL, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
 		}
 	}
 	void OnKeyDown(int vk) {
@@ -39,31 +39,19 @@ protected:
 
 			switch (vk) {
 			case VK_UP:
-				if (current_position.y - speed >= window_rect.top)
-				{
-					current_position.y -= speed;
-				}
+				current_position.y = max(current_position.y - speed, 0);
 				break;
-			case VK_DOWN: 
-				if (current_position.y + ship_rect.bottom + speed <= window_rect.bottom)
-				{
-					current_position.y += speed;
-				}
+			case VK_DOWN:
+				current_position.y = min(current_position.y + speed, window_rect.bottom - SHIP_HEIGHT);
 				break;
-			case VK_LEFT: 
-				if (current_position.x - speed >= window_rect.left)
-				{
-					current_position.x -= speed;
-				}
+			case VK_LEFT:
+				current_position.x = max(current_position.x - speed, 0);
 				break;
-			case VK_RIGHT: 
-				if (current_position.x + ship_rect.right + speed <= window_rect.right)
-				{
-					current_position.x += speed;
-				}
+			case VK_RIGHT:
+				current_position.x = min(current_position.x + speed, window_rect.right - SHIP_HEIGHT);
 				break;
 			}
-			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER | WS_BORDER);
+			SetWindowLong(ship, GWL_STYLE, SHIP_STYLE | WS_BORDER);
 			SetWindowPos(ship, 0, current_position.x, current_position.y, 0, 0, SWP_NOSIZE | SWP_FRAMECHANGED | SWP_NOZORDER);
 		}
 	}
@@ -72,6 +60,9 @@ protected:
 	}
 private:
 	Static ship;
+	const int SHIP_WIDTH = 20;
+	const int SHIP_HEIGHT = 20;
+	const long SHIP_STYLE = WS_CHILD | WS_VISIBLE | SS_CENTER;
 	POINT current_position;
 };
 
