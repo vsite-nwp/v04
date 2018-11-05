@@ -1,5 +1,6 @@
+#define NOMINMAX
 #include "nwpwin.h"
-
+#include <algorithm>
 
 class Static : public Window 
 {
@@ -14,15 +15,10 @@ class MainWindow : public Window
 protected:
 	void OnLButtonDown(POINT p) {
 		if (!ship) 
-		{
-			ship.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, "X", 0, p.x, p.y, ship_size.cx, ship_size.cy);
-			style = GetWindowLong(ship, GWL_STYLE);
-		}
+			ship.Create(*this, style, "X", 0, p.x, p.y, ship_size.cx, ship_size.cy);
 		else 
-		{
 			SetWindowPos(ship, 0, p.x, p.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);			
-		}
-		position = {p.x,p.y};
+		position = p;
 	}
 	void OnKeyUp(int vk) {
 		SetWindowLong(ship, GWL_STYLE, style);
@@ -35,19 +31,24 @@ protected:
 		RECT rect_this;
 		GetWindowRect(*this, &rect_this);
 
+		POINT upDown = { rect_this.top, rect_this.bottom };
+		ScreenToClient(*this, &upDown);
+		POINT leftRight = { rect_this.left, rect_this.right };
+		ScreenToClient(*this, &leftRight);
+
 		switch (vk) 
 		{			
 		case VK_UP:
-			position.y = max(rect_this.top, position.y - speed);
+			position.y = std::max(upDown.x, position.y - speed);
 			break;
 		case VK_DOWN:
-			position.y = min(rect_this.bottom - 40, position.y + speed);
+			position.y = std::min(upDown.y -15, position.y + speed);
 			break;
 		case VK_LEFT:
-			position.x = max(rect_this.left, position.x - speed);
+			position.x = std::max(leftRight.x, position.x - speed);
 			break;
 		case VK_RIGHT:
-			position.x = min(rect_this.right - 40, position.x + speed);
+			position.x = std::min(leftRight.y, position.x + speed);
 			break;
 		default:
 			return;
@@ -62,7 +63,7 @@ protected:
 private:
 	Static ship;
 	POINT position;
-	DWORD style;
+	const DWORD style = WS_CHILD | WS_VISIBLE | SS_CENTER;
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
