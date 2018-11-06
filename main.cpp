@@ -1,5 +1,5 @@
 #include "nwpwin.h"
-
+using namespace std; 
 class Static : public Window
 {
 public:
@@ -10,12 +10,11 @@ class MainWindow : public Window
 {
 protected:
 	void OnLButtonDown(POINT p) {
-			current_position = p;
-			if (!ship) {
-				ship.Create(*this, WS_VISIBLE | WS_CHILD | SS_CENTER, "X",1,p.x,p.y,20,20);
-			}
-			else SetWindowPos(ship, HWND_TOP, p.x, p.y, 20, 20, NULL);
-		
+		current_position = p;
+		if (!ship) {
+			ship.Create(*this, WS_VISIBLE | WS_CHILD | SS_CENTER, "X",1,p.x,p.y,size, size);
+		}
+		else SetWindowPos(ship, 0, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 	}
 	void OnKeyUp(int vk) {
 		if (ship) {
@@ -34,13 +33,13 @@ protected:
 				current_position.y = max(current_position.y - speed, 0);
 				break;
 			case VK_DOWN:
-				current_position.y = min(current_position.y + speed, rc.bottom - 20);
+				current_position.y = min(current_position.y + speed, rc.bottom - size);
 				break;
 			case VK_LEFT:
 				current_position.x = max(current_position.x - speed, 0);
 				break;
 			case VK_RIGHT:
-				current_position.x = min(current_position.x + speed, rc.right - 20);
+				current_position.x = min(current_position.x + speed, rc.right - size);
 				break;
 			}
 			SetWindowLong(ship, GWL_STYLE, GetWindowLong(ship, GWL_STYLE) | WS_BORDER);
@@ -53,6 +52,7 @@ protected:
 private:
 	Static ship;
 	POINT current_position;
+	int size = 20;
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
