@@ -12,7 +12,7 @@ protected:
 	void OnLButtonDown(POINT p) {
 		cur_pos = p;
 		if (!ship)
-			ship.Create(*this, STYLE_1, "X", 0, p.x, p.y, 30, 30);
+			ship.Create(*this, STYLE_1, "X", 0, p.x, p.y, size, size);
 		else
 		{
 			::SetWindowPos(ship, 0, p.x, p.y, 0, 0, STYLE);
@@ -20,7 +20,6 @@ protected:
 	}
 	void OnKeyUp(int vk) {
 		if (ship) {
-			DWORD current_style = ::GetWindowLong(ship, GWL_STYLE);
 			::SetWindowLong(ship, GWL_STYLE, STYLE_1|WS_BORDER);
 			::SetWindowPos(ship, 0, cur_pos.x, cur_pos.y, 0, 0, STYLE);
 		}
@@ -35,13 +34,13 @@ protected:
 			cur_pos.y = max(cur_pos.y - speed, rc.top);
 			break;
 		case VK_DOWN:
-			cur_pos.y = min(cur_pos.y + speed, rc.bottom - 30);
+			cur_pos.y = min(cur_pos.y + speed, rc.bottom - size);
 			break;
 		case VK_LEFT:
 			cur_pos.x = max(cur_pos.x - speed, rc.left);
 			break;
 		case VK_RIGHT:
-			cur_pos.x = min(cur_pos.x + speed, rc.right - 30);
+			cur_pos.x = min(cur_pos.x + speed, rc.right - size);
 			break;
 		default: return;
 		}
@@ -56,6 +55,7 @@ private:
 	POINT cur_pos;
 	const long STYLE_1 = WS_CHILD | WS_VISIBLE | WS_BORDER | SS_CENTER;
 	const long STYLE = SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED;
+	const int size = 30;
 	
 };
 
