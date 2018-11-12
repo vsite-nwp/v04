@@ -8,21 +8,22 @@ protected:
 class MainWindow : public Window
 {
 private:
+	const int style = WS_CHILD | WS_VISIBLE | SS_CENTER | BS_CENTER;
 	Static ship;
 	POINT current_position;
 protected:
 	void OnLButtonDown(POINT p) {
 		current_position = p;
 		if (!ship)
-			ship.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER | BS_CENTER, "X", 0, p.x, p.y, 30, 30);
+			ship.Create(*this, style, "X", 0, p.x, p.y, 30, 30);
 		
 		SetWindowPos(ship, NULL, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 		current_position = p;
 	}
 	void OnKeyUp(int vk) {
 		if (ship) {
-			SetWindowLong(ship, GWL_STYLE, WS_VISIBLE | WS_CHILD);
-			SetWindowPos(ship, NULL, current_position.x, current_position.y, 0, 0, SWP_NOSIZE | SWP_FRAMECHANGED | SWP_NOZORDER | SWP_NOMOVE);
+			SetWindowLong(ship, GWL_STYLE, style);
+			SetWindowPos(ship, NULL, NULL, NULL, 0, 0, SWP_NOSIZE | SWP_FRAMECHANGED | SWP_NOZORDER | SWP_NOMOVE);
 		}
 	}
 	void OnKeyDown(int vk) {
