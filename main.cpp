@@ -16,7 +16,7 @@ protected:
 		else {
 			::SetWindowPos(ship, 0, current_position.x, current_position.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 		}
-	}
+	}  
 	void OnKeyUp(int vk) {
 		if (ship) {
 			SetWindowLong(ship, GWL_STYLE, SHIP_STYLE);
