@@ -28,10 +28,7 @@ protected:
 			int momentum = GetKeyState(VK_CONTROL) < 0 ? 20 : 5;
 			RECT window_rect;
 
-			GetClientRect(*this, &window_rect);
-			RECT ship_rect;
-
-			GetClientRect(ship, &ship_rect);
+		GetClientRect(*this, &window_rect);
 			switch (vk) {
 			case VK_UP:
 				current_position.y = max(current_position.y - momentum, 0);
