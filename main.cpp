@@ -14,7 +14,7 @@ protected:
 			ship.Create(*this, SHIP_STYLE, "X", 1, current_position.x, current_position.y, SHIP_WIDTH, SHIP_HEIGHT);
 		}
 		else {
-			::SetWindowPos(ship, 0, current_position.x, current_position.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+			::SetWindowPos(ship, 0, current_position.x, current_position.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER); 
 		}
 	}  
 	void OnKeyUp(int vk) {
