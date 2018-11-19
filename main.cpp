@@ -8,7 +8,7 @@ protected:
 class MainWindow : public Window
 {
 private:
-	const int style = WS_CHILD | WS_VISIBLE | SS_CENTER | BS_CENTER;
+	const int style = WS_CHILD | WS_VISIBLE | SS_CENTER;
 	Static ship;
 	POINT current_position;
 protected:
@@ -43,7 +43,7 @@ protected:
 				current_position.x = min(window_rect.right - 30, current_position.x + steps); break;
 			default: return;
 		}
-		SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
+		SetWindowLong(ship, GWL_STYLE, style | WS_BORDER);
 		SetWindowPos(ship, 0, current_position.x, current_position.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE | SWP_FRAMECHANGED);
 	}
 	void OnDestroy() {
