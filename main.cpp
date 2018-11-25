@@ -12,16 +12,16 @@ protected:
 	void OnLButtonDown(POINT p) 
 	{
 		if (!ship) 
-			ship.Create(*this,STIL1, "X", 0, p.x, p.y, shipSize.cx, shipSize.cy);
+			ship.Create(*this,STIL, "X", 0, p.x, p.y, shipSize.cx, shipSize.cy);
 			
-		::SetWindowPos(ship, 0,p.x,p.y,0,0,STIL2);
+		::SetWindowPos(ship, 0,p.x,p.y,0,0,SWP_NOSIZE | SWP_NOZORDER);
 		current_position = p;
 	}
 	void OnKeyUp(int vk) {
 
 		if (ship) {
-			::SetWindowLong(ship, GWL_STYLE, STIL1);
-			::SetWindowPos(ship, 0, current_position.x, current_position.y, 0, 0,STIL2);
+			::SetWindowPos(ship, 0, current_position.x, current_position.y, 0, 0, FL| SWP_NOMOVE);
+			SetWindowLong(ship, GWL_STYLE, GetWindowLong(ship, GWL_STYLE) & ~WS_BORDER);
 			}
 		}
 	void OnKeyDown(int vk) {
@@ -48,8 +48,9 @@ protected:
 				return;
 			}
 		
-		::SetWindowLong(ship, GWL_STYLE,STIL1);
-		::SetWindowPos(ship, 0, current_position.x, current_position.y, 0, 0, STIL2);
+			SetWindowLong(ship,GWL_STYLE, STIL | WS_BORDER);
+			::SetWindowPos(ship, 0, current_position.x, current_position.y, 0, 0,FL );
+
 	}
 	void OnDestroy(){
 		::PostQuitMessage(0);
@@ -57,8 +58,8 @@ protected:
 private:
 	Static ship;
 	POINT current_position;
-	const long STIL1 = WS_CHILD | WS_VISIBLE | WS_BORDER | SS_CENTER;
-	const long STIL2 = SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED;
+	const long STIL = WS_CHILD | WS_VISIBLE |  SS_CENTER;
+	const long FL = SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED;
  };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
