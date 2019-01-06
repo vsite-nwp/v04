@@ -29,26 +29,21 @@ protected:
 		int speed = ctrl ? 5 : 1;
 
 		RECT rect_this;
-		GetWindowRect(*this, &rect_this);
-
-		POINT upDown = { rect_this.top, rect_this.bottom };
-		ScreenToClient(*this, &upDown);
-		POINT leftRight = { rect_this.left, rect_this.right };
-		ScreenToClient(*this, &leftRight);
-
+		GetClientRect(*this, &rect_this);
+		
 		switch (vk) 
 		{			
 		case VK_UP:
-			position.y = std::max(upDown.x, position.y - speed);
+			position.y = std::max(rect_this.top, position.y - speed);
 			break;
 		case VK_DOWN:
-			position.y = std::min(upDown.y -15, position.y + speed);
+			position.y = std::min(rect_this.bottom - 20, position.y + speed);
 			break;
 		case VK_LEFT:
-			position.x = std::max(leftRight.x, position.x - speed);
+			position.x = std::max(rect_this.left, position.x - speed);
 			break;
 		case VK_RIGHT:
-			position.x = std::min(leftRight.y, position.x + speed);
+			position.x = std::min(rect_this.right - 30, position.x + speed);
 			break;
 		default:
 			return;
