@@ -1,12 +1,4 @@
-*.obj
-*.pch
-*.dll
-*.lib
-*.exe
-*.suo
 /Debug
 /Release
+/.vs
 *.user
-*.ipch
-*.db
-*.opendb
