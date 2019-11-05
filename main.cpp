@@ -1,6 +1,8 @@
 #include "nwpwin.h"
 
 #define SIZEOFSHIP 20
+#define SLOW 5
+#define FAST 15
 
 class Static : public Window {
 public:
@@ -23,7 +25,42 @@ protected:
 		}
 	}
 	void OnKeyDown(int vk) {
-		// TODO: if ship exists, move it depending on key and mark as "moving"
+		if (ship) {
+			switch (vk) {
+			case VK_LEFT:
+				if (GetKeyState(VK_CONTROL) < 0)
+					point.x -= FAST;
+				else
+					point.x -= SLOW;
+				SetWindowPos(ship, NULL, point.x, point.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+				break;
+			case VK_RIGHT:
+				if (GetKeyState(VK_CONTROL) < 0)
+					point.x += FAST;
+				else
+					point.x += SLOW;
+				SetWindowPos(ship, NULL, point.x, point.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+				break;
+			case VK_UP:
+				if (GetKeyState(VK_CONTROL) < 0)
+					point.y -= FAST;
+				else
+					point.y -= SLOW;
+				SetWindowPos(ship, 0, point.x, point.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+				break;
+			case VK_DOWN:
+				if (GetKeyState(VK_CONTROL) < 0)
+					point.y += FAST;
+				else
+					point.y += SLOW;
+				SetWindowPos(ship, NULL, point.x, point.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+				break;
+			default:
+				return;
+			}
+			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
+			SetWindowPos(ship, 0, point.x, point.y, 0, 0, SWP_NOSIZE | SWP_FRAMECHANGED | SWP_NOZORDER);
+		}
 	}
 	void OnDestroy(){
 		::PostQuitMessage(0);
