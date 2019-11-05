@@ -17,7 +17,10 @@ protected:
 		point = p;
 	}
 	void OnKeyUp(int vk) {
-		// TODO: mark ship (if exists) as "not moving"
+		if (ship) {
+			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE);
+			SetWindowPos(ship, NULL, point.x, point.y, 0, 0, SWP_NOZORDER | SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE);
+		}
 	}
 	void OnKeyDown(int vk) {
 		// TODO: if ship exists, move it depending on key and mark as "moving"
