@@ -2,7 +2,7 @@
 
 #define SIZEOFSHIP 20
 #define SLOW 5
-#define FAST 15
+#define FAST 20
 
 class Static : public Window {
 public:
@@ -25,6 +25,8 @@ protected:
 		}
 	}
 	void OnKeyDown(int vk) {
+		RECT frame;
+		GetClientRect(*this, &frame);
 		if (ship) {
 			switch (vk) {
 			case VK_LEFT:
@@ -32,6 +34,8 @@ protected:
 					point.x -= FAST;
 				else
 					point.x -= SLOW;
+				if (point.x < frame.left)
+					point.x = frame.left;
 				SetWindowPos(ship, NULL, point.x, point.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 				break;
 			case VK_RIGHT:
@@ -39,6 +43,8 @@ protected:
 					point.x += FAST;
 				else
 					point.x += SLOW;
+				if (point.x > frame.right - SIZEOFSHIP)
+					point.x = frame.right - SIZEOFSHIP;
 				SetWindowPos(ship, NULL, point.x, point.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 				break;
 			case VK_UP:
@@ -46,6 +52,8 @@ protected:
 					point.y -= FAST;
 				else
 					point.y -= SLOW;
+				if (point.y < frame.top)
+					point.y = frame.top;
 				SetWindowPos(ship, 0, point.x, point.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 				break;
 			case VK_DOWN:
@@ -53,6 +61,8 @@ protected:
 					point.y += FAST;
 				else
 					point.y += SLOW;
+				if (point.y > frame.bottom - SIZEOFSHIP)
+					point.y = frame.bottom - SIZEOFSHIP;
 				SetWindowPos(ship, NULL, point.x, point.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 				break;
 			default:
