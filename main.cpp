@@ -13,7 +13,7 @@ protected:
 	void OnLButtonDown(POINT p) {
 		if (!ship)
 			ship.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, "X", NULL, p.x, p.y, SHIP_SIZE, SHIP_SIZE);
-		SetWindowPos(ship, 0, p.x, p.y, 0, 0, SS_CENTER);
+		SetWindowPos(ship, 0, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 		point = p;
 	}
 	void OnKeyUp(int vk) {
@@ -25,8 +25,7 @@ protected:
 	void OnKeyDown(int vk) {
 		RECT rc;
 		GetClientRect(*this, &rc);
-		bool ctrl = GetAsyncKeyState(VK_CONTROL);
-		int vel = ctrl ? 15 : 5;
+		int vel = GetAsyncKeyState(VK_CONTROL) ? 15 : 5;
 
 		switch (vk)
 		{
@@ -41,8 +40,11 @@ protected:
 				break;
 			case VK_RIGHT:
 				point.x = min(point.x + vel, rc.right - SHIP_SIZE);
+				break;
+			default:
+				return;
 		}
-		SetWindowLong(ship, GWL_STYLE, GetWindowLong(ship, GWL_STYLE) | WS_BORDER);
+		SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
 		SetWindowPos(ship, 0, point.x, point.y, 0, 0, SWP_NOSIZE | SWP_FRAMECHANGED | SWP_NOZORDER);
 
 	}
@@ -52,7 +54,6 @@ protected:
 private:
 	POINT point;
 	Static ship;
-	void Move(POINT p) { SetWindowPos(ship, 0, p.x, p.y, NULL, NULL, NULL); }
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
