@@ -1,6 +1,6 @@
 #include "nwpwin.h"
 
-#define SHIP_SIZE 20
+#define SHIP_SIZE 40
 
 class Static : public Window {
 public:
@@ -12,13 +12,13 @@ class MainWindow : public Window
 protected:
 	void OnLButtonDown(POINT p) {
 		if (!ship)
-			ship.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, "X", NULL, p.x, p.y, SHIP_SIZE, SHIP_SIZE);
+			ship.Create(*this, style, "X", NULL, p.x, p.y, SHIP_SIZE, SHIP_SIZE);
 		SetWindowPos(ship, 0, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 		point = p;
 	}
 	void OnKeyUp(int vk) {
 		if (ship) {
-			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE );
+			SetWindowLong(ship, GWL_STYLE, style );
 			SetWindowPos(ship, NULL, NULL, NULL, 0, 0, SWP_NOSIZE | SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOZORDER);
 		}
 	}
@@ -47,7 +47,7 @@ protected:
 				return;
 			}
 		}
-		SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
+		SetWindowLong(ship, GWL_STYLE, style | WS_BORDER);
 		SetWindowPos(ship, 0, point.x, point.y, 0, 0, SWP_NOSIZE | SWP_FRAMECHANGED | SWP_NOZORDER);
 
 	}
@@ -57,6 +57,7 @@ protected:
 private:
 	POINT point;
 	Static ship;
+	const int style = WS_CHILD | WS_VISIBLE | SS_CENTER;
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
