@@ -18,17 +18,19 @@ protected:
 	}
 	void OnKeyUp(int vk) {
 		if (ship) {
-			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE);
-			SetWindowPos(ship, NULL, point.x, point.y, 0, 0, SWP_NOSIZE | SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOZORDER);
+			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE );
+			SetWindowPos(ship, NULL, NULL, NULL, 0, 0, SWP_NOSIZE | SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOZORDER);
 		}
 	}
 	void OnKeyDown(int vk) {
-		RECT rc;
-		GetClientRect(*this, &rc);
-		int vel = GetAsyncKeyState(VK_CONTROL) ? 15 : 5;
-
-		switch (vk)
+		if (ship)
 		{
+			RECT rc;
+			GetClientRect(*this, &rc);
+			int vel = GetAsyncKeyState(VK_CONTROL) ? 15 : 5;
+
+			switch (vk)
+			{
 			case VK_UP:
 				point.y = max(point.y - vel, 0);
 				break;
@@ -43,6 +45,7 @@ protected:
 				break;
 			default:
 				return;
+			}
 		}
 		SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
 		SetWindowPos(ship, 0, point.x, point.y, 0, 0, SWP_NOSIZE | SWP_FRAMECHANGED | SWP_NOZORDER);
