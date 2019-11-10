@@ -1,6 +1,9 @@
 #include "nwpwin.h"
 
-// TODO: prepare class (Static) for a ship
+class Static : public Window {
+public:
+	std::string ClassName() override { return "STATIC"; }
+};
 
 class MainWindow : public Window
 {
