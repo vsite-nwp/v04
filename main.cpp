@@ -9,7 +9,8 @@ class MainWindow : public Window
 {
 protected:
 	void OnLButtonDown(POINT p) {
-		// TODO: create ship if it doesn't exist yet
+		if (!ship)
+			ship.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, "X", 0, p.x, p.y, 16, 16);
 		// TODO: change current location
 	}
 	void OnKeyUp(int vk) {
@@ -22,6 +23,7 @@ protected:
 		::PostQuitMessage(0);
 	}
 private:
+	Static ship;
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
