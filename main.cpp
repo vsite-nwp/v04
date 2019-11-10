@@ -24,20 +24,23 @@ protected:
 	void OnKeyDown(int vk) {
 		RECT border;
 		GetClientRect(*this, &border);
+		int speed = 1;
+		if (GetKeyState(VK_CONTROL))
+			speed *= 5;
 		if (ship) {
 			switch (vk)
 			{
 			case VK_UP:
-				curPos.y = max(curPos.y - 1, border.top);
+				curPos.y = max(curPos.y - speed, border.top);
 				break;
 			case VK_DOWN:
-				curPos.y = min(curPos.y + 1, border.bottom - 16);
+				curPos.y = min(curPos.y + speed, border.bottom - 16);
 				break;
 			case VK_LEFT:
-				curPos.x = max(curPos.x - 1, border.left);
+				curPos.x = max(curPos.x - speed, border.left);
 				break;
 			case VK_RIGHT:
-				curPos.x = min(curPos.x + 1, border.right - 16);
+				curPos.x = min(curPos.x + speed, border.right - 16);
 				break;
 			default:
 				return;
