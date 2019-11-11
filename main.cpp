@@ -53,6 +53,7 @@ protected:
 		teleport();
 	}
 	void OnKeyDown(int vk) {
+		GetClientRect(*this, &size);
 		if (GetKeyState(VK_CONTROL)<0) {
 			step = 12;
 		}
@@ -60,7 +61,6 @@ protected:
 		{
 			step = 4;
 		}
-		movestatus = true;
 		switch (vk)
 		{
 		case VK_LEFT:
@@ -70,6 +70,10 @@ protected:
 			{
 				po.x += step;
 				movestatus = false;
+			}
+			else 
+			{
+				movestatus = true;
 			}
 			break;
 		}
@@ -81,6 +85,10 @@ protected:
 				po.x -= step;
 				movestatus = false;
 			}
+			else
+			{
+				movestatus = true;
+			}
 			break;
 		}
 		case VK_DOWN:
@@ -91,6 +99,10 @@ protected:
 				po.y -= step;
 				movestatus = false;
 			}
+			else
+			{
+				movestatus = true;
+			}
 			break;
 		}
 		case VK_UP:
@@ -100,6 +112,10 @@ protected:
 			{
 				po.y += step;
 				movestatus = false;
+			}
+			else
+			{
+				movestatus = true;
 			}
 			break;
 		}
