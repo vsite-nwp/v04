@@ -26,30 +26,7 @@ protected:
 
 		}
 		
-		if (ship) {
-			int Speed = 5;
-			if (GetKeyState(VK_CONTROL) < 0)
-				Speed += 30;
-			RECT ship_r;
-			GetClientRect(*this, &ship_r);
-			switch (vk) {
-			case VK_UP:
-				position.y = max(ship_r.top, position.y - Speed);
-				break;
-			case VK_DOWN:
-				position.y = min(ship_r.bottom - 20, position.y + Speed);
-				break;
-			case VK_LEFT:
-				position.x = max(ship_r.left, position.x - Speed);
-				break;
-			case VK_RIGHT:
-				position.x = min(ship_r.right - 20, position.x + Speed);
-				break;
-			default: return;
-			}
-			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
-			SetWindowPos(ship, 0, position.x, position.y, 0, 0, SWP_NOSIZE | SWP_FRAMECHANGED | SWP_NOZORDER);
-		}
+		
 	}
 	void OnKeyDown(int vk) {
 		
