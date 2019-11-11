@@ -1,24 +1,60 @@
 #include "nwpwin.h"
 
-// TODO: prepare class (Static) for a ship
+class Static : public Window {
+public:
+	std::string ClassName() override { return "STATIC"; }
+};
 
 class MainWindow : public Window
 {
 protected:
 	void OnLButtonDown(POINT p) {
-		// TODO: create ship if it doesn't exist yet
-		// TODO: change current location
+				if (!ship)
+			ship.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, "X", 0, p.x, p.y, 16, 16);
+		else
+			SetWindowPos(ship, NULL, p.x, p.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
+		curPos = p;
 	}
 	void OnKeyUp(int vk) {
-		// TODO: mark ship (if exists) as "not moving"
+				if (ship) {
+			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER);
+			SetWindowPos(ship, NULL, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_NOMOVE);
+		}
 	}
 	void OnKeyDown(int vk) {
-		// TODO: if ship exists, move it depending on key and mark as "moving"
+		RECT border;
+		GetClientRect(*this, &border);
+		int speed = 1;
+		if (GetKeyState(VK_CONTROL))
+			speed *= 5;
+		if (ship) {
+			switch (vk)
+			{
+			case VK_UP:
+				curPos.y = max(curPos.y - speed, border.top);
+				break;
+			case VK_DOWN:
+				curPos.y = min(curPos.y + speed, border.bottom - 16);
+				break;
+			case VK_LEFT:
+				curPos.x = max(curPos.x - speed, border.left);
+				break;
+			case VK_RIGHT:
+				curPos.x = min(curPos.x + speed, border.right - 16);
+				break;
+			default:
+				return;
+			}
+			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER | WS_BORDER);
+			SetWindowPos(ship, NULL, curPos.x, curPos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+		}
 	}
-	void OnDestroy(){
+	void OnDestroy() {
 		::PostQuitMessage(0);
 	}
 private:
+	Static ship;
+	POINT curPos;
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
