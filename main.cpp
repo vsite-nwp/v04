@@ -1,9 +1,18 @@
 #include "nwpwin.h"
 
 // TODO: prepare class (Static) for a ship
+class Static : public Window {
+public:
+	std::string ClassName() override { return "STATIC"; }
+};
 
 class MainWindow : public Window
 {
+private:
+	Static ship;
+	POINT pos = {0, 0};
+	const DWORD style = WS_CHILD | WS_VISIBLE | SS_CENTER;
+
 protected:
 	void OnLButtonDown(POINT p) {
 		// TODO: create ship if it doesn't exist yet
@@ -18,7 +27,6 @@ protected:
 	void OnDestroy(){
 		::PostQuitMessage(0);
 	}
-private:
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
