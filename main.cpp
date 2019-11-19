@@ -1,6 +1,5 @@
 #include "nwpwin.h"
 
-// TODO: prepare class (Static) for a ship
 class Static : public Window {
 public:
 	std::string ClassName() override { return "STATIC"; }
@@ -15,20 +14,41 @@ private:
 
 protected:
 	void OnLButtonDown(POINT p) {
-		// TODO: create ship if it doesn't exist yet
-		// TODO: change current location
 		if (!ship)
 			ship.Create(*this, style, "X", 0, p.x, p.y, 20, 20);
 		SetWindowPos(ship, 0, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 		pos = p;
 	}
 	void OnKeyUp(int vk) {
-		// TODO: mark ship (if exists) as "not moving"
 		::SetWindowLong(ship, GWL_STYLE, style);
 		SetWindowPos(ship, 0, pos.x, pos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
 	}
 	void OnKeyDown(int vk) {
-		// TODO: if ship exists, move it depending on key and mark as "moving"
+		const int speed = GetAsyncKeyState(VK_CONTROL) ? 9 : 3;
+
+		RECT rect;
+		GetClientRect(*this, &rect);
+
+		switch (vk)
+		{
+		case VK_UP:
+			pos.y = max(pos.y - speed, rect.top);
+			break;
+		case VK_DOWN:
+			pos.y = min(pos.y + speed, rect.bottom - 20);
+			break;
+		case VK_LEFT:
+			pos.x = max(pos.x - speed, rect.left);
+			break;
+		case VK_RIGHT:
+			pos.x = min(pos.x + speed, rect.right - 20);
+			break;
+		default:
+			return;
+		}
+
+		::SetWindowLong(ship, GWL_STYLE, style | WS_BORDER);
+		SetWindowPos(ship, 0, pos.x, pos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 	}
 	void OnDestroy(){
 		::PostQuitMessage(0);
