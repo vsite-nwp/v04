@@ -17,6 +17,10 @@ protected:
 	void OnLButtonDown(POINT p) {
 		// TODO: create ship if it doesn't exist yet
 		// TODO: change current location
+		if (!ship)
+			ship.Create(*this, style, "X", 0, p.x, p.y, 20, 20);
+		SetWindowPos(ship, 0, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+		pos = p;
 	}
 	void OnKeyUp(int vk) {
 		// TODO: mark ship (if exists) as "not moving"
