@@ -24,6 +24,8 @@ protected:
 	}
 	void OnKeyUp(int vk) {
 		// TODO: mark ship (if exists) as "not moving"
+		::SetWindowLong(ship, GWL_STYLE, style);
+		SetWindowPos(ship, 0, pos.x, pos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
 	}
 	void OnKeyDown(int vk) {
 		// TODO: if ship exists, move it depending on key and mark as "moving"
