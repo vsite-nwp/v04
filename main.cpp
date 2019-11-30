@@ -15,14 +15,23 @@ class MainWindow : public Window
 	int step = 3;
 	bool movestatus;
 	void setStatus(bool isMoving) {
-		if (isMoving)
-		{
-			SetWindowLong(shippy, GWL_STYLE, GetWindowLong(shippy, GWL_STYLE) | WS_BORDER);
+		if (GetKeyState(VK_CONTROL) < 0) {
+			step = 12;
 		}
 		else
 		{
-			SetWindowLong(shippy, GWL_STYLE, GetWindowLong(shippy, GWL_STYLE) & ~WS_BORDER);
+			step = 4;
 		}
+		LONG gwl = GetWindowLong(shippy, GWL_STYLE);
+		if (isMoving)
+		{
+			gwl = gwl | WS_BORDER;
+		}
+		else
+		{
+			gwl = gwl & ~WS_BORDER;
+		}
+		SetWindowLong(shippy, GWL_STYLE,gwl);
 	}
 	void teleport() {
 		setStatus(movestatus);
@@ -32,6 +41,7 @@ class MainWindow : public Window
 		if (coords.x >= size.right - 20 || coords.y >= size.bottom - 20 || coords.x <= size.left || coords.y <= size.top) {
 			return false;
 		}
+		po = coords;
 		return true;
 	}
 protected:
@@ -54,69 +64,31 @@ protected:
 	}
 	void OnKeyDown(int vk) {
 		GetClientRect(*this, &size);
-		if (GetKeyState(VK_CONTROL)<0) {
-			step = 12;
-		}
-		else
-		{
-			step = 4;
-		}
+		POINT fp = po;
 		switch (vk)
 		{
 		case VK_LEFT:
 		{
-			po.x -= step;
-			if (!checkForOutside(po, size))
-			{
-				po.x += step;
-				movestatus = false;
-			}
-			else 
-			{
-				movestatus = true;
-			}
+			fp.x -= step;
+			movestatus = checkForOutside(fp, size);
 			break;
 		}
 		case VK_RIGHT:
 		{
-			po.x += step;
-			if (!checkForOutside(po, size))
-			{
-				po.x -= step;
-				movestatus = false;
-			}
-			else
-			{
-				movestatus = true;
-			}
+			fp.x += step;
+			movestatus = checkForOutside(fp, size);
 			break;
 		}
 		case VK_DOWN:
 		{
-			po.y += step;
-			if (!checkForOutside(po, size))
-			{
-				po.y -= step;
-				movestatus = false;
-			}
-			else
-			{
-				movestatus = true;
-			}
+			fp.y += step;
+			movestatus = checkForOutside(fp, size);
 			break;
 		}
 		case VK_UP:
 		{
-			po.y -= step;
-			if (!checkForOutside(po, size))
-			{
-				po.y += step;
-				movestatus = false;
-			}
-			else
-			{
-				movestatus = true;
-			}
+			fp.y -= step;
+			movestatus = checkForOutside(fp, size);
 			break;
 		}
 		default:
