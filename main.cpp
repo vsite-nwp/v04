@@ -14,25 +14,15 @@ class MainWindow : public Window
 	RECT size;
 	int step = 3;
 	bool movestatus;
-
 	void setStatus(bool isMoving) {
-		if (GetKeyState(VK_CONTROL) < 0) {
-			step = 12;
-		}
-		else
-		{
-			step = 4;
-		}
-		LONG gwl = GetWindowLong(shippy, GWL_STYLE);
 		if (isMoving)
 		{
-			gwl =gwl| WS_BORDER;
+			SetWindowLong(shippy, GWL_STYLE, GetWindowLong(shippy, GWL_STYLE) | WS_BORDER);
 		}
 		else
 		{
-			gwl = gwl & ~WS_BORDER;
+			SetWindowLong(shippy, GWL_STYLE, GetWindowLong(shippy, GWL_STYLE) & ~WS_BORDER);
 		}
-		SetWindowLong(shippy, GWL_STYLE, gwl);
 	}
 	void teleport() {
 		setStatus(movestatus);
@@ -42,7 +32,6 @@ class MainWindow : public Window
 		if (coords.x >= size.right - 20 || coords.y >= size.bottom - 20 || coords.x <= size.left || coords.y <= size.top) {
 			return false;
 		}
-		po = coords;
 		return true;
 	}
 protected:
@@ -65,31 +54,69 @@ protected:
 	}
 	void OnKeyDown(int vk) {
 		GetClientRect(*this, &size);
-		POINT fp = po;
+		if (GetKeyState(VK_CONTROL)<0) {
+			step = 12;
+		}
+		else
+		{
+			step = 4;
+		}
 		switch (vk)
 		{
 		case VK_LEFT:
 		{
-			fp.x -= step;
-			movestatus = checkForOutside(fp, size);
+			po.x -= step;
+			if (!checkForOutside(po, size))
+			{
+				po.x += step;
+				movestatus = false;
+			}
+			else 
+			{
+				movestatus = true;
+			}
 			break;
 		}
 		case VK_RIGHT:
 		{
-			fp.x += step;
-			movestatus = checkForOutside(fp, size);
+			po.x += step;
+			if (!checkForOutside(po, size))
+			{
+				po.x -= step;
+				movestatus = false;
+			}
+			else
+			{
+				movestatus = true;
+			}
 			break;
 		}
 		case VK_DOWN:
 		{
-			fp.y += step;
-			movestatus = checkForOutside(fp, size);
+			po.y += step;
+			if (!checkForOutside(po, size))
+			{
+				po.y -= step;
+				movestatus = false;
+			}
+			else
+			{
+				movestatus = true;
+			}
 			break;
 		}
 		case VK_UP:
 		{
-			fp.y -= step;
-			movestatus = checkForOutside(fp, size);
+			po.y -= step;
+			if (!checkForOutside(po, size))
+			{
+				po.y += step;
+				movestatus = false;
+			}
+			else
+			{
+				movestatus = true;
+			}
 			break;
 		}
 		default:
