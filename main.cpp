@@ -11,7 +11,7 @@ class MainWindow : public Window
 protected:
 	void OnLButtonDown(POINT p) {
 		position = p;
-		if(!ship)
+		if (!ship)
 			ship.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, "X", NULL, position.x, position.y, 45, 45);
 
 		SetWindowPos(ship, NULL, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
@@ -19,13 +19,38 @@ protected:
 		position = p;
 	}
 	void OnKeyUp(int vk) {
-		if(ship) {
+		if (ship) {
 			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE);
 			SetWindowPos(ship, NULL, position.x, position.y, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
 		}
 	}
 	void OnKeyDown(int vk) {
-		// TODO: if ship exists, move it depending on key and mark as "moving"
+		if (ship) {
+			int SailSpeed = 5;
+			if (GetKeyState(VK_CONTROL) < 0)
+				SailSpeed += 30;
+			RECT ship_rectangle;
+			GetClientRect(*this, &ship_rectangle);
+			switch (vk) {
+			case VK_UP:
+				position.y = max(ship_rectangle.top, position.y - SailSpeed);
+				break;
+			case VK_DOWN:
+				position.y = min(ship_rectangle.bottom - 20, position.y + SailSpeed);
+				break;
+			case VK_LEFT:
+				position.x = max(ship_rectangle.left, position.x - SailSpeed);
+				break;
+			case VK_RIGHT:
+				position.x = min(ship_rectangle.right - 20, position.x + SailSpeed);
+				break;
+			default:return;
+
+			}
+			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
+			SetWindowPos(ship, 0, position.x, position.y, 0, 0, SWP_NOSIZE | SWP_FRAMECHANGED | SWP_NOZORDER);
+
+		}
 	}
 	void OnDestroy(){
 		::PostQuitMessage(0);
