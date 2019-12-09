@@ -11,7 +11,7 @@ class MainWindow : public Window
 protected:
 	void OnLButtonDown(POINT p) {
 		position = p;
-		if (!ship)
+		if(!ship)
 			ship.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, "X", NULL, position.x, position.y, 45, 45);
 
 		SetWindowPos(ship, NULL, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
@@ -19,7 +19,10 @@ protected:
 		position = p;
 	}
 	void OnKeyUp(int vk) {
-		// TODO: mark ship (if exists) as "not moving"
+		if(ship) {
+			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE);
+			SetWindowPos(ship, NULL, position.x, position.y, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
+		}
 	}
 	void OnKeyDown(int vk) {
 		// TODO: if ship exists, move it depending on key and mark as "moving"
