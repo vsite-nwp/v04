@@ -1,4 +1,6 @@
 #include "nwpwin.h"
+#define SHIPY 25
+#define SHIPX 25
 
 class Static : public Window{
 public:
@@ -18,7 +20,7 @@ protected:
 
 		if (!ship)
 		{
-			ship.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER , "X", NULL, p.x, p.y, 25, 25);
+			ship.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER , "X", NULL, p.x, p.y, SHIPX, SHIPY);
 		}
 		else
 		{
@@ -35,59 +37,34 @@ protected:
 	void OnKeyDown(int vk) {
 
 		RECT window;
-		POINT mw;
-		
+		int speedMode = 1;
+
 
 		if (ship)
 		{
 
-			GetClientRect(ship, &window);
-			mw.x = window.right;
-			mw.y = window.bottom;
+			GetClientRect(*this, &window);
 
-			/* Multiple speed modes */
-			switch (vk)
-			{
-			case VK_CONTROL:
+			if (GetKeyState(VK_CONTROL) & 0x8000)
 				speedMode = 5;
-				break;
 
-			case VK_MENU:
-				speedMode = 10;
-				break;
-
-			case VK_SHIFT:
-				speedMode *= (-1);
-				break;
-
-			/* speed up and speed down */
-			case VK_OEM_PLUS:
-				++speedMode;
-				break;
-
-			case VK_OEM_MINUS:
-				--speedMode;
-				break;
-			}
-
-			/* Movement action */
-			switch (vk) 
+			switch(vk)
 			{
-
+			/* Movement action */
 			case VK_UP:
-				cursor.y -= speedMode;
+				cursor.y = max( cursor.y - speedMode, window.top);
 				break;
 
 			case VK_DOWN:
-				cursor.y += speedMode;
+				cursor.y = min( cursor.y + speedMode, window.bottom - SHIPY);
 				break;
 
 			case VK_LEFT:
-				cursor.x -= speedMode;
+				cursor.x = max( cursor.x - speedMode, window.left);
 				break;
 
 			case VK_RIGHT:
-				cursor.x += speedMode;
+				cursor.x = min( cursor.x + speedMode, window.right -SHIPX);
 				break;
 			}
 
@@ -104,7 +81,6 @@ private:
 
 	Static ship;
 	POINT cursor;
-	int speedMode = 1;
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
