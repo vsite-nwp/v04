@@ -2,30 +2,38 @@
 
 class Static : public Window {
 
-public: std::string ClassName() override { 
+public: std::string ClassName() override {
 
-	return "static"; }
+	return "static";
+}
 };
 
 class MainWindow : public Window
 {
 	RECT mSea;
 	Static mShip;
-	POINT mCurretnPosition;
-    int mSpeed;
-	bool mIsMoving;
-
+	POINT mCurrentPosition;
+	int mSpeed;
+	// constants
+	const DWORD mStyle = WS_VISIBLE | WS_CHILD | SS_CENTER;
+	const int mBoardWidth = 25;
+	const int mBoardHeight = 25;
 protected:
 	void OnLButtonDown(POINT position) {
 		if (!mShip)
-			mShip.Create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, "x", 0, position.x, position.y, 25, 25);
+		{
+			mShip.Create(*this, mStyle, "x", 0, position.x, position.y, mBoardWidth, mBoardHeight);
+		}
 
 		SetWindowPos(mShip, 0, position.x, position.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-		mCurretnPosition = position;		
+		mCurrentPosition = position;
 	}
-	void OnKeyUp(int vk) {		
-		mIsMoving = false;
-		ShipMoving();
+	void OnKeyUp(int vk) {
+		if (mShip)
+		{
+			::SetWindowLong(mShip, GWL_STYLE, GetWindowLong(mShip, GWL_STYLE) & ~WS_BORDER);
+			::SetWindowPos(mShip, nullptr, mCurrentPosition.x, mCurrentPosition.y, NULL, NULL, SWP_NOSIZE | SWP_FRAMECHANGED | SWP_NOZORDER | SWP_NOMOVE);
+		}
 	}
 	void OnKeyDown(int vk) {
 		if (!mShip)
@@ -33,49 +41,63 @@ protected:
 
 		GetClientRect(*this, &mSea);
 		GetKeyState(VK_CONTROL) < 0 ? mSpeed = 50 : mSpeed = 5;
+		switch (vk)
+		{
+		case VK_UP:
+		{
+			ShipUp();
+			break;
+		}
+		case VK_DOWN:
+		{
+			ShipDown();
+			break;
+		}
+		case VK_LEFT:
+		{
+			ShipLeft();
+			break;
 
-		ShipRight();
-		ShipLeft();
-		ShipDown();
-		ShipUp();
-		
-		ShipMoving();		
+		}
+		case VK_RIGHT:
+		{
+			ShipRight();
+			break;
+		}
+		}
+		DWORD style = GetWindowLong(mShip, GWL_STYLE);
+		SetWindowLong(mShip, GWL_STYLE, style | WS_BORDER);
+		::SetWindowPos(mShip, nullptr, mCurrentPosition.x, mCurrentPosition.y, NULL, NULL, SWP_NOSIZE | SWP_FRAMECHANGED | SWP_NOZORDER);
 	}
-	void OnDestroy(){
+
+	void OnDestroy() {
 		::PostQuitMessage(0);
 	}
 private:
 
-	void ShipRight() { 
-		if (GetKeyState(VK_RIGHT) < 0 && mCurretnPosition.x < mSea.right - 30)
+	void ShipRight() {
+		if (mCurrentPosition.x < mSea.right - mBoardWidth)
 		{
-			mCurretnPosition.x += mSpeed; mIsMoving = true; 
-		} 
+			mCurrentPosition.x += mSpeed;
+		}
 	}
 	void ShipLeft() {
-		if (GetKeyState(VK_LEFT) < 0 && mCurretnPosition.x > 0)
-		{ 
-			mCurretnPosition.x -= mSpeed; mIsMoving = true;
+		if (mCurrentPosition.x > 0)
+		{
+			mCurrentPosition.x -= mSpeed;
 		}
 	}
 	void ShipDown() {
-		if (GetKeyState(VK_DOWN) < 0 && mCurretnPosition.y < mSea.bottom - 30)
+		if (mCurrentPosition.y < mSea.bottom - mBoardHeight)
 		{
-			mCurretnPosition.y += mSpeed; mIsMoving = true;
-		} 
+			mCurrentPosition.y += mSpeed;
+		}
 	}
 	void ShipUp() {
-		if (GetKeyState(VK_UP) < 0 && mCurretnPosition.y > 25)
+		if (mCurrentPosition.y > mBoardHeight)
 		{
-			mCurretnPosition.y -= mSpeed; mIsMoving = true;
-		} 
-	}
-
-	void ShipMoving()
-	{
-		DWORD style = GetWindowLong(mShip, GWL_STYLE);
-		mIsMoving ? SetWindowLong(mShip, GWL_STYLE, style | WS_BORDER) : SetWindowLong(mShip, GWL_STYLE, style& ~WS_BORDER);
-		SetWindowPos(mShip, 0, mCurretnPosition.x, mCurretnPosition.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+			mCurrentPosition.y -= mSpeed;
+		}
 	}
 };
 
