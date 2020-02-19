@@ -1,4 +1,5 @@
 #include "nwpwin.h"
+#define WINDOWSIZE 16
 class Static :public Window {
 private:
 	bool ismoving = false;
@@ -14,21 +15,18 @@ bool getIsMoving() {
 }
 };
 
-
 class MainWindow : public Window
 {
 protected:
 	LONG lstyle;
-	const int xoffset = -GetSystemMetrics(SM_CXFRAME) - GetSystemMetrics(SM_CXPADDEDBORDER);
-	const int yoffset = -GetSystemMetrics(SM_CYCAPTION) - GetSystemMetrics(SM_CYFRAME) - GetSystemMetrics(SM_CXPADDEDBORDER);
-	RECT r;
-	RECT rveliki;
+	const int xoffset = GetSystemMetrics(SM_CXFRAME) + GetSystemMetrics(SM_CXPADDEDBORDER);
+	const int yoffset = GetSystemMetrics(SM_CYCAPTION) + GetSystemMetrics(SM_CYFRAME) + GetSystemMetrics(SM_CXPADDEDBORDER);
 	void OnLButtonDown(POINT p) {
 		if (ship == NULL) {
-			ship.Create(*this, WS_VISIBLE | WS_CHILD | WS_BORDER, "X", 101, p.x-8, p.y-8, 16, 16);
+			ship.Create(*this, WS_VISIBLE |WS_CHILD| WS_BORDER, "X", 101, p.x-WINDOWSIZE/2, p.y- WINDOWSIZE / 2, WINDOWSIZE, WINDOWSIZE);
 		}
 		else {
-			SetWindowPos((HWND)ship, 0, p.x - 8, p.y - 8,0,0,SWP_NOSIZE|SWP_NOZORDER);
+			SetWindowPos((HWND)ship, 0, p.x - WINDOWSIZE / 2, p.y - WINDOWSIZE / 2,0,0,SWP_NOSIZE|SWP_NOZORDER);
 		}
 	}
 	void OnKeyUp(int vk) {
@@ -42,105 +40,93 @@ protected:
 		
 	}
 	void OnKeyDown(int vk) {
+		const int STEP = 10;
+		const int BIGSTEP = 50;
+		RECT r;
+		RECT rveliki;
 		if(ship != NULL) {
-			int newposx;
-			int newposy;
 			ship.setIsMoving(true);
 			lstyle = GetWindowLong((HWND)ship, GWL_STYLE);
 			lstyle &= ~(WS_BORDER);
 			SetWindowLong((HWND)ship, GWL_STYLE, lstyle);
+			GetWindowRect(*this, &rveliki);
+			int visina = rveliki.bottom-rveliki.top-yoffset;
+			int sirina = rveliki.right-rveliki.left-2*xoffset;
 			SetWindowPos((HWND)ship, NULL, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_NOOWNERZORDER);
 			GetWindowRect((HWND)ship, &r);
-			GetWindowRect(*this, &rveliki);
+			r.top -= rveliki.top+yoffset;
+			r.bottom -= rveliki.bottom+yoffset;
+			r.left -= rveliki.left+xoffset;
+			r.right -= rveliki.right+xoffset;
 			switch (vk) {
 			case VK_LEFT:
-				newposy = r.top - rveliki.top + yoffset;
 					if (GetKeyState(VK_CONTROL) < 0) {
-						newposx = (r.left - rveliki.left - 50) + xoffset;
-						if (newposx > 0) {
-							SetWindowPos((HWND)ship, 0, newposx, newposy, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-						}
+						BigStep(ship,vk, BIGSTEP, r, visina, sirina);
 					}
 					else {
-						newposx = (r.left - rveliki.left - 10) + xoffset;
-						if (newposx >0) {
-							SetWindowPos((HWND)ship, 0, newposx, newposy, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+						if ((r.left-STEP) < 0) {
+							r.left = 0;
 						}
+						else {
+							r.left -= STEP;
+						}
+						MoveShip(ship, r);
 					}
 					break;
 			case VK_RIGHT:
-				newposy = r.top - rveliki.top + yoffset;
 				if (GetKeyState(VK_CONTROL) < 0) {
-					newposx = r.left - rveliki.left + 50 + xoffset;
-					if (newposx < (rveliki.right - rveliki.left) - (r.right - r.left)+xoffset) {
-						SetWindowPos((HWND)ship, 0, newposx, newposy, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-					}
+					BigStep(ship, vk, BIGSTEP, r, visina, sirina);
 				}
 				else {
-					newposx = r.left - rveliki.left + 10 + xoffset;
-					if (newposx < (rveliki.right - rveliki.left-(r.right-r.left))+xoffset) {
-						SetWindowPos((HWND)ship, 0,newposx, newposy, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+					if ((r.left + STEP) > sirina-WINDOWSIZE) {
+						r.left = sirina-WINDOWSIZE;
 					}
+					else {
+						r.left += STEP;
+					}
+					MoveShip(ship, r);
 				}
 				break;
 			case VK_UP:
-				newposx = r.left - rveliki.left + xoffset;
 				if (GetKeyState(VK_CONTROL) < 0) {
-					newposy = r.top - 50 - rveliki.top + yoffset;
-					if (newposy >0) {
-						SetWindowPos((HWND)ship, 0, newposx, newposy, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-					}
+					BigStep(ship, vk, BIGSTEP, r, visina, sirina);
 				}
 				else {
-					newposy = r.top - 10 - rveliki.top + yoffset;
-					if (newposy > 0) {
-						SetWindowPos((HWND)ship, 0, newposx, newposy, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+					if ((r.top - STEP) <0) {
+						r.top = 0;
 					}
+					else {
+						r.top -= STEP;
+					}
+					MoveShip(ship, r);
 				}
 				break;
 			case VK_DOWN:
-				newposx = r.left - rveliki.left + xoffset;
 				if (GetKeyState(VK_CONTROL) < 0) {
-					newposy = r.top + 50 - rveliki.top + yoffset;
-					if (newposy < (rveliki.bottom - rveliki.top-(r.bottom-r.top)+yoffset)) {
-						SetWindowPos((HWND)ship, 0, newposx, newposy, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-					}
+					BigStep(ship, vk, BIGSTEP, r, visina, sirina);
 				}
 				else {
-					newposy = r.top + 10 - rveliki.top + yoffset;
-					if (newposy < (rveliki.bottom - rveliki.top) - (r.bottom - r.top)+yoffset) {
-						SetWindowPos((HWND)ship, 0, newposx, newposy, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+					if ((r.top + STEP) > (visina - WINDOWSIZE)) {
+						r.top = visina - WINDOWSIZE;
 					}
+					else {
+						r.top += STEP;
+					}
+					MoveShip(ship, r);
 				}
 				break;
 			case VK_CONTROL:
 				if (GetKeyState(VK_UP) < 0) {
-					newposx = r.left - rveliki.left + xoffset;
-					newposy = r.top - 50 - rveliki.top + yoffset;
-					if (newposy > 0) {
-						SetWindowPos((HWND)ship, 0, newposx, newposy, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-					}
+					BigStep(ship, VK_UP, BIGSTEP, r, visina, sirina);
 				}
 				else if (GetKeyState(VK_DOWN) < 0) {
-					newposx = r.left - rveliki.left + xoffset;
-					newposy = r.top + 50 - rveliki.top + yoffset;
-					if (newposy < (rveliki.bottom - rveliki.top) - (r.bottom - r.top)+yoffset) {
-						SetWindowPos((HWND)ship, 0, newposx, newposy, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-					}
+					BigStep(ship, VK_DOWN, BIGSTEP, r, visina, sirina);
 				}
 				else if (GetKeyState(VK_LEFT) < 0) {
-					newposy= r.top - rveliki.top + yoffset;
-					newposx = (r.left - rveliki.left - 50) + xoffset;
-					if (newposx > 0) {
-						SetWindowPos((HWND)ship, 0, newposx, newposy, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-					}
+					BigStep(ship, VK_LEFT, BIGSTEP, r, visina, sirina);
 				}
 				else if (GetKeyState(VK_RIGHT) < 0) {
-					newposy = r.top - rveliki.top + yoffset;
-					newposx = r.left - rveliki.left + 50 + xoffset;
-					if (newposx < (rveliki.right - rveliki.left) - (r.right - r.left)+xoffset) {
-						SetWindowPos((HWND)ship, 0, newposx, newposy, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-					}
+					BigStep(ship, VK_RIGHT, BIGSTEP, r, visina, sirina);
 				}
 				break;
 			}
@@ -153,7 +139,51 @@ protected:
 	}
 private:
 	Static ship;
+	void MoveShip(Static& ship,RECT r) {
+		SetWindowPos((HWND)ship,0, r.left, r.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+	}
+	void BigStep(Static& ship,int key,int step,RECT r, int visina,int sirina) {
+		switch (key) {
+		case VK_LEFT:
+			if ((r.left - step) < 0) {
+				r.left = 0;
+			}
+			else {
+				r.left -= step;
+			}
+			MoveShip(ship, r);
+			break;
+		case VK_RIGHT:
+			if ((r.left + step) >( sirina - WINDOWSIZE)) {
+				r.left = sirina - WINDOWSIZE;
+			}
+			else {
+				r.left += step;
+			}
+			MoveShip(ship, r);
+			break;
+		case VK_UP:
+			if ((r.top - step) < 0) {
+				r.top = 0;
+			}
+			else {
+				r.top -= step;
+			}
+			MoveShip(ship, r);
+			break;
+		case VK_DOWN:
+			if ((r.top + step) > visina - WINDOWSIZE) {
+				r.top = visina - WINDOWSIZE;
+			}
+			else {
+				r.top += step;
+			}
+			MoveShip(ship, r);
+			break;
+		}
+	}
 };
+
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
 {
