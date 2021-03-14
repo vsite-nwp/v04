@@ -1,21 +1,21 @@
 #include "nwpwin.h"
 
-// TODO: prepare class (Static) for a ship
+// TODO: prepare class ("STATIC") for a ship
 
-class MainWindow : public Window
+class main_window : public vsite::nwp::window
 {
 protected:
-	void OnLButtonDown(POINT p) {
+	void on_left_button_down(POINT p) override { 
 		// TODO: create ship if it doesn't exist yet
 		// TODO: change current location
 	}
-	void OnKeyUp(int vk) {
+	void on_key_up(int vk) override {
 		// TODO: mark ship (if exists) as "not moving"
 	}
-	void OnKeyDown(int vk) {
+	void on_key_down(int vk) override {
 		// TODO: if ship exists, move it depending on key and mark as "moving"
 	}
-	void OnDestroy(){
+	void on_destroy() override {
 		::PostQuitMessage(0);
 	}
 private:
@@ -23,8 +23,8 @@ private:
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
 {
-	Application app;
-	MainWindow wnd;
-	wnd.Create(NULL, WS_OVERLAPPEDWINDOW | WS_VISIBLE, "NWP 4");
-	return app.Run();
+	vsite::nwp::application app;
+	main_window w;
+	w.create(0, WS_OVERLAPPEDWINDOW | WS_VISIBLE, "NWP 4");
+	return app.run();
 }

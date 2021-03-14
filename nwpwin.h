@@ -1,36 +1,39 @@
 #include <windows.h>
 #include <string>
 
-class Application 
+namespace vsite::nwp {
+
+class application
 {
 public:
-	int Run();
+	int run();
 };
 
-class Window
+class window
 {
-	HWND hw;
+	HWND hw{ 0 };
 
 protected:
-	virtual std::string ClassName();
-	bool Register(const std::string& name);
-	std::string GenerateClassName();
+	virtual std::string class_name();
+	bool register_class(const std::string& name);
+	std::string generate_class_name();
 
 public:
-	Window();
-
-	bool Create(HWND parent, DWORD style, PCSTR caption=0, int IdOrMenu=0, 
-		int x=CW_USEDEFAULT, int y=CW_USEDEFAULT, int width=CW_USEDEFAULT, int height=CW_USEDEFAULT);
+	bool create(HWND parent, DWORD style, LPCTSTR caption = 0, int IdOrMenu = 0,
+		int x = CW_USEDEFAULT, int y = CW_USEDEFAULT, int width = CW_USEDEFAULT, int height = CW_USEDEFAULT);
 
 	operator HWND();
-	static LRESULT CALLBACK Proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+	static LRESULT CALLBACK proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 //	messages
 protected:
-	virtual int OnCreate(CREATESTRUCT*) { return 0; }
-	virtual void OnCommand(int)  { }
-	virtual void OnDestroy()  { }
-	virtual void OnKeyDown(int key)  { }
-	virtual void OnKeyUp(int key)  { }
-	virtual void OnLButtonDown(POINT p)  { }
+	virtual int on_create(CREATESTRUCT*) { return 0; }
+	virtual void on_command(int) { }
+	virtual void on_destroy() { }
+
+	virtual void on_key_down(int key) { }
+	virtual void on_key_up(int key) { }
+	virtual void on_left_button_down(POINT p) { }
 };
+
+} // namespace
