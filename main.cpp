@@ -11,7 +11,7 @@ class main_window : public vsite::nwp::window
 private:
 	Static ship;
 	POINT position;
-	DWORD style = WS_CHILD | WS_VISIBLE | SS_CENTER;
+	static const DWORD style = WS_CHILD | WS_VISIBLE | SS_CENTER;
 
 protected:
 	void on_left_button_down(POINT p) override { 
@@ -54,9 +54,10 @@ protected:
 			case VK_DOWN:
 				position.y = min(position.y + ctrl, rect.bottom - 20);
 				break;
+			default:
+				return;
 			}
 		}
-
 		SetWindowLong(ship, GWL_STYLE, style | WS_BORDER);
 		SetWindowPos(ship, 0, position.x, position.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 	}
