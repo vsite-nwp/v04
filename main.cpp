@@ -1,24 +1,56 @@
 #include "nwpwin.h"
 
-// TODO: prepare class ("STATIC") for a ship
-
+class STATIC : public vsite::nwp::window{public:std::string class_name() override { return "STATIC"; }};
 class main_window : public vsite::nwp::window
 {
 protected:
 	void on_left_button_down(POINT p) override { 
-		// TODO: create ship if it doesn't exist yet
-		// TODO: change current location
+		if (!s) {
+			s.create(*this, style, "Brodic\nCHOO CHOO", 0, p.x, p.y, 50, 50);
+		}
+		SetWindowPos(s, 0, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+		pos = p;
 	}
 	void on_key_up(int vk) override {
-		// TODO: mark ship (if exists) as "not moving"
+		if (s) {
+			SetWindowLong(s, GWL_STYLE, style);
+			SetWindowPos(s, 0, 0, 0, 0, 0, SWP_NOSIZE | SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOZORDER);
+		}
 	}
 	void on_key_down(int vk) override {
-		// TODO: if ship exists, move it depending on key and mark as "moving"
+		int warp_speed = GetAsyncKeyState(VK_CONTROL) ? 100 : 1;
+		RECT rect;
+		GetClientRect(*this, &rect);
+
+		if (s)
+		{
+			switch (vk)
+			{
+			case VK_LEFT:
+				pos.x = max(pos.x - 1 * warp_speed, rect.left);
+				break;
+			case VK_UP:
+				pos.y = max(pos.y - 1 * warp_speed, rect.top);
+				break;
+			case VK_RIGHT:
+				pos.x = min(pos.x + 1 * warp_speed, rect.right - 50);
+				break;
+			case VK_DOWN:
+				pos.y = min(pos.y + 1 * warp_speed, rect.bottom - 50);
+				break;
+			}
+		}
+
+		SetWindowLong(s, GWL_STYLE, style | WS_BORDER);
+		SetWindowPos(s, 0, pos.x, pos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 	}
 	void on_destroy() override {
 		::PostQuitMessage(0);
 	}
 private:
+	STATIC s;
+	POINT pos;
+	DWORD style = WS_CHILD | WS_VISIBLE | SS_CENTER;
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
