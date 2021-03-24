@@ -1,6 +1,5 @@
 #include "nwpwin.h"
 
-// TODO: prepare class ("STATIC") for a ship
 #define WINDOWSIZE 16
 class Static : public vsite::nwp::window {
 private:
@@ -17,9 +16,7 @@ class main_window : public vsite::nwp::window
 {
 protected:
 	int shipMove = 0;
-	void on_left_button_down(POINT p) override { 
-		// TODO: create ship if it doesn't exist yet
-		// TODO: change current location
+	void on_left_button_down(POINT p) override {
 		if (!ship) {
 			ship.create(*this, WS_VISIBLE | WS_CHILD | WS_BORDER, "X", 1, 0, 0, 15, 15);
 			ship.shipCoordinates.x = p.x;
@@ -29,14 +26,12 @@ protected:
 		SetWindowPos(ship, 0, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 	}
 	void on_key_up(int vk) override {
-		// TODO: mark ship (if exists) as "not moving"
 		if (ship) {
 			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER);
 			SetWindowPos(ship, 0, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOMOVE | SWP_NOZORDER);
 		}
 	}
 	void on_key_down(int vk) override {
-		// TODO: if ship exists, move it depending on key and mark as "moving"
 		if (ship) {
 			RECT SizeOfWindow;
 			GetClientRect(*this, &SizeOfWindow);
