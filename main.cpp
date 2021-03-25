@@ -27,21 +27,25 @@ protected:
 			switch (vk)
 			{
 			case VK_LEFT:
-				pos.x = max(pos.x - 1 * warp_speed, rect.left);
+				pos.x = max(pos.x - warp_speed, rect.left);
+				SetWindowLong(s, GWL_STYLE, style | WS_BORDER);
 				break;
 			case VK_UP:
-				pos.y = max(pos.y - 1 * warp_speed, rect.top);
+				pos.y = max(pos.y - warp_speed, rect.top);
+				SetWindowLong(s, GWL_STYLE, style | WS_BORDER);
 				break;
 			case VK_RIGHT:
-				pos.x = min(pos.x + 1 * warp_speed, rect.right - 50);
+				pos.x = min(pos.x + warp_speed, rect.right - 50);
+				SetWindowLong(s, GWL_STYLE, style | WS_BORDER);
 				break;
 			case VK_DOWN:
-				pos.y = min(pos.y + 1 * warp_speed, rect.bottom - 50);
+				pos.y = min(pos.y + warp_speed, rect.bottom - 50);
+				SetWindowLong(s, GWL_STYLE, style | WS_BORDER);
 				break;
 			}
 		}
 
-		SetWindowLong(s, GWL_STYLE, style | WS_BORDER);
+		
 		SetWindowPos(s, 0, pos.x, pos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 	}
 	void on_destroy() override {
@@ -50,7 +54,7 @@ protected:
 private:
 	STATIC s;
 	POINT pos;
-	DWORD style = WS_CHILD | WS_VISIBLE | SS_CENTER;
+	static const int style = WS_CHILD | WS_VISIBLE | SS_CENTER;
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
