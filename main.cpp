@@ -6,7 +6,7 @@ public:
 	std::string class_name() override { return "STATIC"; }
 };
 
-class main_window : public vsite::nwp::window
+class main_window : public window
 {
 protected:
 	void on_left_button_down(POINT p) override {
