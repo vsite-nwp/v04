@@ -24,11 +24,11 @@ protected:
 		SetWindowPos(ship, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_FRAMECHANGED |SWP_NOSIZE | SWP_NOMOVE);
 	}
 	void on_key_down(int vk) override {
+		
+		if (!ship) return;
 
 		RECT r; GetClientRect(*this, &r);
 		int s = GetKeyState(VK_CONTROL) & WM_KEYDOWN ? 100 : 10;
-
-		if (!ship) return;
 
 		switch (vk) {
 		case VK_UP:
