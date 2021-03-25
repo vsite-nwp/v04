@@ -12,14 +12,14 @@ class main_window : public vsite::nwp::window
 protected:
 	void on_left_button_down(POINT p) override {
 
-		position = p;
 		if (!ship) {
-			ship.create(*this, WS_CHILD | WS_VISIBLE | WS_BORDER, "X", 0, p.x, p.y, 20,20);
+			ship.create(*this, style, "X", 0, p.x, p.y, 30,20);
 		}
-
-
-		SetWindowPos(ship, HWND_TOP, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 		position = p;
+
+		SetWindowPos(ship, 0, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+
+
 	}
 	void on_key_up(int vk) override {
 		if (ship) {
@@ -29,24 +29,25 @@ protected:
 		}
 	}
 	void on_key_down(int vk) override {
-		int ship_step = ::GetAsyncKeyState(VK_CONTROL) ? 20 : 10;
+		int ship_step = GetAsyncKeyState(VK_CONTROL) ? 10:5;
 		RECT window_rect;
 		GetClientRect(*this, &window_rect);
+
 		switch (vk) {
 
 
 		case VK_UP:
-			position.y = max(0, position.y - ship_step);
+			position.y = max(position.y - ship_step, window_rect.top);
 			break;
 		case VK_DOWN:
-			position.y = min(window_rect.bottom - 30, position.y + ship_step);
+			position.y = min(position.y + ship_step, window_rect.bottom - 20);
 			break;
 		case VK_LEFT:
-			position.x = max(0, position.x - ship_step);
+			position.x = max(position.x - ship_step, window_rect.left);
 
 			break;
 		case VK_RIGHT:
-			position.x = min(window_rect.right - 30, position.x + ship_step);
+			position.x = min(position.x + ship_step, window_rect.right - 30);
 
 			break;
 		default:
