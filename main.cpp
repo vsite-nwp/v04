@@ -20,8 +20,8 @@ protected:
 		position = p;
 	}
 	void on_key_up(int vk) override {
-		SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER);
-		SetWindowPos(ship, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOSIZE | SWP_NOMOVE);
+		SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER );
+		SetWindowPos(ship, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_FRAMECHANGED |SWP_NOSIZE | SWP_NOMOVE);
 	}
 	void on_key_down(int vk) override {
 
