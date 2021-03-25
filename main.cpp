@@ -28,24 +28,22 @@ protected:
 			{
 			case VK_LEFT:
 				pos.x = max(pos.x - warp_speed, rect.left);
-				SetWindowLong(s, GWL_STYLE, style | WS_BORDER);
 				break;
 			case VK_UP:
 				pos.y = max(pos.y - warp_speed, rect.top);
-				SetWindowLong(s, GWL_STYLE, style | WS_BORDER);
 				break;
 			case VK_RIGHT:
 				pos.x = min(pos.x + warp_speed, rect.right - 50);
-				SetWindowLong(s, GWL_STYLE, style | WS_BORDER);
 				break;
 			case VK_DOWN:
 				pos.y = min(pos.y + warp_speed, rect.bottom - 50);
-				SetWindowLong(s, GWL_STYLE, style | WS_BORDER);
 				break;
+			default:
+				return;
 			}
 		}
 
-		
+		SetWindowLong(s, GWL_STYLE, style | WS_BORDER);
 		SetWindowPos(s, 0, pos.x, pos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 	}
 	void on_destroy() override {
