@@ -28,6 +28,8 @@ protected:
 		RECT r; GetClientRect(*this, &r);
 		int s = GetKeyState(VK_CONTROL) & WM_KEYDOWN ? 100 : 10;
 
+		if (!ship) return;
+
 		switch (vk) {
 		case VK_UP:
 			position.y = max(position.y - 1 * s, r.top);
