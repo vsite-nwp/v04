@@ -28,20 +28,20 @@ protected:
 		if (!ship) return;
 
 		RECT r; GetClientRect(*this, &r);
-		int s = GetKeyState(VK_CONTROL) & WM_KEYDOWN ? 100 : 10;
+		int s = GetAsyncKeyState(VK_CONTROL) ? 100 : 10;
 
 		switch (vk) {
 		case VK_UP:
-			position.y = max(position.y - 1 * s, r.top);
+			position.y = max(position.y - s, r.top);
 			break;
 		case VK_DOWN:
-			position.y = min(position.y + 1 * s, r.bottom - 20);
+			position.y = min(position.y + s, r.bottom - 20);
 			break;
 		case VK_LEFT:
-			position.x = max(position.x - 1 * s, r.left);
+			position.x = max(position.x - s, r.left);
 			break;
 		case VK_RIGHT:
-			position.x = min(position.x + 1 * s, r.right - 20);
+			position.x = min(position.x + s, r.right - 20);
 			break;
 		}
 		SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER | WS_BORDER);
