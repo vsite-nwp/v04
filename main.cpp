@@ -1,19 +1,5 @@
 ﻿#include "nwpwin.h"
 
-//- klasa `STATIC` je za sve "STATIC" prozore, prebacite ostale membere u `main_window`
-//
-//- uputstva kažu da "dok se drži" Ctrl tipka brod ide brže - ne da Ctrl uključuje / isključuje "warp" (koristite `GetAsyncKeyState`)
-//
-//	- ne treba vam promjena stila na `on_left_button_down`
-//
-//	- _brod_ dobije border na svaku tipku, ne samo dok se krece
-//
-//	- ponašanje na rubovima nije konzistentno(a i zakomplicirali ste taj kod, sve movement i power_up varijable mogu biti lokalne)
-//
-//	- ako se postavi pozicija broda mišem, a nakon toga koriste strelice - dogodi se veliki skok
-//
-//	- ne morate POINT kopirati clan po clan
-
 
 class STATIC : public vsite::nwp::window {
 public:
@@ -26,20 +12,19 @@ class main_window : public vsite::nwp::window
 {
 protected:
 	POINT ship_coordinates;
+	const DWORD ship_style = WS_CHILD | WS_VISIBLE | SS_CENTER;
 	const int ship_movement = 5;
 	int ship_move_powerup = 0;
 	void on_left_button_down(POINT p) override {
 		if (!ship) {
-			ship.create(*this, WS_CHILD | WS_VISIBLE, "x", 1, 0, 0, 15, 15);
+			ship.create(*this, ship_style, "X", 1, 0, 0, 15, 15);
 		}
-		ship_coordinates.x = p.x;
-		ship_coordinates.y = p.y;
-		SetWindowLong(ship, 0, WS_CHILD | WS_VISIBLE | SS_CENTER);
+		ship_coordinates = p;
 		SetWindowPos(ship, 0, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 	}
 	void on_key_up(int vk) override {
 		if (ship) {
-			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER);
+			SetWindowLong(ship, GWL_STYLE, ship_style);
 			SetWindowPos(ship, 0, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
 		}
 	}
@@ -52,31 +37,38 @@ protected:
 
 			switch (vk) {
 			case VK_LEFT:
-				if (ship_coordinates.x - (ship_movement + ship_move_powerup) <= parent_window_size.left)
+				if (ship_coordinates.x - (ship_movement + ship_move_powerup) <= parent_window_size.left) {
+					ship_coordinates.x = parent_window_size.left;
 					break;
-				SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER | WS_BORDER);
+				}
 				ship_coordinates.x -= (ship_movement + ship_move_powerup);
 				break;
 			case VK_RIGHT:
-				if (ship_coordinates.x + (ship_movement + ship_move_powerup) >= parent_window_size.right - 12)
+				if (ship_coordinates.x + (ship_movement + ship_move_powerup) >= parent_window_size.right - 15) {
+					ship_coordinates.x = parent_window_size.right - 15;
 					break;
-				SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER | WS_BORDER);
+				}
 				ship_coordinates.x += (ship_movement + ship_move_powerup);
 				break;
 			case VK_DOWN:
-				if (ship_coordinates.y + (ship_movement + ship_move_powerup) >= parent_window_size.bottom - 12)
+				if (ship_coordinates.y + (ship_movement + ship_move_powerup) >= parent_window_size.bottom - 15) {
+					ship_coordinates.y = parent_window_size.bottom - 15;
 					break;
-				SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER | WS_BORDER);
+				}
 				ship_coordinates.y += (ship_movement + ship_move_powerup);
 				break;
 			case VK_UP:
-				if (ship_coordinates.y - (ship_movement + ship_move_powerup) <= parent_window_size.top)
+				if (ship_coordinates.y - (ship_movement + ship_move_powerup) <= parent_window_size.top) {
+					ship_coordinates.y = parent_window_size.top;
 					break;
-				SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER | WS_BORDER);
+				}
 				ship_coordinates.y -= (ship_movement + ship_move_powerup);
 				break;
+			default: 
+				return;
 			}
-			
+
+			SetWindowLong(ship, GWL_STYLE, ship_style | WS_BORDER);
 			SetWindowPos(ship, 0, ship_coordinates.x, ship_coordinates.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 		}
 	}
