@@ -2,28 +2,24 @@
 
 #define WINDOWSIZE 16
 class Static : public vsite::nwp::window {
-private:
-	bool ismoving = false;
 public:
-	std::string ClassName() {
+	std::string class_name() {
 		return "Static";
 	}
-	POINT shipCoordinates;
-	const int shipMovement = 5;
 };
 
 class main_window : public vsite::nwp::window
 {
 protected:
 	int shipMove = 0;
+	POINT shipCoordinates;
+	const int shipMovement = 5;
 	void on_left_button_down(POINT p) override {
 		if (!ship) {
-			ship.create(*this, WS_VISIBLE | WS_CHILD | WS_BORDER, "X", 1, 0, 0, 15, 15);
-			ship.shipCoordinates.x = p.x;
-			ship.shipCoordinates.y = p.y;
+			ship.create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, "X", 1, 0, 0, 15, 15);
 		}
-		SetWindowLong(ship, GWL_STYLE, WS_CHILD | SS_CENTER | WS_VISIBLE);
 		SetWindowPos(ship, 0, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+		shipCoordinates = p;
 	}
 	void on_key_up(int vk) override {
 		if (ship) {
@@ -35,34 +31,43 @@ protected:
 		if (ship) {
 			RECT SizeOfWindow;
 			GetClientRect(*this, &SizeOfWindow);
-			SetWindowLong(ship, GWL_STYLE, WS_CHILD | SS_CENTER | WS_VISIBLE | WS_BORDER);
+			if (GetAsyncKeyState(VK_CONTROL))
+				shipMove = 10;
+			else
+				shipMove = 0;
 			switch (vk) {
-			case VK_CONTROL:
-				if (shipMove > 0) shipMove = 0;
-				else shipMove = 20;
-				break;
 			case VK_UP:
-				if (ship.shipCoordinates.y - (ship.shipMovement + shipMove) <= SizeOfWindow.top)
+				if (shipCoordinates.y - (shipMovement + shipMove) <= SizeOfWindow.top) {
+					shipCoordinates.y = SizeOfWindow.top;
 					break;
-				ship.shipCoordinates.y -= (ship.shipMovement + shipMove);
+				}
+				shipCoordinates.y -= (shipMovement + shipMove);
 				break;
 			case VK_DOWN:
-				if (ship.shipCoordinates.y + (ship.shipMovement + shipMove) >= SizeOfWindow.bottom)
+				if (shipCoordinates.y + (shipMovement + shipMove) >= SizeOfWindow.bottom - 15) {
+					shipCoordinates.y = SizeOfWindow.bottom - 15;
 					break;
-				ship.shipCoordinates.y += (ship.shipMovement + shipMove);
+				}
+				shipCoordinates.y += (shipMovement + shipMove);
 				break;
 			case VK_LEFT:
-				if (ship.shipCoordinates.x - (ship.shipMovement + shipMove) <= SizeOfWindow.left)
+				if (shipCoordinates.x - (shipMovement + shipMove) <= SizeOfWindow.left) {
+					shipCoordinates.x = SizeOfWindow.left;
 					break;
-				ship.shipCoordinates.x -= (ship.shipMovement + shipMove);
+				}
+				shipCoordinates.x -= (shipMovement + shipMove);
 				break;
 			case VK_RIGHT:
-				if (ship.shipCoordinates.x + (ship.shipMovement + shipMove) >= SizeOfWindow.right)
+				if (shipCoordinates.x + (shipMovement + shipMove) >= SizeOfWindow.right - 15) {
+					shipCoordinates.x = SizeOfWindow.right - 15;
 					break;
-				ship.shipCoordinates.x += (ship.shipMovement + shipMove);
+				}
+				shipCoordinates.x += (shipMovement + shipMove);
 				break;
+			default: return;
 			}
-			SetWindowPos(ship, 0, ship.shipCoordinates.x, ship.shipCoordinates.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
+			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER | WS_BORDER);
+			SetWindowPos(ship, 0, shipCoordinates.x, shipCoordinates.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 		}
 	}
 	void on_destroy() override {
