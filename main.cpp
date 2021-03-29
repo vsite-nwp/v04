@@ -12,7 +12,7 @@ protected:
 	void on_left_button_down(POINT p) override { 
 		pozicija = p;
 		if (!ship)
-			ship.create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, "X", NULL, pozicija.x, pozicija.y, 30, 30);
+			ship.create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, "X", 1, pozicija.x, pozicija.y, 20, 20);
 
 		SetWindowPos(ship, NULL, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 		pozicija = p;
@@ -28,7 +28,7 @@ protected:
 	void on_key_down(int vk) override {
 		if (ship) {
 			int MoveSpeed = 5;
-			if (GetKeyState(VK_CONTROL) < 0)
+			if (GetAsyncKeyState(VK_CONTROL) < 0)
 				MoveSpeed += 80;
 			RECT ship_r;
 			GetClientRect(*this, &ship_r);
@@ -47,7 +47,7 @@ protected:
 				break;
 			default: return;
 			}
-			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER);
+			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | WS_BORDER | SS_CENTER);
 			SetWindowPos(ship, 0, pozicija.x, pozicija.y, 0, 0, SWP_NOSIZE | SWP_FRAMECHANGED | SWP_NOZORDER);
 		}
 	}
