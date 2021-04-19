@@ -1,4 +1,5 @@
 #include "nwpwin.h"
+#include<conio.h>
 
 // TODO: prepare class ("STATIC") for a ship
 class ship :public vsite::nwp::window {
@@ -11,11 +12,13 @@ class main_window : public vsite::nwp::window
 {
 	ship brod;
 	POINT position;
+	const int shipHeight = 20;
+	const int shipWidth = 20;
 protected:
 	void on_left_button_down(POINT p) override { 
 		// TODO: create ship if it doesn't exist yet
 		if(!brod)
-		brod.create(*this, WS_CHILD | WS_VISIBLE | WS_BORDER, "X", 1, p.x,p.y,50,50);
+		brod.create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, "X", 1, p.x,p.y,shipHeight,shipWidth);
 		position = p;
 		
 		// TODO: change current location
@@ -23,9 +26,45 @@ protected:
 	}
 	void on_key_up(int vk) override {
 		// TODO: mark ship (if exists) as "not moving"
+		if (brod) {
+			SetWindowLong(brod, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER);
+			SetWindowPos(brod, 0, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOMOVE | SWP_NOZORDER);
+		}
+
 	}
 	void on_key_down(int vk) override {
 		// TODO: if ship exists, move it depending on key and mark as "moving"
+		int brod_brzina = GetAsyncKeyState(VK_CONTROL) ? 20 : 10;
+		RECT rect;
+		GetClientRect(*this, &rect);
+
+		switch (vk) {
+		case VK_LEFT:
+			position.x = max(position.x - brod_brzina, rect.left);
+			break;
+		case VK_UP:
+			position.y = max(position.y - brod_brzina, rect.top);
+			break;
+		case VK_RIGHT:
+			position.x = min(position.x + brod_brzina, rect.right - shipWidth);
+			break;
+		case VK_DOWN:
+			position.y = min(position.y + brod_brzina, rect.bottom - shipHeight);
+			break;
+		default:
+			return;
+		}
+
+		SetWindowLong(brod,GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER | WS_BORDER);
+		SetWindowPos(brod, 0, position.x, position.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
+		
+	
+
+		 
+			
+			
+		
+		
 	}
 	void on_destroy() override {
 		::PostQuitMessage(0);
