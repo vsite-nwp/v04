@@ -1,7 +1,7 @@
 #include "nwpwin.h"
-#include<conio.h>
 
-// TODO: prepare class ("STATIC") for a ship
+
+
 class ship :public vsite::nwp::window {
 	virtual std::string class_name() { return "STATIC"; }
 
@@ -16,16 +16,16 @@ class main_window : public vsite::nwp::window
 	const int shipWidth = 20;
 protected:
 	void on_left_button_down(POINT p) override { 
-		// TODO: create ship if it doesn't exist yet
+	
 		if(!brod)
 		brod.create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, "X", 1, p.x,p.y,shipHeight,shipWidth);
 		position = p;
 		
-		// TODO: change current location
+	
 		SetWindowPos(brod, 0, p.x, p.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 	}
 	void on_key_up(int vk) override {
-		// TODO: mark ship (if exists) as "not moving"
+		
 		if (brod) {
 			SetWindowLong(brod, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER);
 			SetWindowPos(brod, 0, 0, 0, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOMOVE | SWP_NOZORDER);
@@ -33,7 +33,7 @@ protected:
 
 	}
 	void on_key_down(int vk) override {
-		// TODO: if ship exists, move it depending on key and mark as "moving"
+	
 		int brod_brzina = GetAsyncKeyState(VK_CONTROL) ? 20 : 10;
 		RECT rect;
 		GetClientRect(*this, &rect);
