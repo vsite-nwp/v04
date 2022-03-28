@@ -1,24 +1,75 @@
 #include "nwpwin.h"
 
-// TODO: prepare class ("STATIC") for a ship
+// : prepare class ("STATIC") for a ship
+class Static : public vsite::nwp::window
+{
+public:
+	std::string class_name() override { return "Static"; }
+};
 
 class main_window : public vsite::nwp::window
 {
 protected:
-	void on_left_button_down(POINT p) override { 
-		// TODO: create ship if it doesn't exist yet
-		// TODO: change current location
+	void on_left_button_down(POINT p) override
+	{
+		// : create ship if it doesn't exist yet
+		// : change current location
+		ship_pos = p;
+
+		if (!ship)
+			ship.create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, "x", 0, p.x, p.y, 20, 20);
+		else
+			SetWindowPos(ship, NULL, p.x, p.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 	}
-	void on_key_up(int vk) override {
-		// TODO: mark ship (if exists) as "not moving"
+
+	void on_key_up(int vk) override
+	{
+		// : mark ship (if exists) as "not moving"
+		SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER);
+		SetWindowPos(ship, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOMOVE);
 	}
-	void on_key_down(int vk) override {
-		// TODO: if ship exists, move it depending on key and mark as "moving"
+
+	void on_key_down(int vk) override
+	{
+		// : if ship exists, move it depending on key and mark as "moving"
+		RECT window_border;
+		GetClientRect(*this, &window_border);
+
+		int ship_speed = GetAsyncKeyState(VK_CONTROL) ? 30 : 15;
+
+		if (ship)
+		{
+			switch (vk)
+			{
+			case VK_UP:
+				ship_pos.y = max(ship_pos.y - ship_speed, window_border.top);
+				break;
+			case VK_DOWN:
+				ship_pos.y = min(ship_pos.y + ship_speed, window_border.bottom - 20);
+				break;
+			case VK_LEFT:
+				ship_pos.x = max(ship_pos.x - ship_speed, window_border.left);
+				break;
+			case VK_RIGHT:
+				ship_pos.x = min(ship_pos.x + ship_speed, window_border.right - 20);
+				break;
+			default:
+				return;
+			}
+
+			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER | WS_BORDER);
+			SetWindowPos(ship, NULL, ship_pos.x, ship_pos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+		}
 	}
-	void on_destroy() override {
+
+	void on_destroy() override
+	{
 		::PostQuitMessage(0);
 	}
+
 private:
+	Static ship;
+	POINT ship_pos;
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
