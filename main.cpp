@@ -18,19 +18,16 @@ protected:
 		// create ship if it doesn't exist yet
 		ShipPos = p;
 		if (!ship){
-			ship.create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER, "x", 0, p.x, p.y, 20, 20);
 			ship.create(*this, style1, "x", 0, p.x, p.y, ShipSize, ShipSize);
 		}
 		else  
 			// change current location
-			SetWindowPos(ship, NULL, p.x, p.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 			SetWindowPos(ship, 0, p.x, p.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 	}
 
 	void on_key_up(int vk) override
 	{
 		// mark ship (if exists) as "not moving"
-		SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER);
 		SetWindowPos(ship, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOMOVE);
 		// mark ship (if exists) as "not moving"
 		DWORD style = GetWindowLong(ship, GWL_STYLE);
@@ -44,7 +41,7 @@ protected:
 		// if ship exists, move it depending on key and mark as "moving"
 		RECT window_border;
 		GetClientRect(*this, &window_border);
-		int ShipSpeed = GetAsyncKeyState(VK_CONTROL) ? 30 : 15;
+		int ShipSpeed = GetAsyncKeyState(VK_CONTROL) ? 40 : 10;
 		if (ship)
 		{
 			switch (vk)
@@ -54,14 +51,12 @@ protected:
 				break;
 			case VK_DOWN:
 				ShipPos.y = min(ShipPos.y + ShipSpeed, window_border.bottom - 20);
-				ShipPos.y = min(ShipPos.y + ShipSpeed, window_border.bottom - ShipSize);
 				break;
 			case VK_LEFT:
 				ShipPos.x = max(ShipPos.x - ShipSpeed, window_border.left);
 				break;
 			case VK_RIGHT:
 				ShipPos.x = min(ShipPos.x + ShipSpeed, window_border.right - 20);
-				ShipPos.x = min(ShipPos.x + ShipSpeed, window_border.right - ShipSize);
 				break;
 			default:
 				return;
