@@ -28,8 +28,6 @@ protected:
 	void on_key_up(int vk) override
 	{
 		// mark ship (if exists) as "not moving"
-		SetWindowPos(ship, NULL, 0, 0, 0, 0, SWP_NOZORDER | SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOMOVE);
-		// mark ship (if exists) as "not moving"
 		DWORD style = GetWindowLong(ship, GWL_STYLE);
 		style &= ~WS_BORDER;
 		SetWindowLong(ship, GWL_STYLE, style);
@@ -50,20 +48,18 @@ protected:
 				ShipPos.y = max(ShipPos.y - ShipSpeed, window_border.top);
 				break;
 			case VK_DOWN:
-				ShipPos.y = min(ShipPos.y + ShipSpeed, window_border.bottom - 20);
+				ShipPos.y = min(ShipPos.y + ShipSpeed, window_border.bottom - ShipSize);
 				break;
 			case VK_LEFT:
 				ShipPos.x = max(ShipPos.x - ShipSpeed, window_border.left);
 				break;
 			case VK_RIGHT:
-				ShipPos.x = min(ShipPos.x + ShipSpeed, window_border.right - 20);
+				ShipPos.x = min(ShipPos.x + ShipSpeed, window_border.right - ShipSize);
 				break;
 			default:
 				return;
 			}
 
-			SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER | WS_BORDER);
-			SetWindowPos(ship, NULL, ShipPos.x, ShipPos.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
 			DWORD style = GetWindowLong(ship, GWL_STYLE);
 			style |= WS_BORDER;
 
