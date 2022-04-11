@@ -55,7 +55,7 @@ protected:
 
 		switch (vk) {
 		case VK_UP:
-			if(location.y>0 && (location.y-speed)>=0)
+			if((location.y-speed)>=0)
 				location.y -= speed;
 			break;
 		case VK_DOWN:
@@ -63,7 +63,7 @@ protected:
 				location.y += speed;
 			break;
 		case VK_LEFT:
-			if(location.x>0 && (location.x - speed) >= 0)
+			if((location.x - speed) >= 0)
 				location.x -= speed;
 			break;
 		case VK_RIGHT:
