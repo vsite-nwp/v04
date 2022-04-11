@@ -65,7 +65,7 @@ protected:
 				location.y -= speed;
 			break;
 		case VK_DOWN:
-			if(location.y+ plusDownRight <rc.bottom && ((location.y + plusDownRight) - speed) <= rc.bottom)
+			if(((location.y + plusDownRight) + speed) <= rc.bottom)
 				location.y += speed;
 			break;
 		case VK_LEFT:
@@ -73,12 +73,14 @@ protected:
 				location.x -= speed;
 			break;
 		case VK_RIGHT:
-			if(location.x+ plusDownRight <rc.right && ((location.x + plusDownRight) - speed)  <= rc.right)
+			if(((location.x + plusDownRight) + speed)  <= rc.right)
 				location.x += speed;
 			break;
+
+		default:
+			return;
 		}
-		//default:
-		//	return location.x=0,location.y=0;
+		// location.x=0,location.y=0;
 
 		DWORD style = GetWindowLong(ship, GWL_STYLE);
 
