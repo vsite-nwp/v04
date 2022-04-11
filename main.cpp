@@ -2,7 +2,7 @@
 
 using namespace std;
 
-POINT location;
+const int shipSize = 20;
 
 class STATIC : public vsite::nwp::window {
 
@@ -15,6 +15,7 @@ public:
 class main_window : public vsite::nwp::window
 {
 	STATIC ship;
+	POINT location;
 
 protected:
 	void on_left_button_down(POINT p) override { 
@@ -23,7 +24,7 @@ protected:
 		location = p;
 		
 		if (!ship) {
-			ship.create(*this, WS_VISIBLE | WS_CHILD | SS_CENTER, "X", 0, location.x, location.y, 20, 20);
+			ship.create(*this, WS_VISIBLE | WS_CHILD | SS_CENTER, "X", 0, location.x, location.y, shipSize, shipSize);
 		}
 
 		SetWindowPos(ship, 0, location.x, location.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
@@ -45,7 +46,7 @@ protected:
 		GetClientRect(*this, &rc);
 		short key_press = GetAsyncKeyState(VK_CONTROL);
 		int speed;
-		const int plusDownRight = 20;
+		
 
 		if (key_press < 0)
 			speed = 30;
@@ -58,7 +59,7 @@ protected:
 				location.y -= speed;
 			break;
 		case VK_DOWN:
-			if(((location.y + plusDownRight) + speed) <= rc.bottom)
+			if(((location.y + shipSize) + speed) <= rc.bottom)
 				location.y += speed;
 			break;
 		case VK_LEFT:
@@ -66,7 +67,7 @@ protected:
 				location.x -= speed;
 			break;
 		case VK_RIGHT:
-			if(((location.x + plusDownRight) + speed)  <= rc.right)
+			if(((location.x + shipSize) + speed)  <= rc.right)
 				location.x += speed;
 			break;
 
