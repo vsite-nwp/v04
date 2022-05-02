@@ -1,5 +1,8 @@
 #include "nwpwin.h"
 
+
+int const shipSize = 20;
+
 class Static : public vsite::nwp::window {
 public:
 	std::string class_name() override { return "STATIC"; }
@@ -7,12 +10,13 @@ public:
 
 class main_window : public vsite::nwp::window
 {
+
 protected:
 	void on_left_button_down(POINT p) override {
 		
 		pos = p;
 		if (!ship) {
-			ship.create(*this, WS_CHILD | WS_VISIBLE | SS_CENTERIMAGE | SS_CENTER, "X", 0, p.x, p.y, 20, 20); 
+			ship.create(*this, WS_CHILD | WS_VISIBLE | SS_CENTERIMAGE | SS_CENTER, "X", 0, p.x, p.y, shipSize, shipSize); 
 		}
 			
 		SetWindowPos(ship, 0, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
@@ -21,7 +25,7 @@ protected:
 		DWORD style = GetWindowLong(ship, GWL_STYLE);
 		style &= ~WS_BORDER;
 		SetWindowLong(ship, GWL_STYLE, style);
-		SetWindowPos(ship, 0, pos.x, pos.y, 0, 0, SWP_NOSIZE | SWP_FRAMECHANGED | SWP_NOZORDER);
+		SetWindowPos(ship, 0, pos.x, pos.y, 0, 0, SWP_NOSIZE | SWP_FRAMECHANGED | SWP_NOZORDER | SWP_NOMOVE);
 	}
 	void on_key_down(int vk) override {
 		if (ship) {
@@ -34,13 +38,13 @@ protected:
 				pos.y = max(movement.top, pos.y - Speed);
 				break;
 			case VK_DOWN:
-				pos.y = min(movement.bottom-20, pos.y + Speed);
+				pos.y = min(movement.bottom-shipSize, pos.y + Speed);
 				break;
 			case VK_LEFT:
 				pos.x = max(movement.left, pos.x - Speed);
 				break;
 			case VK_RIGHT:
-				pos.x = min(movement.right-20, pos.x + Speed);
+				pos.x = min(movement.right-shipSize, pos.x + Speed);
 				break;
 			default: return;
 			}
