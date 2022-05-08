@@ -1,6 +1,6 @@
 #include "nwpwin.h"
 
-// TODO: prepare class ("STATIC") for a ship
+// : prepare class ("STATIC") for a ship
 
 class STATIC : public vsite::nwp::window 
 { 
@@ -12,8 +12,8 @@ class main_window : public vsite::nwp::window
 {
 protected:
 	void on_left_button_down(POINT p) override { 
-		// TODO: create ship if it doesn't exist yet
-		// TODO: change current location
+		// : create ship if it doesn't exist yet
+		// : change current location
 		location = p;
 		if (!ship) {
 			ship.create(*this, style, "X", 0, p.x, p.y, 50, 50);
@@ -21,7 +21,7 @@ protected:
 		SetWindowPos(ship, 0, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 	}
 	void on_key_up(int vk) override {
-		// TODO: mark ship (if exists) as "not moving"
+		// : mark ship (if exists) as "not moving"
 		DWORD style = GetWindowLong(ship, GWL_STYLE);
 		style &= ~WS_BORDER;
 		if (ship) {
@@ -30,7 +30,7 @@ protected:
 		}
 	}
 	void on_key_down(int vk) override {
-		// TODO: if ship exists, move it depending on key and mark as "moving"
+		// : if ship exists, move it depending on key and mark as "moving"
 		RECT rc; GetClientRect(*this,&rc);
 		int speed = GetAsyncKeyState(VK_CONTROL) ? 30:15 ;
 
