@@ -33,36 +33,46 @@ protected:
 		// : if ship exists, move it depending on key and mark as "moving"
 		RECT rc; GetClientRect(*this,&rc);
 		int speed = GetAsyncKeyState(VK_CONTROL) ? 30:15 ;
-
-		
+		DWORD style1 = GetWindowLong(ship, GWL_STYLE);
+			
 			switch (vk) {
 			case VK_LEFT:
+				style1 |= WS_BORDER;
 				location.x -= speed;
 				if (location.x < 0)
 					location.x = rc.right;
+				SetWindowLong(ship, GWL_STYLE, style1);
+				SetWindowPos(ship, 0, location.x, location.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 				break;
 				//location.x = max(0, location.x - speed);
 			case VK_RIGHT: 
+				style1 |= WS_BORDER;
 				location.x += speed; 
 				if (location.x > rc.right) 
 				
 					location.x = 0; 
+				SetWindowLong(ship, GWL_STYLE, style1);
+				SetWindowPos(ship, 0, location.x, location.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 				break;
 			case VK_UP: 
+				style1 |= WS_BORDER;
 				location.y -= speed; 
 				if (location.y < 0) 
 				
 					location.y = rc.bottom;
+				SetWindowLong(ship, GWL_STYLE, style1);
+				SetWindowPos(ship, 0, location.x, location.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 				break;
 			case VK_DOWN: 
+				style1 |= WS_BORDER;
 				location.y += speed;  
 				if (location.y > rc.bottom)
 				
 					location.y = 0;
+				SetWindowLong(ship, GWL_STYLE, style1);
+				SetWindowPos(ship, 0, location.x, location.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 				break;
-			}
-		SetWindowLong(ship, GWL_STYLE, style | WS_BORDER);
-		SetWindowPos(ship, 0, location.x, location.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
+			}		
 	}
 	void on_destroy() override {
 		::PostQuitMessage(0);
