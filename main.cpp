@@ -16,7 +16,8 @@ protected:
 		// : change current location
 		location = p;
 		if (!ship) {
-			ship.create(*this, style, "X", 0, p.x, p.y, 50, 50);
+			ship.create(*this, WS_CHILD | WS_VISIBLE | SS_CENTER
+			, "X", 0, p.x, p.y, 50, 50);
 		}
 		SetWindowPos(ship, 0, p.x, p.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 	}
@@ -37,7 +38,7 @@ protected:
 			
 			switch (vk) {
 			case VK_LEFT:
-				style1 |= WS_BORDER;
+				
 				location.x -= speed;
 				if (location.x < 0)
 					location.x = rc.right;
@@ -46,33 +47,38 @@ protected:
 				break;
 				//location.x = max(0, location.x - speed);
 			case VK_RIGHT: 
-				style1 |= WS_BORDER;
+				
 				location.x += speed; 
 				if (location.x > rc.right) 
 				
 					location.x = 0; 
-				SetWindowLong(ship, GWL_STYLE, style1);
-				SetWindowPos(ship, 0, location.x, location.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
+				
 				break;
 			case VK_UP: 
-				style1 |= WS_BORDER;
+				
 				location.y -= speed; 
 				if (location.y < 0) 
 				
 					location.y = rc.bottom;
-				SetWindowLong(ship, GWL_STYLE, style1);
-				SetWindowPos(ship, 0, location.x, location.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
+			
+			
 				break;
 			case VK_DOWN: 
-				style1 |= WS_BORDER;
+				
 				location.y += speed;  
 				if (location.y > rc.bottom)
 				
 					location.y = 0;
-				SetWindowLong(ship, GWL_STYLE, style1);
-				SetWindowPos(ship, 0, location.x, location.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
+
 				break;
-			}		
+			default:
+				return;
+				
+			}
+			style1 |= WS_BORDER;
+			SetWindowLong(ship, GWL_STYLE, style1);
+			SetWindowPos(ship, 0, location.x, location.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
+
 	}
 	void on_destroy() override {
 		::PostQuitMessage(0);
@@ -80,7 +86,6 @@ protected:
 private:
 	STATIC ship;
 	POINT location;
-	DWORD style = WS_CHILD | WS_VISIBLE | SS_CENTER;
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
