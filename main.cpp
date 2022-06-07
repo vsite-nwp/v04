@@ -1,6 +1,5 @@
 #include "nwpwin.h"
 
-// TODO: prepare class ("STATIC") for a ship
 class label: public vsite::nwp::window{
 	std::string class_name() override {
 		return "STATIC";
@@ -24,10 +23,10 @@ protected:
 		
 	}
 	void on_key_up(int vk) override {
-		
+
 		if (l) {
-			SetWindowLong(l, GWL_STYLE, WS_CHILD | WS_VISIBLE|SS_CENTER);
-			SetWindowPos(l, 0, position.x, position.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+			SetWindowLong(l, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER);
+			SetWindowPos(l, 0, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_NOMOVE);
 		}
 	}
 	void on_key_down(int vk) override {
@@ -57,6 +56,8 @@ protected:
 
 
 			}
+			SetWindowLong(l, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER | WS_BORDER);
+			SetWindowPos(l, 0, position.x, position.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 		}
 	}
 	void on_destroy() override {
