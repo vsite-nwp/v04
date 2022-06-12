@@ -22,27 +22,27 @@ protected:
 		}
 		pos = p;
 
-		SetWindowPos(ship, 0, p.x, p.y, 30, 30, SWP_NOZORDER | SWP_NOSIZE);
+		SetWindowPos(ship, 0, p.x, p.y, 0, 0, SWP_NOZORDER | SWP_NOSIZE);
 	}
 
 	void on_key_up(int vk) override {
-		// TODO: mark ship (if exists) as "not moving"
+
 		if (!ship) {
-			MessageBox(*this, "Ship is non existent!", "Warning!", MB_ICONWARNING);
+			
 			return;
 		}
-		int style = GetWindowLong(ship, GWL_STYLE) & ~WS_BORDER; //reverse and
+		int style = GetWindowLong(ship, GWL_STYLE) & ~WS_BORDER;
 		SetWindowLong(ship, GWL_STYLE, style);
-		SetWindowPos(ship, 0, pos.x, pos.y, 30, 30, SWP_FRAMECHANGED);
+		SetWindowPos(ship, 0, pos.x, pos.y, 0, 0, SWP_NOSIZE | SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOZORDER);
 	}
 
 	void on_key_down(int vk) override {
-		// TODO: if ship exists, move it depending on key and mark as "moving"
+
 		if (!ship) {
-			MessageBox(*this, "Ship is non existent!", "Warning!", MB_ICONWARNING);
+			
 			return;
 		}
-		int style = GetWindowLong(ship, GWL_STYLE) | WS_BORDER;  // or
+		int style = GetWindowLong(ship, GWL_STYLE) | WS_BORDER;
 		RECT winBorder;
 		GetClientRect(*this, &winBorder);
 		//Normal move: 10
@@ -68,7 +68,7 @@ protected:
 		}
 
 		SetWindowLong(ship, GWL_STYLE, style);
-		SetWindowPos(ship, 0, pos.x, pos.y, 30, 30, SWP_FRAMECHANGED);
+		SetWindowPos(ship, 0, pos.x, pos.y, 0, 0, SWP_NOSIZE | SWP_FRAMECHANGED | SWP_NOZORDER);
 
 	}
 
