@@ -9,12 +9,10 @@ public:
 
 class main_window : public vsite::nwp::window
 {
-public:
+private:
 	Static ship;
 	POINT position;
-	RECT windowsBorder;
 	int speed = 5;
-	bool isFaster = false;
 
 protected:
 	void on_left_button_down(POINT p) override { 
@@ -36,49 +34,33 @@ protected:
 	void on_key_down(int vk) override {
 		if (!ship) {return;}
 
+		RECT windowsBorder;
 		GetClientRect(*this, &windowsBorder);
+
+		if (GetAsyncKeyState(VK_CONTROL)){speed = 20;}
+		else {speed = 5;}
 
 		switch (vk)
 		{
-		case VK_CONTROL:
-			if (isFaster)
-			{
-				speed = 5;
-				isFaster = false;
-			}
-			else { speed = 20; isFaster = true; }
-			break;
-		case VK_UP:
-			if (windowsBorder.top < position.y - speed){position.y -= speed;}
-			break;
-		case VK_DOWN:
-			if (windowsBorder.bottom - 15 > position.y + speed) { position.y += speed; }
-			break;
-		case VK_LEFT:
-			if (windowsBorder.left < position.x - speed){position.x -= speed;}
-			break;
-		case VK_RIGHT:
-			if (windowsBorder.right -20 > position.x + speed){position.x += speed;}
-			break;
 		case 87:
-			// W
+		case VK_UP:
+			
 			if (windowsBorder.top < position.y - speed){position.y -= speed;}
 			break;
 		case 83:
-			// S
-			if (windowsBorder.bottom - 15 > position.y + speed){position.y += speed;}
+		case VK_DOWN:
+			if (windowsBorder.bottom - 15 > position.y + speed) { position.y += speed; }
 			break;
 		case 65:
-			// A
+		case VK_LEFT:
 			if (windowsBorder.left < position.x - speed){position.x -= speed;}
 			break;
 		case 68:
-			// D
-			if (windowsBorder.right - 20 > position.x + speed){position.x += speed;}
+		case VK_RIGHT:
+			if (windowsBorder.right -20 > position.x + speed){position.x += speed;}
 			break;
 		default: 
 			return;
-			break;
 		}
 
 		SetWindowLong(ship, GWL_STYLE, WS_CHILD | WS_VISIBLE | SS_CENTER | WS_BORDER);
@@ -88,7 +70,6 @@ protected:
 	void on_destroy() override {
 		::PostQuitMessage(0);
 	}
-private:
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hp, LPSTR cmdLine, int nShow)
