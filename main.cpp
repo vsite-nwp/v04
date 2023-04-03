@@ -12,12 +12,13 @@ class main_window : public vsite::nwp::window
 private:
 	Static ship;
 	POINT position;
-	int speed = 5;
+	const short int ShipWidth = 20;
+	const short int ShipHeight = 15;
 
 protected:
 	void on_left_button_down(POINT p) override { 
 		if (!ship) {
-			ship.create(*this, WS_CHILD | SS_CENTER | WS_VISIBLE, "X", 1, p.x, p.y, 20, 15);
+			ship.create(*this, WS_CHILD | SS_CENTER | WS_VISIBLE, "X", 1, p.x, p.y, ShipWidth, ShipHeight);
 		}
 		position = p;
 
@@ -36,30 +37,34 @@ protected:
 
 		RECT windowsBorder;
 		GetClientRect(*this, &windowsBorder);
+		int speed;
 
 		if (GetAsyncKeyState(VK_CONTROL)){speed = 20;}
 		else {speed = 5;}
 
 		switch (vk)
 		{
-		case 87:
+		case 'W':
 		case VK_UP:
-			
-			if (windowsBorder.top < position.y - speed){position.y -= speed;}
+			if (windowsBorder.top > position.y - speed){position.y  = windowsBorder.top;}
+			else{position.y -= speed;}
 			break;
-		case 83:
+		case 'S':
 		case VK_DOWN:
-			if (windowsBorder.bottom - 15 > position.y + speed) { position.y += speed; }
+			if (windowsBorder.bottom < position.y + speed + ShipHeight) { position.y = windowsBorder.bottom - ShipHeight; }
+			else{position.y += speed;}
 			break;
-		case 65:
+		case 'A':
 		case VK_LEFT:
-			if (windowsBorder.left < position.x - speed){position.x -= speed;}
+			if (windowsBorder.left > position.x - speed) { position.x = windowsBorder.left; }
+			else{position.x -= speed;}
 			break;
-		case 68:
+		case 'D':
 		case VK_RIGHT:
-			if (windowsBorder.right -20 > position.x + speed){position.x += speed;}
+			if (windowsBorder.right < position.x + speed + ShipWidth) { position.x = windowsBorder.right - ShipWidth; }
+			else{position.x += speed;}
 			break;
-		default: 
+		default:
 			return;
 		}
 
