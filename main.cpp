@@ -34,7 +34,6 @@ protected:
 		RECT wndSize;
 		GetClientRect(*this, &wndSize);
 		if (!(GetWindowLong(x, GWL_STYLE) & WS_BORDER)) SetWindowLong(x, GWL_STYLE, GetWindowLong(x, GWL_STYLE) | WS_BORDER);
-		SetWindowPos(x, 0, current_pos.x, current_pos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 		int move = GetKeyState(VK_CONTROL) < 0 ? 8 : 4;
 		switch (vk) {
 			case VK_UP:
@@ -49,9 +48,8 @@ protected:
 			case VK_RIGHT:
 				current_pos.x = wndSize.right > current_pos.x + width + move ? current_pos.x + move : wndSize.right - width;
 				break;
-			default:
-				return;
 		}
+		SetWindowPos(x, 0, current_pos.x, current_pos.y, 0, 0, SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 	}
 	void on_destroy() override {
 		::PostQuitMessage(0);
