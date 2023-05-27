@@ -75,15 +75,8 @@ protected:
 				GetWindowLong(player_ship, GWL_STYLE) | WS_BORDER);
 		}
 
-		SetWindowPos(player_ship, 
-			0, 
-			player_ship_position.x, 
-			player_ship_position.y, 
-			0, 
-			0, 
-			SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 
-		int move = GetKeyState(VK_CONTROL) < 0 ? 10 : 10;
+		int move = GetKeyState(VK_CONTROL) < 0 ? 16 : 8;
 
 		switch (vk)
 		{
@@ -102,7 +95,16 @@ protected:
 		default:
 			return;
 		}
+
+		SetWindowPos(player_ship, 
+			0, 
+			player_ship_position.x, 
+			player_ship_position.y, 
+			0, 
+			0, 
+			SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 	}
+
 	void on_destroy() override {
 		::PostQuitMessage(0);
 	}
