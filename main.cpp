@@ -68,14 +68,6 @@ protected:
 		RECT window_size;
 		GetClientRect(*this, &window_size);
 
-		if (!(GetWindowLong(player_ship, GWL_STYLE) & WS_BORDER))
-		{
-			SetWindowLong(player_ship, 
-				GWL_STYLE, 
-				GetWindowLong(player_ship, GWL_STYLE) | WS_BORDER);
-		}
-
-
 		int move = GetKeyState(VK_CONTROL) < 0 ? 16 : 8;
 
 		switch (vk)
@@ -94,6 +86,13 @@ protected:
 			break;
 		default:
 			return;
+		}
+
+		if (!(GetWindowLong(player_ship, GWL_STYLE) & WS_BORDER))
+		{
+			SetWindowLong(player_ship, 
+				GWL_STYLE, 
+				GetWindowLong(player_ship, GWL_STYLE) | WS_BORDER);
 		}
 
 		SetWindowPos(player_ship, 
