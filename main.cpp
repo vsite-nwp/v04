@@ -33,11 +33,6 @@ public:
 	{
 		return m_step;
 	}
-
-	void setStep(const int step)
-	{
-		m_step = step;
-	}
 };
 
 class main_window : public vsite::nwp::window
