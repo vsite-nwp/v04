@@ -84,7 +84,7 @@ protected:
 			pos.y = next < rc.top ? rc.top : next;
 			break;
 		case VK_DOWN:
-			next = pos.y + currStep + m_StaticWnd.defaultHeight;
+			next = pos.y + currStep;
 			pos.y = min(rc.bottom - m_StaticWnd.defaultHeight, next);
 			break;
 		case VK_LEFT:
@@ -92,7 +92,7 @@ protected:
 			pos.x = next < rc.left ? rc.left : next;
 			break;
 		case VK_RIGHT:
-			next = pos.x + currStep + m_StaticWnd.defaultWidth;
+			next = pos.x + currStep;
 			pos.x = min(rc.right - m_StaticWnd.defaultWidth, next);
 			break;
 		default:
