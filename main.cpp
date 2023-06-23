@@ -36,9 +36,9 @@ protected:
 				m_StaticWnd.defaultWidth,
 				m_StaticWnd.defaultHeight);
 
-		SetWindowPos(m_StaticWnd,0,
-			p.x,p.y,
-			0, 0,
+		SetWindowPos(m_StaticWnd,0, // ignored
+			p.x,p.y, // new pos
+			0, 0, // ignored (noresize)
 			SWP_NOSIZE | SWP_NOZORDER);
 
 		m_StaticWnd.setPos(p);
@@ -51,9 +51,9 @@ protected:
 
 			auto pos = m_StaticWnd.getCurrPos();
 
-			SetWindowPos(m_StaticWnd, 0,
-				0, 0,
-				0, 0,
+			SetWindowPos(m_StaticWnd, 0, // ignored by SWP_NOZORDER
+				0, 0, // ignored by SWP_NOMOVE
+				0, 0, // ignored by SWP_NOSIZE
 				SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
 		}
 
@@ -94,9 +94,9 @@ protected:
 			break;
 		}
 
-		SetWindowPos(m_StaticWnd, 0, 
-			pos.x, pos.y,
-			0, 0,
+		SetWindowPos(m_StaticWnd, 0, // ignored by SWP_NOZORDER
+			pos.x, pos.y, // new pos
+			0, 0, // ignored by SWP_NOSIZE
 			SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 
 		m_StaticWnd.setPos(pos);
