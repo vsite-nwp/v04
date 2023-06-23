@@ -3,20 +3,14 @@
 class Static : public vsite::nwp::window
 {
 	POINT m_pos;
-	int m_step;
 public:
 	static const int defaultHeight = 20;
 	static const int defaultWidth = 20;
 
 	Static()
 		: vsite::nwp::window()
-		, m_step(20)
 		, m_pos{ 0, 0 }
 	{
-	}
-
-	std::string class_name() override {
-		return "Static";
 	}
 
 	POINT getCurrPos() const
@@ -28,12 +22,7 @@ public:
 	{
 		m_pos = p;
 	}
-
-	int getStep() const
-	{
-		return m_step;
-	}
-};
+	};
 
 class main_window : public vsite::nwp::window
 {
@@ -41,7 +30,7 @@ protected:
 	void on_left_button_down(POINT p) override { 
 		if (!m_StaticWnd)
 			m_StaticWnd.create(*this,
-				WS_CHILD | WS_VISIBLE,
+				WS_CHILD | WS_VISIBLE | SS_CENTER,
 				"X", 1,
 				p.x, p.y,
 				m_StaticWnd.defaultWidth,
@@ -57,11 +46,13 @@ protected:
 	void on_key_up(int vk) override {
 		if (m_StaticWnd) {
 			auto wndStyle = GetWindowLong(m_StaticWnd, GWL_STYLE);
-			auto currPos = m_StaticWnd.getCurrPos();
 
 			SetWindowLong(m_StaticWnd, GWL_STYLE, wndStyle & ~WS_BORDER);
+
+			auto pos = m_StaticWnd.getCurrPos();
+
 			SetWindowPos(m_StaticWnd, 0,
-				currPos.x, currPos.y,
+				0, 0,
 				0, 0,
 				SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER);
 		}
@@ -69,8 +60,12 @@ protected:
 	}
 	void on_key_down(int vk) override {
 		if (!m_StaticWnd) return;
-		auto currStep = m_StaticWnd.getStep();
-		currStep += GetKeyState(VK_CONTROL) < 0 ? 60 : 0;
+
+		auto wndStyle = GetWindowLong(m_StaticWnd, GWL_STYLE);
+		SetWindowLong(m_StaticWnd, GWL_STYLE, wndStyle | WS_BORDER);
+
+		auto step = m_StaticWnd.defaultWidth;
+		step += GetKeyState(VK_CONTROL) < 0 ? 60 : 0;
 		auto pos = m_StaticWnd.getCurrPos();
 		int next = 0;
 
@@ -80,28 +75,25 @@ protected:
 		switch (vk)
 		{
 		case VK_UP:
-			next = pos.y - currStep;
+			next = pos.y - step;
 			pos.y = next < rc.top ? rc.top : next;
 			break;
 		case VK_DOWN:
-			next = pos.y + currStep;
+			next = pos.y + step;
 			pos.y = min(rc.bottom - m_StaticWnd.defaultHeight, next);
 			break;
 		case VK_LEFT:
-			next = pos.x - currStep;
+			next = pos.x - step;
 			pos.x = next < rc.left ? rc.left : next;
 			break;
 		case VK_RIGHT:
-			next = pos.x + currStep;
+			next = pos.x + step;
 			pos.x = min(rc.right - m_StaticWnd.defaultWidth, next);
 			break;
 		default:
 			break;
 		}
 
-		auto wndStyle = GetWindowLong(m_StaticWnd, GWL_STYLE);
-
-		SetWindowLong(m_StaticWnd, GWL_STYLE, wndStyle | WS_BORDER);
 		SetWindowPos(m_StaticWnd, 0, 
 			pos.x, pos.y,
 			0, 0,
