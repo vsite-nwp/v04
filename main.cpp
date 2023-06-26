@@ -7,6 +7,10 @@ public:
 	static const int defaultHeight = 20;
 	static const int defaultWidth = 20;
 
+	std::string class_name() override {
+		return "Static";
+	}
+
 	Static()
 		: vsite::nwp::window()
 		, m_pos{ 0, 0 }
@@ -36,6 +40,7 @@ protected:
 				m_StaticWnd.defaultWidth,
 				m_StaticWnd.defaultHeight);
 
+		// just draw Static
 		SetWindowPos(m_StaticWnd,0, // ignored
 			p.x,p.y, // new pos
 			0, 0, // ignored (noresize)
@@ -47,10 +52,10 @@ protected:
 		if (m_StaticWnd) {
 			auto wndStyle = GetWindowLong(m_StaticWnd, GWL_STYLE);
 
+			// remove border
 			SetWindowLong(m_StaticWnd, GWL_STYLE, wndStyle & ~WS_BORDER);
 
-			auto pos = m_StaticWnd.getCurrPos();
-
+			// redraw
 			SetWindowPos(m_StaticWnd, 0, // ignored by SWP_NOZORDER
 				0, 0, // ignored by SWP_NOMOVE
 				0, 0, // ignored by SWP_NOSIZE
@@ -61,45 +66,46 @@ protected:
 	void on_key_down(int vk) override {
 		if (!m_StaticWnd) return;
 
-		auto wndStyle = GetWindowLong(m_StaticWnd, GWL_STYLE);
-		SetWindowLong(m_StaticWnd, GWL_STYLE, wndStyle | WS_BORDER);
-
 		auto step = m_StaticWnd.defaultWidth;
 		step += GetKeyState(VK_CONTROL) < 0 ? 60 : 0;
 		auto pos = m_StaticWnd.getCurrPos();
-		int next = 0;
+		bool moving{ false };
 
 		RECT rc; GetClientRect(*this, &rc);
 
-		// handle possible exiting out of rc
+		// handle possible exiting out of rc (pos is top left so we might drop out at down and right)
 		switch (vk)
 		{
 		case VK_UP:
-			next = pos.y - step;
-			pos.y = next < rc.top ? rc.top : next;
+			pos.y = max(rc.top, pos.y - step);
+			moving = true;
 			break;
 		case VK_DOWN:
-			next = pos.y + step;
-			pos.y = min(rc.bottom - m_StaticWnd.defaultHeight, next);
+			pos.y = min(rc.bottom - m_StaticWnd.defaultHeight, pos.y + step);
+			moving = true;
 			break;
 		case VK_LEFT:
-			next = pos.x - step;
-			pos.x = next < rc.left ? rc.left : next;
+			pos.x = max(rc.left, pos.x - step);
+			moving = true;
 			break;
 		case VK_RIGHT:
-			next = pos.x + step;
-			pos.x = min(rc.right - m_StaticWnd.defaultWidth, next);
+			pos.x = min(rc.right - m_StaticWnd.defaultWidth, pos.x + step);
+			moving = true;
 			break;
 		default:
 			break;
 		}
 
-		SetWindowPos(m_StaticWnd, 0, // ignored by SWP_NOZORDER
-			pos.x, pos.y, // new pos
-			0, 0, // ignored by SWP_NOSIZE
-			SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
+		if (moving) {
+			auto wndStyle = GetWindowLong(m_StaticWnd, GWL_STYLE);
+			SetWindowLong(m_StaticWnd, GWL_STYLE, wndStyle | WS_BORDER);
+			SetWindowPos(m_StaticWnd, 0, // ignored by SWP_NOZORDER
+				pos.x, pos.y, // new pos
+				0, 0, // ignored by SWP_NOSIZE
+				SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOZORDER);
 
-		m_StaticWnd.setPos(pos);
+			m_StaticWnd.setPos(pos);
+		}
 	}
 	void on_destroy() override {
 		::PostQuitMessage(0);
